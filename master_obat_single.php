@@ -235,9 +235,9 @@ include "../inc/anggota_check.php";
                             var btn="";
 							// btn = '<a class="btn btn-xs btn-block bg-purple" href=\"sync_stok_sisa.php?id=' + data.id_obat + '&sumber=' + data.sumber + '\"><i class="fa fa-list"></i> Sinkron Sisa Stok</a>';
 							// // btn +='<a class="btn btn-xs btn-block btn-info" href=\"sync_stok.php?id='+data.id_obat+'&sumber='+data.sumber+'\"><i class="fa fa-gear"></i> Sinkronisasi</a>';
-							// btn += '<a class="btn btn-xs btn-block btn-warning" href=\"set_stok_gudang.php?o=' + data.id_obat + '\"><i class="fa fa-gear"></i> Pengaturan Stok Awal</a>';
+							btn += '<a class="btn btn-xs btn-block btn-warning" href=\"set_stok_gudang.php?o=' + data.id_obat + '\"><i class="fa fa-gear"></i> Pengaturan Stok Awal</a>';
 							// btn += '<a class="btn btn-xs btn-block btn-success" href=\"histori_harga.php?obat=' + data.nama + '&sumber=' + data.sumber + '\"><i class="fa fa-money"></i> Riwayat Harga</a>';
-							// btn += '<a class="btn btn-xs btn-block btn-primary" href=\"kartu_stok.php?o=' + data.id_obat + '\"><i class="fa fa-book"></i> Kartu Stok</a>';
+							btn += '<a class="btn btn-xs btn-block btn-primary" href=\"kartu_stok.php?o=' + data.id_obat + '\"><i class="fa fa-book"></i> Kartu Stok</a>';
 							// btn += '<a target="_blank" class="btn btn-xs btn-block btn-default" href=\"cetakbarcode.php?o=' + data.id_obat + '\"><i class="fa fa-list"></i> Cetak Barcode</a>';
 							return btn;
 						}

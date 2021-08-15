@@ -15,18 +15,18 @@
           </div>
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
-            <!-- <li class="header text-green">TRANSAKSI</li>
+            <li class="header text-green">TRANSAKSI</li>
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-money"></i> <span>Transaksi</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
                 <li><a href="masuk.php"><i class="fa fa-circle-o"></i> Obat Masuk</a></li>
-                <li><a href="masuk_retur.php"><i class="fa fa-circle-o"></i> Obat Masuk dari Retur</a></li>
+                <!-- <li><a href="masuk_retur.php"><i class="fa fa-circle-o"></i> Obat Masuk dari Retur</a></li> -->
                 <li><a href="list_keluar_draft.php"><i class="fa fa-circle-o"></i> Obat Keluar</a></li>
               </ul>
             </li>
-            <li><a href="keluar_donasi_list.php" class="text-green"><i class="fa fa-book"></i> Barang Donasi Keluar <span class="label label-success">New</span></a></li>
+            <!-- <li><a href="keluar_donasi_list.php" class="text-green"><i class="fa fa-book"></i> Barang Donasi Keluar <span class="label label-success">New</span></a></li>
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-undo"></i> <span>Retur</span> <i class="fa fa-angle-left pull-right"></i>
@@ -144,14 +144,14 @@
                 <li><a href="count_cycle.php"><i class="fa fa-circle-o"></i> Form SO</a></li>
               </ul>
             </li> -->
-            <!-- <li class="header text-maroon">PENGATURAN</li>
+            <li class="header text-maroon">PENGATURAN</li>
             <li class="treeview">
               <a href="#">
-                <i class="fa fa-gear"></i> <span>Pengaturan <span class="label label-warning">Update</span></span> <i class="fa fa-angle-left pull-right"></i>
+                <i class="fa fa-gear"></i> <span>Pengaturan</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
                 <li><a href="stok_depo.php"><i class="fa fa-circle-o"></i> Data Stok Awal Depo</a></li>
-                <li><a href="supplier.php" class="text-green"><i class="fa fa-circle-o"></i> Data Supplier <span class="label label-warning">Update</a></li>
+                <!-- <li><a href="supplier.php" class="text-green"><i class="fa fa-circle-o"></i> Data Supplier <span class="label label-warning">Update</a></li>
                 <li><a href="data_petugas.php"><i class="fa fa-circle-o"></i> Data Petugas</a></li>
                 <li><a href="warehouse.php"><i class="fa fa-circle-o"></i> Depo / Mini Depo</a></li>
                 <li><a href="tuslah.php"><i class="fa fa-circle-o"></i> Tuslah</a></li>
@@ -159,9 +159,9 @@
                 <li><a href="bentuk_sediaan.php"><i class="fa fa-circle-o"></i> Data Bentuk Sediaan</a></li>
                 <li><a href="kadaluarsa_conf.php"><i class="fa fa-circle-o"></i> Waktu Kontrol Kadaluarsa</a></li>
                 <li><a href="master_pabrik.php"><i class="fa fa-circle-o"></i> Data Pabrik/Principle</a></li>
-                <li><a href="setting_kelas_terapi.php"><i class="fa fa-circle-o"></i> Data Kelas Terapi</a></li>
+                <li><a href="setting_kelas_terapi.php"><i class="fa fa-circle-o"></i> Data Kelas Terapi</a></li> -->
               </ul>
-            </li> -->
+            </li>
             <!-- <li class="treeview">
               <a href="#">
                 <i class="fa fa-book"></i> <span>Laporan Farmasi</span> <i class="fa fa-angle-left pull-right"></i>
