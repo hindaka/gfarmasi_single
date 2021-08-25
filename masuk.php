@@ -20,6 +20,7 @@ $supplier = $h3->fetchAll(PDO::FETCH_ASSOC);
 $get_petugas = $db->query("SELECT p.id_petugas,peg.nama FROM petugas p INNER JOIN pegawai peg ON(p.id_pegawai=peg.id_pegawai) WHERE p.instalasi='GFARMASI'");
 $total_peg = $get_petugas->rowCount();
 $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
+//get kelola sumber dana
 ?>
 <!DOCTYPE html>
 <html>
@@ -56,7 +57,7 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
 
 <body class="<?php echo $skin_gfarmasi; ?>">
     <div class="wrapper">
-        <?php 
+        <?php
         include "header.php";
         include "menu_index.php"; ?>
         <!-- Content Wrapper. Contains page content -->
@@ -132,10 +133,9 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="sumber">Sumber Dana <span style="color:red">*</span></label>
-                                        <select class="form-control" name="sumber" required>
+                                        <select class="form-control" name="sumber" readonly>
                                             <option value="">---Pilih Sumber Dana---</option>
-                                            <option value="APBD">APBD</option>
-                                            <option value="BLUD">BLUD</option>
+                                            <option value="Belum dibayar" selected>Belum dibayar</option>
                                         </select>
                                     </div>
                                 </div>
@@ -144,6 +144,7 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                         <label for="">Dana Pembayaran <span style="color:red">*</span></label>
                                         <select name="dana_pembayaran" id="dana_pembayaran" class="form-control" required>
                                             <option value="">---Pilih Dana Pembayaran ---</option>
+                                            <option value="belum dibayar" selected>Belum dibayar</option>
                                             <option value="apbd">APBD</option>
                                             <option value="blud">BLUD</option>
                                         </select>

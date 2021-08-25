@@ -80,11 +80,12 @@ $no_spb = "";
 $kode_pemkot = "027";
 $bulan = substr($tanggal_keluar,5,2);
 $bulan_romawi = getRomawi($bulan);
-if($sumber_dana=='APBD'){
-	$dana = "APBD-FAR";
-}else{
-	$dana = "BLUD-FAR";
-}
+// if($sumber_dana=='APBD'){
+// 	$dana = "APBD-FAR";
+// }else{
+// 	$dana = "BLUD-FAR";
+// }
+$dana = "FARMASI";
 $rs = "RSKIA";
 $tahun = substr($tanggal_keluar,0,4);
 
@@ -112,7 +113,7 @@ try {
 	$ins_parent->bindParam(":approval",$id_petugas,PDO::PARAM_INT);
 	$ins_parent->execute();
 	$id_parent = $db->lastInsertId();
-	echo "<script language=\"JavaScript\">window.location = \"keluar.php?parent=".$id_parent."&type=".$sumber_dana."\"</script>";
+	echo "<script language=\"JavaScript\">window.location = \"keluar.php?parent=".$id_parent."\"</script>";
 } catch (PDOException $e) {
 	echo "Fail to create Parent for Obat keluar : FAIL ON ( ".$e->getMessage()." )";
 }

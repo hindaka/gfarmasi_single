@@ -25,6 +25,8 @@ $no_batch = isset($_POST['nobatch']) ? $_POST['nobatch'] : '';
 $expired = isset($_POST['expired']) ? $_POST['expired'] : '';
 $merk = isset($_POST['merk']) ? $_POST['merk'] : '';
 $sumber_dana = isset($_POST['sumber_dana']) ? $_POST['sumber_dana'] : '';
+$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : '';
+$pabrikan = isset($_POST['pabrikan']) ? $_POST['pabrikan'] : '';
 $date = explode("/",$expired);
 $new_date = $date[2]."-".$date[1]."-".$date[0];
 $today = date('Y-m-d');
@@ -42,7 +44,7 @@ try {
           "icon"=>"warning"
       ];
   }else{
-    $ins= $db->prepare("INSERT INTO `temp_stok_awal`(`id_obat`, `id_warehouse`,`volume`,`harga_beli`, `no_batch`, `expired`,`merk`,`sumber_dana`) VALUES(:id_obat,:id_warehouse,:volume,:harga_beli,:no_batch,:expired,:merk,:sumber_dana)");
+    $ins= $db->prepare("INSERT INTO `temp_stok_awal`(`id_obat`, `id_warehouse`,`volume`,`harga_beli`, `no_batch`, `expired`,`merk`,`sumber_dana`,`jenis`,`pabrikan`) VALUES(:id_obat,:id_warehouse,:volume,:harga_beli,:no_batch,:expired,:merk,:sumber_dana,:jenis,:pabrikan)");
     $ins->bindParam(":id_obat",$id_obat,PDO::PARAM_INT);
     $ins->bindParam(":id_warehouse",$id_warehouse,PDO::PARAM_INT);
     $ins->bindParam(":volume",$volume,PDO::PARAM_INT);
@@ -51,6 +53,8 @@ try {
     $ins->bindParam(":expired",$new_date,PDO::PARAM_STR);
     $ins->bindParam(":merk",$merk,PDO::PARAM_STR);
     $ins->bindParam(":sumber_dana",$sumber_dana,PDO::PARAM_STR);
+    $ins->bindParam(":jenis",$jenis,PDO::PARAM_STR);
+    $ins->bindParam(":pabrikan",$pabrikan,PDO::PARAM_STR);
     $ins->execute();
     $feedback=[
         "status"=>200,

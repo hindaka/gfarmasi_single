@@ -151,6 +151,7 @@
               </a>
               <ul class="treeview-menu">
                 <li><a href="stok_depo.php"><i class="fa fa-circle-o"></i> Data Stok Awal Depo</a></li>
+                <li><a href="kelola_sumber_dana.php"><i class="fa fa-circle-o"></i> Pengaturan Sumber Dana</a></li>
                 <!-- <li><a href="supplier.php" class="text-green"><i class="fa fa-circle-o"></i> Data Supplier <span class="label label-warning">Update</a></li>
                 <li><a href="data_petugas.php"><i class="fa fa-circle-o"></i> Data Petugas</a></li>
                 <li><a href="warehouse.php"><i class="fa fa-circle-o"></i> Depo / Mini Depo</a></li>

@@ -39,7 +39,8 @@ $list_obat_keluar->bindParam(":id", $id_parent, PDO::PARAM_INT);
 $list_obat_keluar->execute();
 $data3 = $list_obat_keluar->fetchAll(PDO::FETCH_ASSOC);
 $total_rincian = $list_obat_keluar->rowCount();
-$h4 = $db->query("SELECT k.id_kartu,k.id_obat,g.nama,k.sumber_dana,k.merk,k.no_batch,k.volume_kartu_akhir FROM kartu_stok_gobat k INNER JOIN gobat g ON(k.id_obat=g.id_obat) WHERE k.sumber_dana='" . $tipe . "' AND k.volume_kartu_akhir>0 AND k.in_out='masuk' AND g.flag_single_id='new'");
+
+$h4 = $db->query("SELECT k.id_kartu,k.id_obat,g.nama,k.sumber_dana,k.merk,k.no_batch,k.volume_kartu_akhir,k.no_batch,k.jenis,k.pabrikan,g.flag_single_id,k.harga_beli FROM kartu_stok_gobat k INNER JOIN gobat g ON(k.id_obat=g.id_obat) WHERE k.volume_kartu_akhir>0 AND k.in_out='masuk'");
 $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
 $tuslah_aktif = $db->query("SELECT * FROM tuslah WHERE aktif='y'");
 $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
@@ -120,7 +121,7 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                 <div class="alert alert-info">Pengurangan Nilai Stok dilakukan jika sudah mengkonfirmasi pengeluaran dengan menekan tombol SIMPAN.</div>
                 <div class="row">
                     <!-- left column -->
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="box box-primary">
                             <div class="box-header">
                                 <i class="fa fa-medkit"></i>
@@ -160,8 +161,13 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                                         <select class="form-control selectpicker" data-live-search="true" name="id_obat" id="id_obat" required>
                                             <option value="">Pilih Obat</option>
                                             <?php
-                                            foreach ($data4 as $r4) {
-                                                echo "<option value='" . $r4['id_kartu'] . "|" . $r4['id_obat'] . "|" . $r4['volume_kartu_akhir'] . "'>" . $r4['nama'] . " | " . $r4['merk'] . " |" . $r4['volume_kartu_akhir'] . " | " . $r4['sumber_dana'] . "</option>";
+                                            foreach ($data4 as $r4) {   
+                                                if($r4['flag_single_id']=='new'){
+                                                    $text_name = "(single id)".$r4['nama'] . "(" . $r4['merk'] . ") |" . $r4['volume_kartu_akhir'] . " | " . $r4['sumber_dana'] . " | " . $r4['no_batch'] . " | Rp.".$r4['harga_beli'];
+                                                }else{
+                                                    $text_name = $r4['nama'] . "(" . $r4['merk'] . ")|" . $r4['volume_kartu_akhir'] . " | " . $r4['sumber_dana'] . " | " . $r4['no_batch'] . " | Rp.".$r4['harga_beli'];
+                                                }                                             
+                                                echo "<option value='" . $r4['id_kartu'] . "|" . $r4['id_obat'] . "|" . $r4['volume_kartu_akhir'] . "'>".$text_name."</option>";
                                             }
                                             ?>
                                         </select>
@@ -180,7 +186,7 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                         </div>
                     </div><!-- /.left column -->
                     <!-- right column -->
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <div class="box box-primary">
                             <div class="box-header">
                                 <i class="fa fa-medkit"></i>
@@ -194,7 +200,6 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                                             <tr class="info">
                                                 <th>Nama</th>
                                                 <th>Sumber</th>
-                                                <th>Merk</th>
                                                 <th>Volume</th>
                                                 <th>Harga Satuan</th>
                                                 <th>No Batch</th>
@@ -206,9 +211,8 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                                         foreach ($data3 as $r3) {
                                             $volumeformat = number_format($r3['volume'], 0, ".", ".");
                                             echo "<tr>
-                                                    <td>" . $r3['namaobat'] . "</td>
+                                                    <td>" . $r3['namaobat'] . "<br><span style='font-size:10px'>Merk: ".$r3['merk']."<br>Jenis: ".$r3['jenis']."<br>Pabrikan: ".$r3['pabrikan']."</span></td>
                                                     <td>" . $r3['sumber'] . "</td>
-                                                    <td>" . $r3['merk'] . "</td>
                                                     <td>" . $volumeformat . "</td>
                                                     <td>" . number_format($r3['harga_beli'], 4, ',', '.') . "</td>
                                                     <td>" . $r3['no_batch'] . "</td>

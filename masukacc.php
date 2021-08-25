@@ -91,11 +91,15 @@ if($row==1){
 		// format nomor 027/001/IV/APBD-FAR/BASTBP/RSKIA/2018
 		$bulan = $split_date[1];
 		$bulan_romawi = getRomawi($bulan);
-		if($sumber=='APBD'){
-			$dana = "APBD-FAR/BASTBP";
-		}else{
-			$dana = "BLUD-FAR/BASTBP";
-		}
+		// if($sumber=='APBD'){
+		// 	$dana = "APBD-FAR/BASTBP";
+		// }else if($sumber=='BLUD'){
+		// 	$dana = "BLUD-FAR/BASTBP";
+		// }else{
+		// 	$dana = "KOSONG-FAR/BASTBP";
+		// }
+		$dana = "FARMASI/BASTBP";
+		
 		$rs = "RSKIA";
 		$tahun = $split_date[2];
 		if($dana_pembayaran=='apbd'){

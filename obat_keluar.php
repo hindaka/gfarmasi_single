@@ -124,14 +124,14 @@ $pegawai = $data_pegawai->fetchAll(PDO::FETCH_ASSOC);
                                     ?>
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="sumber_dana">Sumber Dana <span style="color:red">*</span></label>
                                 <select class="form-control" name="sumber_dana" required>
                                     <option value="">---Pilih Sumber Dana Obat---</option>
                                     <option value="APBD">APBD</option>
                                     <option value="BLUD">BLUD</option>
                                 </select>
-                            </div>
+                            </div> -->
                             <div class="form-group">
                                 <label for="pemesan">Nama Pemesan <span style="color:red">*</span></label>
                                 <!-- <input type="text" class="form-control" name="pemesan" placeholder="Masukan Nama Pemesan disini." required> -->

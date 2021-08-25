@@ -46,6 +46,8 @@ try {
 	$namaobat = isset($list_masuk['nama']) ? $list_masuk['nama'] : '';
 	$sumber = isset($list_masuk['sumber_dana']) ? $list_masuk['sumber_dana'] : '';
 	$merk = isset($list_masuk['merk']) ? $list_masuk['merk'] : '';
+	$jenis = isset($list_masuk['jenis']) ? $list_masuk['jenis'] : '';
+	$pabrikan = isset($list_masuk['pabrikan']) ? $list_masuk['pabrikan'] : '';
 	$expired = isset($list_masuk['expired']) ? $list_masuk['expired'] : '';
 	$no_batch = isset($list_masuk['no_batch']) ? $list_masuk['no_batch'] : '';
 	$harga_beli = isset($list_masuk['harga_beli']) ? $list_masuk['harga_beli'] : 0;
@@ -53,10 +55,12 @@ try {
 	//update volume_kartu_akhir berdasarkan data on point
 	$update_vol = $db->query("UPDATE kartu_stok_gobat SET volume_kartu_akhir='" . $volume_sisa . "' WHERE id_kartu='" . $id_kartu . "'");
 	//insert ke kartu_stok_gobat
-	$ins_kartu = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `sumber_dana`,`merk`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`, `keterangan`, `ref`) VALUES (:id_obat,:sumber,:merk,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:keterangan,:ref)");
+	$ins_kartu = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`, `keterangan`, `ref`) VALUES (:id_obat,:sumber,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:keterangan,:ref)");
 	$ins_kartu->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
 	$ins_kartu->bindParam(":sumber", $sumber, PDO::PARAM_STR);
 	$ins_kartu->bindParam(":merk", $merk, PDO::PARAM_STR);
+	$ins_kartu->bindParam(":jenis", $jenis, PDO::PARAM_STR);
+	$ins_kartu->bindParam(":pabrikan", $pabrikan, PDO::PARAM_STR);
 	$ins_kartu->bindParam(":volume_kartu_awal", $volume_kartu_awal, PDO::PARAM_INT);
 	$ins_kartu->bindParam(":volume_kartu_akhir", $volume_sisa, PDO::PARAM_INT);
 	$ins_kartu->bindParam(":volume_sisa", $volume_sisa, PDO::PARAM_INT);
@@ -73,7 +77,7 @@ try {
 	$ins_kartu->execute();
 	$id_kartu_gobat = $db->lastInsertId();
 	//insert ke obatkeluar
-	$ins_keluar = $db->prepare("INSERT INTO `obatkeluar`(`id_obat`, `id_parent`,`id_kartu`, `id_warehouse`, `tanggal`, `namaobat`, `sumber`,`merk`, `volume`, `ruang`,`id_tuslah`,`ket_tuslah`,`time`)VALUES (:id_obat,:id_parent,:id_kartu,:id_warehouse,:tanggal,:namaobat,:sumber,:merk,:volume,:ruang,:id_tuslah,:ket_tuslah,:waktu)");
+	$ins_keluar = $db->prepare("INSERT INTO `obatkeluar`(`id_obat`, `id_parent`,`id_kartu`, `id_warehouse`, `tanggal`, `namaobat`, `sumber`,`merk`,`jenis`,`pabrikan`, `volume`, `ruang`,`id_tuslah`,`ket_tuslah`,`time`)VALUES (:id_obat,:id_parent,:id_kartu,:id_warehouse,:tanggal,:namaobat,:sumber,:merk,:jenis,:pabrikan,:volume,:ruang,:id_tuslah,:ket_tuslah,:waktu)");
 	$ins_keluar->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
 	$ins_keluar->bindParam(":id_parent", $id_parent, PDO::PARAM_INT);
 	$ins_keluar->bindParam(":id_kartu", $id_kartu_gobat, PDO::PARAM_INT);
@@ -82,6 +86,8 @@ try {
 	$ins_keluar->bindParam(":namaobat", $namaobat, PDO::PARAM_STR);
 	$ins_keluar->bindParam(":sumber", $sumber, PDO::PARAM_STR);
 	$ins_keluar->bindParam(":merk", $merk, PDO::PARAM_STR);
+	$ins_keluar->bindParam(":jenis", $jenis, PDO::PARAM_STR);
+	$ins_keluar->bindParam(":pabrikan", $pabrikan, PDO::PARAM_STR);
 	$ins_keluar->bindParam(":volume", $volume_out, PDO::PARAM_INT);
 	$ins_keluar->bindParam(":ruang", $warehouse, PDO::PARAM_STR);
 	$ins_keluar->bindParam(":id_tuslah", $id_tuslah, PDO::PARAM_INT);

@@ -1,0 +1,32 @@
+<?php
+session_start();
+include("../inc/pdo.conf.php");
+include("../inc/version.php");
+date_default_timezone_set('Asia/Jakarta');
+$namauser = $_SESSION['namauser'];
+$password = $_SESSION['password'];
+$tipe = $_SESSION['tipe'];
+$tipes = explode('-',$tipe);
+if ($tipes[0]!='Gfarmasi')
+{
+	unset($_SESSION['tipe']);
+	unset($_SESSION['namauser']);
+	unset($_SESSION['password']);
+	header("location:../index.php?status=2");
+	exit;
+}
+include "../inc/anggota_check.php";
+$id_sumber = isset($_GET['d']) ? $_GET['d'] : '';
+//check data
+$check_data = $db->query("SELECT COUNT(*) as total_data FROM `kelola_sumber_dana` WHERE id_sumber='".$id_sumber."'");
+$check = $check_data->fetch(PDO::FETCH_ASSOC);
+$total_data = isset($check['total_data']) ? $check['total_data'] : 0;
+if($total_data==1){
+    $stmt = $db->prepare("UPDATE `kelola_sumber_dana` SET `delete_stat`='0' WHERE `id_sumber`=:id");
+    $stmt->bindParam(":id",$id_sumber,PDO::PARAM_INT);
+    $stmt->execute();
+	header("location: kelola_sumber_dana.php?status=1");
+}else{
+	header("location: kelola_sumber_dana.php?status=2");
+
+}

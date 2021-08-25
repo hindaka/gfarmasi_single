@@ -2,6 +2,7 @@
 session_start();
 include("../inc/pdo.conf.php");
 include("../inc/version.php");
+include("../inc/set_gfarmasi.php");
 $namauser = $_SESSION['namauser'];
 $password = $_SESSION['password'];
 $tipe = $_SESSION['tipe'];
@@ -113,7 +114,9 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                 <th>Tujuan</th>
                                                 <th>Expired</th>
                                                 <th>No Batch</th>
+                                                <th>Jenis</th>
                                                 <th>Merk</th>
+                                                <th>pabrikan</th>
                                                 <th>Sumber Dana</th>
                                                 <th>Volume Masuk</th>
                                                 <th>Volume Keluar</th>
@@ -139,12 +142,12 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                 } else {
                                                     $bgcolor = "warning";
                                                 }
-                                                if($stok['sumber_dana']=='APBD'){
-                                                    $sd = '<span class="label bg-maroon">APBD</span>';
-                                                }else if($stok['sumber_dana']=='BLUD'){
-                                                    $sd = '<span class="label label-primary">BLUD</span>';
+                                                if(substr($stok['sumber_dana'],0,4)=='APBD'){
+                                                    $sd = '<span class="label bg-maroon">'.$stok['sumber_dana'].'</span>';
+                                                }else if(substr($stok['sumber_dana'],0,4)=='BLUD'){
+                                                    $sd = '<span class="label label-primary">'.$stok['sumber_dana'].'</span>';
                                                 }else{
-                                                    $sd = '<span class="label label-default">-</span>';
+                                                    $sd = '<span class="label label-default">'.$stok['sumber_dana'].'</span>';
                                                 }
                                                 echo "<tr class='" . $bgcolor . "'>
                                                         <td>" . $stok['created_at'] . "</td>
@@ -154,12 +157,14 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                         <td>" . $stok['tujuan'] . "</td>
                                                         <td>" . $stok['expired'] . "</td>
                                                         <td>" . $stok['no_batch'] . "</td>
+                                                        <td>" . $stok['jenis'] . "</td>
                                                         <td>" . $stok['merk'] . "</td>
+                                                        <td>" . $stok['pabrikan'] . "</td>
                                                         <td>" . $sd . "</td>
                                                         <td>" . $stok['volume_in'] . "</td>
                                                         <td>" . $stok['volume_out'] . "</td>
                                                         <td>" . $stok['volume_sisa'] . "</td>
-                                                        <td>Rp " . number_format($stok['harga_beli'], 0, ',', '.') . "</td>
+                                                        <td>Rp " . number_format($stok['harga_beli'], $digit_akhir, ',', '.') . "</td>
                                                         <td>" . $stok['keterangan'] . "</td>
                                                     </tr>";
                                             }

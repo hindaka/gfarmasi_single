@@ -2,6 +2,7 @@
 session_start();
 include("../inc/pdo.conf.php");
 include("../inc/version.php");
+include("../inc/set_gfarmasi.php");
 $namauser = $_SESSION['namauser'];
 $password = $_SESSION['password'];
 $tipe = $_SESSION['tipe'];
@@ -95,12 +96,12 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
             </section>
             <!-- Main content -->
             <section class="content">
-                <div class="alert alert-info">klik Tombol Simpan untuk menyimpan seluruh data faktur. Data tidak akan tersimpan jika tombol simpan tidak diklik</div>
+                <div class="alert alert-info">Tanda <span style="color:red">*</span> Wajib diisi <br>klik Tombol Simpan untuk menyimpan seluruh data faktur. Data tidak akan tersimpan jika tombol simpan tidak diklik</div>
                 <!-- general form elements -->
                 <!-- general form elements -->
                 <div class="row">
                     <!-- left column -->
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <div class="box box-primary">
                             <div class="box-header">
                                 <i class="fa fa-user"></i>
@@ -109,66 +110,69 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                             <!-- form start -->
                             <form role="form" action="tambahacc.php?id=<?php echo $id_faktur; ?>&sumber=<?php echo $sumber; ?>" method="post">
                                 <div class="box-body">
-                                    <div class="form-group">
-                                        <label for="namaobat">Nama obat</label>
-                                        <select class="form-control selectpicker" name="id_obat" id="id_obat" style="width:100%" required>
-                                            <option value=""></option>
-                                            <?php
-                                            foreach ($data4 as $r4) {
-                                                echo "<option value='" . $r4['id_obat'] . "'>" . $r4['nama'] . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
                                     <div class="row">
-                                        <div class="col-xs-6">
+                                        <div class="col-xs-6 col-md-3">
                                             <div class="form-group">
-                                                <label for="hargalama">Harga Lama</label>
-                                                <input type="text" class="form-control" id="hargalama" readonly>
+                                                <label for="namaobat">Nama obat <span style="color:red">*</span></label>
+                                                <select class="form-control selectpicker" name="id_obat" id="id_obat" style="width:100%" required>
+                                                    <option value=""></option>
+                                                    <?php
+                                                    foreach ($data4 as $r4) {
+                                                        echo "<option value='" . $r4['id_obat'] . "'>" . $r4['nama'] . "</option>";
+                                                    }
+                                                    ?>
+                                                </select>
                                             </div>
                                         </div>
-                                        <div class="col-xs-6">
+                                        <div class="col-xs-6 col-md-3">
                                             <div class="form-group">
-                                                <label for="satuan">Satuan</label>
-                                                <input type="text" class="form-control" id="satuan" readonly>
+                                                <label for="">Jenis <span style="color:red">*</span></label>
+                                                <select name="jenis" id="jenis" class="form-control" required>
+                                                    <option value="">---Pilih Jenis---</option>
+                                                    <option value="generik">Generik</option>
+                                                    <option value="non generik">Non Generik</option>
+                                                    <option value="bmhp">bmhp</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Merk</label>
+                                                <select name="merk" id="merk" class="form-control select_merk" style="width:100%;">
+                                                    <option value="">--Pilih Merk--</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Pabrikan</label>
+                                                <select name="pabrikan" id="pabrikan" class="form-control select_pabrikan" style="width:100%;">
+                                                    <option value="">--Pilih Pabrikan--</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="">Merk</label>
-                                        <select name="merk" id="merk" class="form-control select_merk" style="width:100%;">
-                                            <option value="">--Pilih Merk--</option>
-                                            <?php
-                                            if ($total_data > 0) {
-                                                for ($i = 0; $i < $total_data; $i++) {
-                                                    echo '<option value="' . $split[$i] . '">' . $split[$i] . '</option>';
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
+                                    <hr>
                                     <div class="row">
-                                        <div class="col-xs-6">
+                                        <div class="col-xs-6 col-md-4">
                                             <div class="form-group">
                                                 <label for="volume">Volume terkecil <span style="color:red">*</span></label>
                                                 <input type="number" class="form-control" id="volume" name="volume" placeholder="Volume" autocomplete="off" min="1" required>
                                             </div>
                                         </div>
-                                        <div class="col-xs-6">
+                                        <div class="col-xs-6 col-md-4">
                                             <div class="form-group">
                                                 <label for="harga">Harga Beli <span style="color:red">*</span></label>
                                                 <input type="text" class="form-control" id="harga" name="harga" placeholder="Harga" autocomplete="off" required>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-6">
+                                        <div class="col-xs-6 col-md-4">
                                             <div class="form-group">
                                                 <label for="diskon">Diskon (%) <span style="color:red">*</span></label>
                                                 <input type="text" class="form-control" id="diskon" name="diskon" placeholder="Diskon" autocomplete="off" required>
                                             </div>
                                         </div>
-                                        <div class="col-xs-6">
+                                        <div class="col-xs-6 col-md-4">
                                             <div class="form-group">
                                                 <label for="">PPN <span style="color:red">*</span></label>
                                                 <select name="ppn" id="ppn" class="form-control" required>
@@ -178,15 +182,13 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                                 </select>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-xs-6 col-md-4">
                                             <div class="form-group">
                                                 <label for="nobatch">No. Batch <span style="color:red">*</span></label>
                                                 <input type="text" class="form-control" id="nobatch" name="nobatch" placeholder="No. Batch" autocomplete="off" required>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-xs-6 col-md-4">
                                             <div class="form-group">
                                                 <label for="expired">Expired Date <span style="color:red">*</span></label>
                                                 <input type="text" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" required>
@@ -200,7 +202,7 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div><!-- /.left column -->
                     <!-- right column -->
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <div class="box box-primary">
                             <div class="box-header">
                                 <i class="fa fa-users"></i>
@@ -213,7 +215,6 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                         <thead>
                                             <tr class="bg-blue">
                                                 <th>Nama</th>
-                                                <th>Merk</th>
                                                 <th>Volume</th>
                                                 <th>Harga Beli</th>
                                                 <th>No Batch</th>
@@ -230,26 +231,25 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                         $subtot = 0;
                                         $total = 0;
                                         foreach ($data3 as $r3) {
-                                            $volumeformat = number_format($r3['volume'], 0, ".", ".");
-                                            $hargaformat = number_format($r3['harga'], 4, ",", ".");
-                                            $totalformat = number_format($r3['total'], 4, ",", ".");
-                                            $ppnformat = number_format($r3['ppn'], 0, ",", ".");
+                                            $volumeformat = number_format($r3['volume'], $digit_akhir, ",", ".");
+                                            $hargaformat = number_format($r3['harga'], $digit_akhir, ",", ".");
+                                            $totalformat = number_format($r3['total'], $digit_akhir, ",", ".");
+                                            $ppnformat = number_format($r3['ppn'], $digit_akhir, ",", ".");
                                             $total = $r3['volume'] * $r3['harga'];
                                             $hitungdiskon = $total * $r3['diskon'] / 100;
                                             $final = $total - $hitungdiskon;
                                             echo "<tr>
-                                                    <td>" . $r3['namaobat'] . "</td>
-                                                    <td>" . $r3['merk'] . "</td>
+                                                    <td>" . $r3['namaobat'] . "<br><span style='font-size:10px;'>Merk : " . $r3['merk'] . "<br>Jenis : " . $r3['jenis'] . "<br>Pabrikan : " . $r3['pabrikan'] . "</span></td>
                                                     <td>" . $volumeformat . "</td>
                                                     <td>" . $hargaformat . "</td>
                                                     <td>" . $r3['nobatch'] . "</td>
                                                     <td>" . $r3['expired'] . "</td>
-                                                    <td>" . number_format($total, 0, '.', '.') . "</td>
+                                                    <td>" . number_format($total, $digit_akhir, ',', '.') . "</td>
                                                     <td>" . $r3['diskon'] . " %</td>
-                                                    <td>" . number_format($final, 0, '.', '.') . "</td>
+                                                    <td>" . number_format($final, $digit_akhir, ',', '.') . "</td>
                                                     <td>" . $ppnformat . "</td>
                                                     <td>" . $totalformat . "</td>
-                                                    <td><a class='btn btn-sm btn-danger' href='hapus.php?id=" . $r3['id_item'] . "&faktur=" . $id_faktur . "&sumber=" . $sumber . "'><i class='fa fa-trash'></i> Hapus</a></td>
+                                                    <td><a class='btn btn-sm btn-danger' href='hapus.php?id=" . $r3['id_item'] . "&obat=" . $r3['id_obat'] . "&faktur=" . $id_faktur . "&sumber=" . $sumber . "'><i class='fa fa-trash'></i> Hapus</a></td>
                                             </tr>";
                                             $subtot += $r3['total'];
                                         }
@@ -257,7 +257,7 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                         <tfoot>
                                             <tr class="success">
                                                 <th colspan="9" align="right">Total</th>
-                                                <th colspan="2">Rp. <?php echo number_format($subtot, 2, ".", "."); ?></th>
+                                                <th colspan="3">Rp. <?php echo number_format($subtot, $digit_akhir, ",", "."); ?></th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -266,11 +266,33 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                             <div class="box-footer">
                                 <?php if ($total_data > 0) : ?>
                                     <a class="btn btn-app bg-green" href="save_faktur.php?faktur=<?php echo $id_faktur; ?>&sumber=<?php echo $sumber; ?>"><i class="fa fa-save"></i>Simpan</a>
+                                    <button type="button" id="btnCompare" onclick="compareData(this)" data-id="<?php echo $id_faktur; ?>" class="btn btn-app bg-blue"><i class="fa fa-check"></i>Bandingkan Harga</button>
                                     <!-- <a class="btn btn-app bg-red" href="batal.php?faktur=<?php echo $id_faktur; ?>"><i class="fa fa-trash"></i>Batal</a> -->
                                 <?php else : ?>
                                     <a class="btn btn-app bg-red" href="batal.php?faktur=<?php echo $id_faktur; ?>"><i class="fa fa-trash"></i>Batal</a>
                                 <?php endif; ?>
                             </div>
+                            <!-- Modal -->
+                            <div id="modalCompare" class="modal fade" role="dialog">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-blue">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Perbandingan Harga Barang</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="content">
+                                                content goes here
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- end modal -->
                         </div>
                     </div><!-- /.right column -->
                 </div><!-- /.row -->
@@ -298,59 +320,137 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
     <script src="../plugins/typeahead/typeahead.bundle.js" type="text/javascript"></script>
     <!-- FastClick -->
     <script src='../plugins/fastclick/fastclick.min.js'></script>
+    <script src='../plugins/sweetalert/sweetalert.min.js'></script>
     <!-- AdminLTE App -->
     <script src="../dist/js/app.min.js" type="text/javascript"></script>
     <!-- page script -->
     <script type="text/javascript">
+        function compareData(ele) {
+            var id = ele.id;
+            let id_faktur = $('#' + id).data('id');
+            $.ajax({
+                type: "POST",
+                url: "ajax_data/get_banding_harga.php",
+                data: {"id_faktur":id_faktur},
+                success: function (response) {
+                    console.log(response);
+                },error: function(err){
+                    console.warn(err);
+                }
+            });
+            $('#modalCompare').modal('show');
+        }
         $(function() {
             $("#example1").dataTable();
             $('.selectpicker').select2({
                 placeholder: "Pilih Obat/Bmhp",
-                width : "resolve",
+                width: "resolve",
                 allowClear: true
             });
             $('.select_merk').select2({
+                tags: true,
                 placeholder: "Pilih Merk",
                 allowClear: true,
                 width: "resolve"
             });
-            $('#id_obat').change(function(event) {
-                var id_obat = $('#id_obat').val();
+            $('.select_pabrikan').select2({
+                tags: true,
+                placeholder: "Pilih Pabrikan",
+                allowClear: true,
+                width: "resolve"
+            });
+            $('#jenis').change(function(event) {
+                event.preventDefault();
+                let jenis = $(this).val();
+                let id_obat = $('#id_obat').val();
+                if (id_obat == '') {
+                    swal('Peringatan', 'Pilih Nama Obat Terlebih dahulu', 'warning');
+                    return;
+                }
                 $.ajax({
                     type: "POST",
-                    url: "get_data_obat.php",
+                    url: "ajax_data/get_merk_pabrik.php",
                     data: {
-                        'id_obat': id_obat,
+                        "id_obat": id_obat,
+                        "jenis": jenis
                     },
-                    dataType: 'json',
-                    success: function(respon) {
-                        var hargalama;
-                        var satuan = respon['satuan'];
-                        if (respon == 0) {
-                            hargalama = "Rp. 0";
+                    success: function(response) {
+                        let res = JSON.parse(response);
+                        let content = res.content;
+                        let total_data = res.total_data;
+                        if (total_data > 0) {
+                            swal('Info', 'Data Merk/Pabrikan Ditemukan sebanyak ' + total_data + ' data', 'info');
                         } else {
-                            hargalama = "Rp. " + respon['harga_baru'];
+                            swal('Info', 'Data Merk/Pabrikan Tidak Ditemukan', 'info');
                         }
-                        document.getElementById('hargalama').value = hargalama;
-                        document.getElementById('satuan').value = satuan;
-                        $('.select_merk').val(null).trigger('change');
-                        let merk = respon['merk'];
-                        if (merk != '') {
-                            let sp = merk.split("|");
-                            sp.forEach(function(data) {
-                                var option = new Option(data, data, true, true);
+                        if (jenis == 'generik') {
+                            content.forEach(function(data) {
+                                var option = new Option(data.pabrikan, data.pabrikan, true, true);
+                                $('#pabrikan').append(option).trigger('change');
+                            });
+                            $('#pabrikan').val('');
+                            $('#pabrikan').trigger('change');
+                        } else if (jenis == 'non generik') {
+                            content.forEach(function(data) {
+                                var option = new Option(data.merk, data.merk, true, true);
                                 $('#merk').append(option).trigger('change');
                             });
                             $('#merk').val('');
                             $('#merk').trigger('change');
+                        } else {
+                            $('#pabrikan').val('');
+                            $('#pabrikan').trigger('change');
+                            $('#merk').val('');
+                            $('#merk').trigger('change');
                         }
                     },
-                    error: function(e) {
-                        // $("#result").text(e.responseText);
-                        console.log("ERROR : ", e.responseText);
+                    error: function(err) {
+                        console.warn(err);
                     }
                 });
             });
+            // $('#pabrikan').change(function(pb){
+            //     pb.preventDefault();
+            //     let val = $(this).val();
+
+            // });
+            // $('#id_obat').change(function(event) {
+            //     var id_obat = $('#id_obat').val();
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "get_data_obat.php",
+            //         data: {
+            //             'id_obat': id_obat,
+            //         },
+            //         dataType: 'json',
+            //         success: function(respon) {
+            //             var hargalama;
+            //             var satuan = respon['satuan'];
+            //             if (respon == 0) {
+            //                 hargalama = "Rp. 0";
+            //             } else {
+            //                 hargalama = "Rp. " + respon['harga_baru'];
+            //             }
+            //             document.getElementById('hargalama').value = hargalama;
+            //             document.getElementById('satuan').value = satuan;
+            //             $('.select_merk').val(null).trigger('change');
+            //             let merk = respon['merk'];
+            //             if (merk != '') {
+            //                 let sp = merk.split("|");
+            //                 sp.forEach(function(data) {
+            //                     var option = new Option(data, data, true, true);
+            //                     $('#merk').append(option).trigger('change');
+            //                 });
+            //                 $('#merk').val('');
+            //                 $('#merk').trigger('change');
+            //             }
+            //         },
+            //         error: function(e) {
+            //             // $("#result").text(e.responseText);
+            //             console.log("ERROR : ", e.responseText);
+            //         }
+            //     });
+            // });
         });
         //Date range picker
         $('#expired').datepicker({

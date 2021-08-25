@@ -126,15 +126,14 @@ include "../inc/anggota_check.php";
 											<tr class="bg-blue">
 												<th>#</th>
 												<th>No. ID</th>
-                                                <th>Kategori</th>
+												<th>Kategori</th>
 												<th>Nama Obat / Bmhp</th>
 												<th>Nama Fornas</th>
-                                                <th>jenis</th>
 												<th>Kandungan</th>
-                                                <th>Bentuk Sediaan</th>
-                                                <th>Satuan Jual</th>
-                                                <th>kemasan</th>
-                                                <th>Action</th>
+												<th>Bentuk Sediaan</th>
+												<th>Satuan Jual</th>
+												<th>kemasan</th>
+												<th>Action</th>
 											</tr>
 										</thead>
 									</table>
@@ -181,42 +180,43 @@ include "../inc/anggota_check.php";
 							small_btn = '<a class="btn btn-xs btn-warning" href=\"edit_master_single.php?o=' + data.id_obat + '\" title=\"Ubah Data obat ' + data.nama + '\"><i class="fa fa-pencil"></i></a> ';
 							return small_btn;
 						}
-					},{
+					}, {
 						"searchable": true,
 						"data": 'id_obat'
 					},
-                    {
+					{
 						"searchable": true,
 						"data": 'kategori'
 					},
 					{
 						"searchable": true,
 						"data": 'nama',
-                        "render": function(data, type, full, meta) {
-							var nama_obat='<span style="font-size:16px;">'+data+'</span><br>';
+						"render": function(data, type, full, meta) {
+							var nama_obat = '<span style="font-size:16px;">' + data + '</span><br>';
 							return nama_obat;
 						}
 					},
 					{
 						"searchable": true,
 						"data": 'nama_fornas',
-                        "render": function(data, type, full, meta) {
-							let fornas="";
-                            if(data!=''){
-                                fornas +='<span style="font-size:12px;" class="label label-default"><i> '+data+'</i></span>';
-                            }
+						"render": function(data, type, full, meta) {
+							let fornas = "";
+							if (data != '') {
+								fornas += '<span style="font-size:12px;" class="label label-default"><i> ' + data + '</i></span>';
+							}
 							return fornas;
 						}
 					},
 					{
 						"searchable": false,
-						"data": 'jenis'
+						"data": 'kandungan',
+						"render": function(data, type, full, meta) {
+							let kandungan = '';
+							kandungan = data.split("|").join("; ");
+							return kandungan;
+						}
 					},
-                    {
-						"searchable": false,
-						"data": 'kandungan'
-					},
-                    {
+					{
 						"searchable": false,
 						"data": 'bentuk_sediaan'
 					},
@@ -224,7 +224,7 @@ include "../inc/anggota_check.php";
 						"searchable": false,
 						"data": 'satuan'
 					},
-                    {
+					{
 						"searchable": false,
 						"data": 'kemasan'
 					},
@@ -232,7 +232,7 @@ include "../inc/anggota_check.php";
 						"searchable": false,
 						"data": null,
 						"render": function(data, type, full, meta) {
-                            var btn="";
+							var btn = "";
 							// btn = '<a class="btn btn-xs btn-block bg-purple" href=\"sync_stok_sisa.php?id=' + data.id_obat + '&sumber=' + data.sumber + '\"><i class="fa fa-list"></i> Sinkron Sisa Stok</a>';
 							// // btn +='<a class="btn btn-xs btn-block btn-info" href=\"sync_stok.php?id='+data.id_obat+'&sumber='+data.sumber+'\"><i class="fa fa-gear"></i> Sinkronisasi</a>';
 							btn += '<a class="btn btn-xs btn-block btn-warning" href=\"set_stok_gudang.php?o=' + data.id_obat + '\"><i class="fa fa-gear"></i> Pengaturan Stok Awal</a>';

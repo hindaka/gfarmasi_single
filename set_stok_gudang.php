@@ -20,7 +20,9 @@ $today = date('Y-m-d');
 //tampilkan data tindakan
 $h3 = $db->query("SELECT * FROM temp_stok_awal WHERE id_warehouse='0' AND id_obat='" . $id_obat . "' AND sync='n'");
 $total_data = $h3->rowCount();
-
+//get kelola sumber dana
+$get_sumber = $db->query("SELECT * FROM kelola_sumber_dana WHERE delete_stat=1 ORDER BY nama_sumber ASC");
+$data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
 $h4 = $db->prepare("SELECT * FROM gobat WHERE id_obat=:id");
 $h4->bindParam(":id", $id_obat, PDO::PARAM_INT);
 $h4->execute();
@@ -143,6 +145,26 @@ if ($data_merk == '') {
                                         <input type="text" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" required>
                                     </div>
                                     <div class="form-group">
+                                        <label for="">Sumber Dana <span style="color:red">*</span></label>
+                                        <select name="sumber_dana" id="sumber_dana" class="form-control" required>
+                                            <option value="">---Pilih Salah Satu---</option>
+                                            <?php
+                                            foreach ($data_sumber as $ds) {
+                                                echo '<option value="' . $ds['nama_sumber'] . '">' . $ds['nama_sumber'] . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Jenis <span style="color:red">*</span></label>
+                                        <select name="jenis" id="jenis" class="form-control" required>
+                                            <option value="">---Pilih Salah Satu---</option>
+                                            <option value="generik">Generik</option>
+                                            <option value="non generik">Non Generik</option>
+                                            <option value="bmhp">Bmhp</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="">Merk</label>
                                         <select name="merk" id="merk" class="form-control">
                                             <option value="">--Pilih Merk--</option>
@@ -154,15 +176,10 @@ if ($data_merk == '') {
                                             }
                                             ?>
                                         </select>
-                                        <!-- <input type="text" name="merk" id="merk" class="form-control" placeholder="Masukan Merk"> -->
                                     </div>
                                     <div class="form-group">
-                                        <label for="">Sumber Dana <span style="color:red">*</span></label>
-                                        <select name="sumber_dana" id="sumber_dana" class="form-control" required>
-                                            <option value="">---Pilih Salah Satu---</option>
-                                            <option value="APBD">APBD</option>
-                                            <option value="BLUD">BLUD</option>
-                                        </select>
+                                        <label for="">Pabrikan</label>
+                                        <input type="text" name="pabrikan" id="pabrikan" class="form-control" placeholder="Masukan Nama Pabrikan Jika jenis generik">
                                     </div>
                                 </div><!-- /.box-body -->
                                 <div class="box-footer">
@@ -189,6 +206,8 @@ if ($data_merk == '') {
                                                 <th>Harga Beli</th>
                                                 <th>No.Batch</th>
                                                 <th>Expired</th>
+                                                <th>Jenis</th>
+                                                <th>Pabrikan</th>
                                                 <th>Merk</th>
                                                 <th>Sumber Dana</th>
                                                 <th>Hapus</th>
@@ -314,6 +333,18 @@ if ($data_merk == '') {
                         }
                     },
                     {
+                        "data": 'jenis',
+                        "render": function(data, type, full, meta) {
+                            return data;
+                        }
+                    },
+                    {
+                        "data": 'pabrikan',
+                        "render": function(data, type, full, meta) {
+                            return data;
+                        }
+                    },
+                    {
                         "data": 'merk',
                         "render": function(data, type, full, meta) {
                             return data;
@@ -356,6 +387,8 @@ if ($data_merk == '') {
                 var id_warehouse = $("#id_warehouse").val();
                 var merk = $('#merk').val();
                 var sumber_dana = $('#sumber_dana').val();
+                var jenis = $('#jenis').val();
+                var pabrikan = $('#pabrikan').val();
                 if (id_obat == "") {
                     swal('Peringatan', 'Silakan Pilih Obat terlebih dahulu', 'warning');
                     return;
@@ -374,6 +407,9 @@ if ($data_merk == '') {
                 } else if (sumber_dana == "") {
                     swal('Peringatan', 'Silakan Isi Sumber Dana Terlebih Dahulu', 'warning');
                     return;
+                } else if (jenis == "") {
+                    swal('Peringatan', 'Silakan Isi Jenis Terlebih Dahulu', 'warning');
+                    return;
                 } else {
                     //ajax
                     $.ajax({
@@ -387,7 +423,9 @@ if ($data_merk == '') {
                             'nobatch': nobatch,
                             'expired': expired,
                             'merk': merk,
-                            'sumber_dana': sumber_dana
+                            'sumber_dana': sumber_dana,
+                            'jenis': jenis,
+                            'pabrikan': pabrikan
                         },
                         success: function(respon) {
                             console.log(respon)
