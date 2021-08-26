@@ -281,7 +281,7 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                             <h4 class="modal-title">Perbandingan Harga Barang</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="content">
+                                            <div id="content">
                                                 content goes here
                                             </div>
                                         </div>
@@ -331,14 +331,20 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
             $.ajax({
                 type: "POST",
                 url: "ajax_data/get_banding_harga.php",
-                data: {"id_faktur":id_faktur},
-                success: function (response) {
+                data: {
+                    "id_faktur": id_faktur
+                },
+                success: function(response) {
                     console.log(response);
-                },error: function(err){
+                    let res = response;
+                    $('#modalCompare').modal('show');
+                    $('#modalCompare').find('.modal-body #content').html(res);
+                },
+                error: function(err) {
                     console.warn(err);
                 }
             });
-            $('#modalCompare').modal('show');
+
         }
         $(function() {
             $("#example1").dataTable();

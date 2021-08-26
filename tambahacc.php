@@ -80,7 +80,7 @@ if ($cek == 0) {
 		//update
 		// $result = $db->query("UPDATE gobat SET volume='$total',harga='$hargappn',hargalama='$hargalama',nobatch='$nobatch',expired='$expired',terbaru='$hariini' WHERE id_obat='$id_obat'");
 		//insert
-		$result2 = $db->query("INSERT INTO itemfaktur(id_faktur,tanggal,namaobat,id_obat,volume,harga,diskon,ppn,total,nobatch,expired,sumber,merk,jenis,pabrikan) VALUES ('$id_faktur','$hariini','$namaobat','$id_obat','$volume','$harga','$diskon','$hargappn','$totalharga_ppn','$nobatch','$expired','$sumber_dana','$merk','$jenis','$pabrikan')");
+		$result2 = $db->query("INSERT INTO itemfaktur(id_faktur,tanggal,namaobat,id_obat,volume,harga,diskon,ppn,total,harga_satuan,nobatch,expired,sumber,merk,jenis,pabrikan) VALUES ('$id_faktur','$hariini','$namaobat','$id_obat','$volume','$harga','$diskon','$hargappn','$totalharga_ppn','$harga_ppn_inc','$nobatch','$expired','$sumber_dana','$merk','$jenis','$pabrikan')");
 		//db hasil
 		$result3 = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `id_faktur`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`, `aktif`, `created_at`, `keterangan`)VALUES (:id_obat,:id_faktur,:sumber,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:aktif,:created_at,:keterangan)");
 		$result3->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
