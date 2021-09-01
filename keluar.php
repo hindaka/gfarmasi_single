@@ -40,8 +40,6 @@ $list_obat_keluar->execute();
 $data3 = $list_obat_keluar->fetchAll(PDO::FETCH_ASSOC);
 $total_rincian = $list_obat_keluar->rowCount();
 
-$h4 = $db->query("SELECT k.id_kartu,k.id_obat,g.nama,k.sumber_dana,k.merk,k.no_batch,k.volume_kartu_akhir,k.no_batch,k.jenis,k.pabrikan,g.flag_single_id,k.harga_beli FROM kartu_stok_gobat k INNER JOIN gobat g ON(k.id_obat=g.id_obat) WHERE k.volume_kartu_akhir>0 AND k.in_out='masuk'");
-$data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
 $tuslah_aktif = $db->query("SELECT * FROM tuslah WHERE aktif='y'");
 $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
 ?>
@@ -63,13 +61,25 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
     <!-- DATA TABLES -->
     <link href="../plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     <!-- BootsrapSelect -->
-    <link href="../plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+    <link href="../plugins/select2/select2.min.css" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
     <link href="../dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link href="../dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .new_data {
+            color: blue;
+        }
 
+        .old_data {
+            color: burlywood;
+        }
+
+        .select2-result-obat__namaobat {
+            height: 30px;
+        }
+    </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -158,19 +168,13 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                                     </div>
                                     <div class="form-group">
                                         <label for="namaobat">Nama obat <span style="color:red">*</span></label>
-                                        <select class="form-control selectpicker" data-live-search="true" name="id_obat" id="id_obat" required>
-                                            <option value="">Pilih Obat</option>
-                                            <?php
-                                            foreach ($data4 as $r4) {   
-                                                if($r4['flag_single_id']=='new'){
-                                                    $text_name = "(single id)".$r4['nama'] . "(" . $r4['merk'] . ") |" . $r4['volume_kartu_akhir'] . " | " . $r4['sumber_dana'] . " | " . $r4['no_batch'] . " | Rp.".$r4['harga_beli'];
-                                                }else{
-                                                    $text_name = $r4['nama'] . "(" . $r4['merk'] . ")|" . $r4['volume_kartu_akhir'] . " | " . $r4['sumber_dana'] . " | " . $r4['no_batch'] . " | Rp.".$r4['harga_beli'];
-                                                }                                             
-                                                echo "<option value='" . $r4['id_kartu'] . "|" . $r4['id_obat'] . "|" . $r4['volume_kartu_akhir'] . "'>".$text_name."</option>";
-                                            }
-                                            ?>
+                                        <select class="form-control select_obat" name="id_obat" id="id_obat" style="width:100%;" required>
+                                            <option value=""></option>
                                         </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="volume">Stok Sistem <span style="color:red">*</span></label>
+                                        <input type="text" class="form-control" id="stok_sistem" readonly>
                                     </div>
                                     <div class="form-group">
                                         <label for="volume">Volume <span style="color:red">*</span></label>
@@ -211,7 +215,7 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                                         foreach ($data3 as $r3) {
                                             $volumeformat = number_format($r3['volume'], 0, ".", ".");
                                             echo "<tr>
-                                                    <td>" . $r3['namaobat'] . "<br><span style='font-size:10px'>Merk: ".$r3['merk']."<br>Jenis: ".$r3['jenis']."<br>Pabrikan: ".$r3['pabrikan']."</span></td>
+                                                    <td>" . $r3['namaobat'] . "<br><span style='font-size:10px'>Merk: " . $r3['merk'] . "<br>Jenis: " . $r3['jenis'] . "<br>Pabrikan: " . $r3['pabrikan'] . "</span></td>
                                                     <td>" . $r3['sumber'] . "</td>
                                                     <td>" . $volumeformat . "</td>
                                                     <td>" . number_format($r3['harga_beli'], 4, ',', '.') . "</td>
@@ -256,8 +260,8 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
     <script src="../plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
     <!-- date-picker -->
     <script src="../plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
-    <!-- BootsrapSelect -->
-    <script src="../plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+    <!-- select2 -->
+    <script src="../plugins/select2/select2.full.min.js" type="text/javascript"></script>
     <!-- typeahead -->
     <script src="../plugins/typeahead/typeahead.bundle.js" type="text/javascript"></script>
     <!-- FastClick -->
@@ -268,7 +272,117 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
     <!-- page script -->
     <script type="text/javascript">
         $(function() {
+            // loadData();
             $("#example1").dataTable();
+            $('.select_obat').change(function() {
+                let id_obat = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    url: "ajax_data/get_sisa_stok_gudang.php",
+                    data: {
+                        "id": id_obat
+                    },
+                    success: function(response) {
+                        let res = JSON.parse(response);
+                        $("#stok_sistem").val(res.stok);
+                    },
+                    error: function(err) {
+                        console.warn(err);
+                    }
+                });
+            });
+            $(".select_obat").select2({
+                ajax: {
+                    url: "ajax_data/get_obat_keluar.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page
+                        };
+                    },
+                    processResults: function(data, params) {
+                        console.log(data);
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 30) < data.total_count
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Pilih Obat',
+                allowClear: true,
+                minimumInputLength: 1,
+                templateResult: formatRepo,
+                templateSelection: formatRepoSelection
+            });
+
+            function formatRepo(repo) {
+                if (repo.loading) {
+                    return repo.text;
+                }
+                let text_name = '';
+                if (repo.jenis == 'generik') {
+                    text_name += repo.nama_obat + " (<b style='color:blue'>" + repo.merk_pabrik + "</b>)| stok: " + repo.volume_kartu_akhir;
+                } else if (repo.jenis == 'non generik') {
+                    text_name += repo.nama_obat + " (<b style='color:green'>" + repo.merk_pabrik + "</b>)| stok: " + repo.volume_kartu_akhir;
+                } else {
+                    text_name += repo.nama_obat + " | stok : " + repo.volume_kartu_akhir;
+                }
+                var $container = $(
+                    "<div class='select2-result-obat clearfix'>" +
+                    "<div class='select2-result-obat__namaobat'>" + text_name + "</div>" +
+                    "</div>"
+                );
+
+                // var $container = $(
+                //     "<div class='select2-result-repository clearfix'>" +
+                //     "<div class='select2-result-repository__avatar'><img src='" + repo.owner.avatar_url + "' /></div>" +
+                //     "<div class='select2-result-repository__meta'>" +
+                //     "<div class='select2-result-repository__title'></div>" +
+                //     "<div class='select2-result-repository__description'></div>" +
+                //     "<div class='select2-result-repository__statistics'>" +
+                //     "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> </div>" +
+                //     "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> </div>" +
+                //     "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> </div>" +
+                //     "</div>" +
+                //     "</div>" +
+                //     "</div>"
+                // );
+
+                // $container.find(".select2-result-repository__title").text(repo.full_name);
+                // $container.find(".select2-result-repository__description").text(repo.description);
+                // $container.find(".select2-result-repository__forks").append(repo.forks_count + " Forks");
+                // $container.find(".select2-result-repository__stargazers").append(repo.stargazers_count + " Stars");
+                // $container.find(".select2-result-repository__watchers").append(repo.watchers_count + " Watchers");
+
+                return $container;
+            }
+
+            function formatRepoSelection(repo) {
+                let text_name = '';
+                if (repo.id == '') {
+                    text_name = repo.text;
+                } else {
+                    if (repo.jenis == 'generik') {
+                        text_name += repo.nama_obat + " (" + repo.merk_pabrik + ")| stok: " + repo.volume_kartu_akhir;
+                    } else if (repo.jenis == 'non generik') {
+                        text_name += repo.nama_obat + " (" + repo.merk_pabrik + ")| stok: " + repo.volume_kartu_akhir;
+                    } else {
+                        text_name += repo.nama_obat + " | stok : " + repo.volume_kartu_akhir;
+                    }
+                }
+                return text_name;
+            }
             $('#btnTambah').click(function(ev) {
                 ev.preventDefault();
                 let parent = $('#parent').val();
@@ -281,9 +395,10 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                 let id_tuslah = $('#id_tuslah').val();
                 let selectedItem = $('#id_obat').val();
                 let sp = selectedItem.split("|");
-                let id_kartu = sp[0];
-                let id_obat = sp[1];
-                let volume_akhir = sp[2];
+                let id_obat = sp[0];
+                let jenis = sp[1];
+                let merk_pabrikan = sp[2];
+                let volume_akhir = $('#stok_sistem').val();
                 let volume = $('#volume').val();
                 if (warehouse == '') {
                     swal('Peringatan!', 'Nama Depo/Ruangan pemesan belum dipilih', 'warning');
@@ -293,7 +408,7 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                     swal('Peringatan!', 'Nama pemesan belum dipilih', 'warning');
                     return;
                 }
-                if (id_kartu == '') {
+                if (selectedItem == '') {
                     swal('Peringatan!', 'Nama Obat/BMHP belum dipilih', 'warning');
                     return;
                 }
@@ -317,8 +432,11 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                         "pemesan": pemesan,
                         "warehouse": warehouse,
                         "id_warehouse": id_warehouse,
-                        "id_kartu": id_kartu,
-                        "volume": volume
+                        "id_obat": id_obat,
+                        "jenis": jenis,
+                        "merk_pabrikan": merk_pabrikan,
+                        "volume": volume,
+                        "volume_akhir": volume_akhir
                     },
                     success: function(response) {
                         console.log(response);
