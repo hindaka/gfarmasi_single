@@ -27,13 +27,7 @@ $h4 = $db->prepare("SELECT * FROM gobat WHERE id_obat=:id");
 $h4->bindParam(":id", $id_obat, PDO::PARAM_INT);
 $h4->execute();
 $obat = $h4->fetch(PDO::FETCH_ASSOC);
-$data_merk = isset($obat['merk']) ? $obat['merk'] : '';
-if ($data_merk == '') {
-    $total_data = 0;
-} else {
-    $split = explode("|", $data_merk);
-    $total_data = count($split);
-}
+$nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
 ?>
 <!DOCTYPE html>
 <html>
@@ -51,7 +45,7 @@ if ($data_merk == '') {
     <!-- daterange picker -->
     <link href="../plugins/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
     <!-- BootsrapSelect -->
-    <link href="../plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+    <link href="../plugins/select2/select2.min.css" rel="stylesheet" type="text/css" />
     <!-- DATA TABLES -->
     <link href="../plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     <!-- iCheck for checkboxes and radio inputs -->
@@ -68,6 +62,16 @@ if ($data_merk == '') {
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+    <style>
+        .select2-result__nama {
+            height: 30px;
+        }
+
+        .select2-result__nama>span {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body class="<?php echo $skin_gfarmasi; ?>">
@@ -122,11 +126,11 @@ if ($data_merk == '') {
                             <!-- form start -->
                             <form id="myForm" role="form" action="#">
                                 <input type="hidden" id="id_warehouse" name="id_warehouse" value="<?php echo $id_warehouse; ?>">
-                                <input type="hidden" name="id_obat" id="id_obat" value="<?php echo $obat['id_obat']; ?>">
+                                <input type="hidden" name="id_obat" id="id_obat" value="<?php echo $id_obat; ?>">
                                 <div class="box-body">
                                     <div class="form-group">
                                         <label for="namaobat">Nama obat <span style="color:red;">*</span></label>
-                                        <input type="text" class="form-control" value="<?php echo $obat['nama']; ?>" readonly>
+                                        <input type="text" class="form-control" value="<?php echo $nama_obat; ?>" readonly>
                                     </div>
                                     <div class="form-group">
                                         <label for="volume">Volume <span style="color:red;">*</span></label>
@@ -164,22 +168,29 @@ if ($data_merk == '') {
                                             <option value="bmhp">Bmhp</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="">Merk</label>
-                                        <select name="merk" id="merk" class="form-control">
-                                            <option value="">--Pilih Merk--</option>
-                                            <?php
-                                            if ($total_data > 0) {
-                                                for ($i = 0; $i < $total_data; $i++) {
-                                                    echo '<option value="' . $split[$i] . '">' . $split[$i] . '</option>';
-                                                }
-                                            }
-                                            ?>
-                                        </select>
+                                    <div id="merk_block">
+                                        <div class="form-group">
+                                            <label for="">Merk</label>
+                                            <select name="merk" id="merk" class="form-control select_merk" style="width:100%">
+                                                <option value=""></option>
+                                                <!-- <?php
+                                                        if ($total_data > 0) {
+                                                            for ($i = 0; $i < $total_data; $i++) {
+                                                                echo '<option value="' . $split[$i] . '">' . $split[$i] . '</option>';
+                                                            }
+                                                        }
+                                                        ?> -->
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="">Pabrikan</label>
-                                        <input type="text" name="pabrikan" id="pabrikan" class="form-control" placeholder="Masukan Nama Pabrikan Jika jenis generik">
+                                    <div id="pabrik_block">
+                                        <div class="form-group">
+                                            <label for="">Pabrikan</label>
+                                            <select name="pabrikan" id="pabrikan" class="form-control select_pabrikan" style="width:100%">
+                                                <option value=""></option>
+                                            </select>
+                                            <!-- <input type="text" name="pabrikan" id="pabrikan" class="form-control" placeholder="Masukan Nama Pabrikan Jika jenis generik"> -->
+                                        </div>
                                     </div>
                                 </div><!-- /.box-body -->
                                 <div class="box-footer">
@@ -242,7 +253,7 @@ if ($data_merk == '') {
     <!-- date-picker -->
     <script src="../plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
     <!-- BootsrapSelect -->
-    <script src="../plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+    <script src="../plugins/select2/select2.full.min.js" type="text/javascript"></script>
     <!-- typeahead -->
     <script src="../plugins/typeahead/typeahead.bundle.js" type="text/javascript"></script>
     <!-- iCheck 1.0.1 -->
@@ -298,6 +309,124 @@ if ($data_merk == '') {
             document.getElementById("myForm").reset();
         }
         $(function() {
+            let merk_block = $('#merk_block');
+            let pabrik_block = $('#pabrik_block');
+            merk_block.hide();
+            pabrik_block.hide();
+            $('#jenis').change(function() {
+                let jenis_selected = $(this).val();
+                if (jenis_selected == 'generik') {
+                    merk_block.hide();
+                    pabrik_block.show();
+                } else if (jenis_selected == 'non generik') {
+                    merk_block.show();
+                    pabrik_block.hide();
+                } else if (jenis_selected == 'bmhp') {
+                    merk_block.hide();
+                    pabrik_block.show();
+                } else {
+                    merk_block.hide();
+                    pabrik_block.hide();
+                }
+            });
+            let id_obat = $('#id_obat').val();
+            $(".select_pabrikan").select2({
+                ajax: {
+                    url: "ajax_data/get_pabrik_kartu.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            id_obat: id_obat,
+                            page: params.page
+                        };
+                    },
+                    processResults: function(data, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 30) < data.total_count
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Masukan Nama Pabrikan yang dicari',
+                allowClear: true,
+                minimumInputLength: 1,
+                templateResult: formatRepo,
+                templateSelection: formatRepoSelection,
+            });
+            $(".select_merk").select2({
+                ajax: {
+                    url: "ajax_data/get_merk_kartu.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            id_obat: id_obat,
+                            page: params.page
+                        };
+                    },
+                    processResults: function(data, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 30) < data.total_count
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Masukan Nama Merk yang dicari',
+                allowClear: true,
+                minimumInputLength: 1,
+                templateResult: formatRepo,
+                templateSelection: formatRepoSelection,
+            });
+
+            function formatRepo(repo) {
+                let text_name = '';
+                if (repo.loading) {
+                    return repo.text;
+                } else {
+                    if (repo.flag == 'new') {
+                        text_name = "<span>" + repo.nama + "</span> Tambahkan Sebagai Data Baru";
+                    } else {
+                        text_name = "<span>" + repo.nama + "</span>";
+                    }
+                    var $container = $(
+                        "<div class='select2-result clearfix'>" +
+                        "<div class='select2-result__nama'>" + text_name + "</div>" +
+                        "</div>"
+                    );
+                    return $container;
+                }
+            }
+
+            function formatRepoSelection(repo) {
+                let text_name = '';
+                if (repo.id == '') {
+                    text_name = repo.text;
+                } else {
+                    text_name = repo.nama;
+                }
+                return text_name;
+            }
             var master_temp = $('#example1').DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -409,6 +538,15 @@ if ($data_merk == '') {
                     return;
                 } else if (jenis == "") {
                     swal('Peringatan', 'Silakan Isi Jenis Terlebih Dahulu', 'warning');
+                    return;
+                } else if ((jenis == "generik") && (pabrikan == '')) {
+                    swal('Peringatan', 'Silakan Isi Pabrikan Terlebih Dahulu', 'warning');
+                    return;
+                } else if ((jenis == "non generik") && (merk == '')) {
+                    swal('Peringatan', 'Silakan Isi Merk Terlebih Dahulu', 'warning');
+                    return;
+                } else if ((jenis == "bmhp") && (pabrikan == '')) {
+                    swal('Peringatan', 'Silakan Isi Pabrikan Terlebih Dahulu', 'warning');
                     return;
                 } else {
                     //ajax

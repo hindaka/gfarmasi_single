@@ -152,15 +152,15 @@
               <ul class="treeview-menu">
                 <li><a href="stok_depo.php"><i class="fa fa-circle-o"></i> Data Stok Awal Depo</a></li>
                 <li><a href="kelola_sumber_dana.php"><i class="fa fa-circle-o"></i> Pengaturan Sumber Dana</a></li>
-                <!-- <li><a href="supplier.php" class="text-green"><i class="fa fa-circle-o"></i> Data Supplier <span class="label label-warning">Update</a></li>
+                <!-- <li><a href="supplier.php" class="text-green"><i class="fa fa-circle-o"></i> Data Supplier <span class="label label-warning">Update</a></li> -->
                 <li><a href="data_petugas.php"><i class="fa fa-circle-o"></i> Data Petugas</a></li>
                 <li><a href="warehouse.php"><i class="fa fa-circle-o"></i> Depo / Mini Depo</a></li>
                 <li><a href="tuslah.php"><i class="fa fa-circle-o"></i> Tuslah</a></li>
-                <li><a href="fornas.php"><i class="fa fa-circle-o"></i> Data Formularium Nasional</a></li>
-                <li><a href="bentuk_sediaan.php"><i class="fa fa-circle-o"></i> Data Bentuk Sediaan</a></li>
+                <!-- <li><a href="fornas.php"><i class="fa fa-circle-o"></i> Data Formularium Nasional</a></li> -->
+                <!-- <li><a href="bentuk_sediaan.php"><i class="fa fa-circle-o"></i> Data Bentuk Sediaan</a></li> -->
                 <li><a href="kadaluarsa_conf.php"><i class="fa fa-circle-o"></i> Waktu Kontrol Kadaluarsa</a></li>
-                <li><a href="master_pabrik.php"><i class="fa fa-circle-o"></i> Data Pabrik/Principle</a></li>
-                <li><a href="setting_kelas_terapi.php"><i class="fa fa-circle-o"></i> Data Kelas Terapi</a></li> -->
+                <!-- <li><a href="master_pabrik.php"><i class="fa fa-circle-o"></i> Data Pabrik/Principle</a></li> -->
+                <!-- <li><a href="setting_kelas_terapi.php"><i class="fa fa-circle-o"></i> Data Kelas Terapi</a></li> -->
               </ul>
             </li>
             <!-- <li class="treeview">
