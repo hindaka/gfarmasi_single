@@ -44,34 +44,34 @@
                 <li><a href="order_obat.php"><i class="fa fa-circle-o"></i> Daftar Permohonan Kebutuhan Barang</a></li>
               </ul>
             </li> -->
-            <!-- <li class="header text-blue">REKAPAN</li>
+            <li class="header text-blue">REKAPAN</li>
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-calendar"></i> <span>Rekap Transaksi</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="rmasuk.php"><i class="fa fa-circle-o"></i> Faktur</a></li>
+                <!-- <li><a href="rmasuk.php"><i class="fa fa-circle-o"></i> Faktur</a></li>
                 <li><a href="raw_masuk.php"><i class="fa fa-circle-o"></i> RAW Faktur</a></li>
                 <li><a href="rekap_retur_supplier.php"><i class="fa fa-circle-o"></i> Rekap Retur Ke Supplier</a></li>
                 <li><a href="rekap_retur_depo.php"><i class="fa fa-circle-o"></i><span class="label label-success">New</span>Rekap Retur Depo</a></li>
                 <li><a href="rekap_set_stok.php"><i class="fa fa-circle-o"></i><span class="label label-success">New</span>Rekap Set Stok</a></li>
                 <li><a href="rekap_set_stok_gudang.php"><i class="fa fa-circle-o"></i><span class="label label-success">New</span>Rekap Set Stok Gudang Farmasi</a></li>
                 <li><a href="rekap_retur_transaksi.php"><i class="fa fa-circle-o"></i><span class="label label-success">New</span>Rekap Retur Transaksi</a></li>
-                <li><a href="faktur.php"><i class="fa fa-circle-o"></i> History Retur Faktur</a></li>
+                <li><a href="faktur.php"><i class="fa fa-circle-o"></i> History Retur Faktur</a></li> -->
                 <li><a href="romasuk.php"><i class="fa fa-circle-o"></i> Obat Masuk</a></li>
                 <li class="treeview">
                   <a href="#">
-                    <i class="fa fa-book"></i> <span>Obat Keluar <span class="label label-warning">Update</span></span> <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-book"></i> <span>Obat Keluar </span> <i class="fa fa-angle-left pull-right"></i>
                   </a>
                   <ul class="treeview-menu">
                     <li><a href="rkeluar_hari.php"><i class="fa fa-book"></i> Per Hari</a></li>
                     <li><a href="rkeluar_bulan.php"><i class="fa fa-book"></i> Per Bulan</a></li>
                   </ul>
                 </li>
-                <li><a href="retur_warehouse_rekap.php"><i class="fa fa-circle-o"></i> Retur Depo</a></li>
-                <li><a href="rekap_bast.php"><i class="fa fa-circle-o"></i> Rekap BAST</a></li>
+                <!-- <li><a href="retur_warehouse_rekap.php"><i class="fa fa-circle-o"></i> Retur Depo</a></li> -->
+                <!-- <li><a href="rekap_bast.php"><i class="fa fa-circle-o"></i> Rekap BAST</a></li> -->
                 <li><a href="rekap_spb.php"><i class="fa fa-circle-o"></i> Rekap Nota Dinas / SPBB / SPB</a></li>
-                <li><a href="romasuk_akm.php"><i class="fa fa-circle-o"></i> Penerimaan</a></li>
+                <!-- <li><a href="romasuk_akm.php"><i class="fa fa-circle-o"></i> Penerimaan</a></li>
                 <li class="treeview">
                   <a href="#">
                     <i class="fa fa-book"></i> <span>Pengeluaran <span class="label label-warning">Update</span></span> <i class="fa fa-angle-left pull-right"></i>
@@ -80,19 +80,20 @@
                     <li><a href="laporan_pengeluaran_farmasi_hari.php"><i class="fa fa-book"></i> Per Hari</a></li>
                     <li><a href="laporan_pengeluaran_farmasi.php"><i class="fa fa-book"></i> Per Bulan</a></li>
                   </ul>
-                </li>
+                </li> -->
               </ul>
-            </li> -->
-            <!-- <li class="treeview">
+            </li>
+            <li class="header text-yellow">DOKUMEN</li>
+            <li class="treeview">
               <a href="#">
                 <i class="fa fa-book"></i> <span>Cetak Dokumen <span class="label label-warning">Update</span></span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
                 <li><a href="bast.php"><i class="fa fa-circle-o"></i> Berita Acara Serah Terima</a></li>
                 <li><a href="spb.php"><i class="fa fa-circle-o"></i> Pengeluran Barang</a></li>
-                <li><a href="spb_donasi.php" class="text-green"><i class="fa fa-circle-o"></i> Pengeluran Barang Donasi <span class="label label-success">New</span></a></li>
+                <!-- <li><a href="spb_donasi.php" class="text-green"><i class="fa fa-circle-o"></i> Pengeluran Barang Donasi <span class="label label-success">New</span></a></li> -->
               </ul>
-            </li> -->
+            </li>
             <!-- <li class="header text-yellow">PELAPORAN RS ONLINE V2</li>
             <li class="treeview">
               <li><a href="laporan_obat_covid.php"><i class="fa fa-list"></i> Pelaporan Obat Covid</a></li>
