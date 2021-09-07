@@ -39,6 +39,7 @@ $columns = array(
   array( 'db' => '`s`.`expired`', 'dt' => 'expired', 'field' => 'expired', 'as' => 'expired'),
   array( 'db' => '`s`.`merk`', 'dt' => 'merk', 'field' => 'merk', 'as' => 'merk'),
   array( 'db' => '`s`.`sumber_dana`', 'dt' => 'sumber_dana', 'field' => 'sumber_dana', 'as' => 'sumber_dana'),
+  array( 'db' => '`s`.`e_kat`', 'dt' => 'e_kat', 'field' => 'e_kat', 'as' => 'e_kat'),
   array( 'db' => '`s`.`jenis`', 'dt' => 'jenis', 'field' => 'jenis', 'as' => 'jenis'),
   array( 'db' => '`s`.`pabrikan`', 'dt' => 'pabrikan', 'field' => 'pabrikan', 'as' => 'pabrikan'),
   array( 'db' => '`s`.`tuslah`', 'dt' => 'tuslah', 'field' => 'tuslah', 'as' => 'tuslah'),

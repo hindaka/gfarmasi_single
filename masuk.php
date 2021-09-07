@@ -101,7 +101,7 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
 
             <!-- Main content -->
             <section class="content">
-                <div class="box">
+                <div class="box box-primary">
                     <div class="box-header">
                         <i class="fa fa-user"></i>
                         <h3 class="box-title">Input data faktur</h3>
@@ -110,27 +110,37 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                     <form role="form" action="masukacc.php" method="post">
                         <div class="box-body">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="tanggalf">Tanggal faktur <span style="color:red">*</span></label>
                                         <input type="text" class="form-control" id="tanggalf" name="tanggalf" placeholder="Tanggal" autocomplete="off" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="nofaktur">Nomor faktur <span style="color:red">*</span></label>
                                         <input type="text" class="form-control" id="nofaktur" name="nofaktur" placeholder="No. Faktur" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="jatuh_tempo">Tanggal Jatuh Tempo <span style="color:red">*</span></label>
                                         <input type="text" class="form-control" id="jatuh_tempo" name="jatuh_tempo" placeholder="Tanggal Jatuh tempo" autocomplete="off" required>
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Jenis Faktur <span style="color:red">*</span></label>
+                                        <select name="jenis_faktur" id="jenis_faktur" class="form-control" required>
+                                            <option value="">--- Pilih Jenis Faktur ---</option>
+                                            <option value="obat">OBAT</option>
+                                            <option value="bmhp">BMHP</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="sumber">Sumber Dana <span style="color:red">*</span></label>
                                         <select class="form-control" name="sumber" readonly>
@@ -139,7 +149,7 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Dana Pembayaran <span style="color:red">*</span></label>
                                         <select name="dana_pembayaran" id="dana_pembayaran" class="form-control" required>
@@ -150,19 +160,7 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">E-Katalog <span style="color:red">*</span></label>
-                                        <select name="ekatalog" id="ekatalog" class="form-control" required>
-                                            <option value="">--- Pilih Salah Satu ---</option>
-                                            <option value="ya">Ya</option>
-                                            <option value="tidak">Tidak</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Cara Bayar <span style="color:red">*</span></label>
                                         <select name="cara_bayar" id="cara_bayar" class="form-control" required>
@@ -172,17 +170,7 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                         </select>
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-4">
-												<div class="form-group">
-												  <label for="">Pembelian <span style="color:red">*</span></label>
-												  <select name="pembelian" id="pembelian" class="form-control" required>
-												  	<option value="">--- Pilih Pembelian ---</option>
-														<option value="Dalam">Dalam</option>
-														<option value="Luar">Luar</option>
-												  </select>
-												</div>
-											</div> -->
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Pembayaran Tunai <span style="color:red">*</span></label>
                                         <select name="pembayaran_tunai" id="pembayaran_tunai" class="form-control" required>
@@ -192,16 +180,16 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <!-- <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="">Jenis Faktur <span style="color:red">*</span></label>
-                                        <select name="jenis_faktur" id="jenis_faktur" class="form-control" required>
-                                            <option value="">--- Pilih Jenis Faktur ---</option>
-                                            <option value="obat">OBAT</option>
-                                            <option value="bmhp">BMHP</option>
+                                        <label for="">E-Katalog <span style="color:red">*</span></label>
+                                        <select name="ekatalog" id="ekatalog" class="form-control" required>
+                                            <option value="">--- Pilih Salah Satu ---</option>
+                                            <option value="ya">Ya</option>
+                                            <option value="tidak">Tidak</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="form-group">
                                 <label for="perusahaan">Perusahaan <span style="color:red">*</span></label>

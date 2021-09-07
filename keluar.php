@@ -3,6 +3,7 @@ ob_start();
 session_start();
 include("../inc/pdo.conf.php");
 include("../inc/version.php");
+include("../inc/set_gfarmasi.php");
 date_default_timezone_set("Asia/Jakarta");
 $namauser = $_SESSION['namauser'];
 $password = $_SESSION['password'];
@@ -205,6 +206,7 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                                                 <th>Nama</th>
                                                 <th>Sumber</th>
                                                 <th>Volume</th>
+                                                <th>Harga Ekatalog</th>
                                                 <th>Harga Satuan</th>
                                                 <th>No Batch</th>
                                                 <th>Expired</th>
@@ -213,12 +215,19 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                                         </thead>
                                         <?php
                                         foreach ($data3 as $r3) {
-                                            $volumeformat = number_format($r3['volume'], 0, ".", ".");
+                                            $volumeformat = number_format($r3['volume'], 0, ",", ".");
+                                            $e_kat = isset($r3['e_kat']) ? $r3['e_kat'] : 'tidak';
+                                            if($e_kat=='ya'){
+                                                $e_kat_label = '<i class="fa fa-check text-green"></i>';
+                                            }else{
+                                                $e_kat_label = '<i class="fa fa-times text-danger"></i>';
+                                            }
                                             echo "<tr>
                                                     <td>" . $r3['namaobat'] . "<br><span style='font-size:10px'>Merk: " . $r3['merk'] . "<br>Jenis: " . $r3['jenis'] . "<br>Pabrikan: " . $r3['pabrikan'] . "</span></td>
                                                     <td>" . $r3['sumber'] . "</td>
                                                     <td>" . $volumeformat . "</td>
-                                                    <td>" . number_format($r3['harga_beli'], 4, ',', '.') . "</td>
+                                                    <td>" . $e_kat_label . "</td>
+                                                    <td>" . number_format($r3['harga_beli'], $digit_akhir, ',', '.') . "</td>
                                                     <td>" . $r3['no_batch'] . "</td>
                                                     <td>" . $r3['expired'] . "</td>
                                                     <td><a class='btn btn-sm btn-danger' href='hapuskeluar.php?parent=" . $id_parent . "&id=" . $r3['id_obatkeluar'] . "&kartu=" . $r3['id_kartu'] . "&type=" . $tipe . "'><i class='fa fa-trash'></i> Hapus</a></td>
@@ -335,6 +344,8 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                     text_name += repo.nama_obat + " (<b style='color:blue'>" + repo.merk_pabrik + "</b>)| stok: " + repo.volume_kartu_akhir;
                 } else if (repo.jenis == 'non generik') {
                     text_name += repo.nama_obat + " (<b style='color:green'>" + repo.merk_pabrik + "</b>)| stok: " + repo.volume_kartu_akhir;
+                } else if (repo.jenis == 'bmhp') {
+                    text_name += repo.nama_obat + " (<b style='color:blue'>" + repo.merk_pabrik + "</b>)| stok: " + repo.volume_kartu_akhir;
                 } else {
                     text_name += repo.nama_obat + " | stok : " + repo.volume_kartu_akhir;
                 }
@@ -343,27 +354,6 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                     "<div class='select2-result-obat__namaobat'>" + text_name + "</div>" +
                     "</div>"
                 );
-
-                // var $container = $(
-                //     "<div class='select2-result-repository clearfix'>" +
-                //     "<div class='select2-result-repository__avatar'><img src='" + repo.owner.avatar_url + "' /></div>" +
-                //     "<div class='select2-result-repository__meta'>" +
-                //     "<div class='select2-result-repository__title'></div>" +
-                //     "<div class='select2-result-repository__description'></div>" +
-                //     "<div class='select2-result-repository__statistics'>" +
-                //     "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> </div>" +
-                //     "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> </div>" +
-                //     "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> </div>" +
-                //     "</div>" +
-                //     "</div>" +
-                //     "</div>"
-                // );
-
-                // $container.find(".select2-result-repository__title").text(repo.full_name);
-                // $container.find(".select2-result-repository__description").text(repo.description);
-                // $container.find(".select2-result-repository__forks").append(repo.forks_count + " Forks");
-                // $container.find(".select2-result-repository__stargazers").append(repo.stargazers_count + " Stars");
-                // $container.find(".select2-result-repository__watchers").append(repo.watchers_count + " Watchers");
 
                 return $container;
             }
@@ -376,6 +366,8 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                     if (repo.jenis == 'generik') {
                         text_name += repo.nama_obat + " (" + repo.merk_pabrik + ")| stok: " + repo.volume_kartu_akhir;
                     } else if (repo.jenis == 'non generik') {
+                        text_name += repo.nama_obat + " (" + repo.merk_pabrik + ")| stok: " + repo.volume_kartu_akhir;
+                    } else if (repo.jenis == 'bmhp') {
                         text_name += repo.nama_obat + " (" + repo.merk_pabrik + ")| stok: " + repo.volume_kartu_akhir;
                     } else {
                         text_name += repo.nama_obat + " | stok : " + repo.volume_kartu_akhir;

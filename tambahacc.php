@@ -28,6 +28,8 @@ $diskon = isset($_POST["diskon"]) ? $_POST['diskon'] : '';
 $nobatch = isset($_POST["nobatch"]) ? $_POST['nobatch'] : '';
 $expired = isset($_POST["expired"]) ? $_POST['expired'] : '';
 $ppn = isset($_POST['ppn']) ? $_POST['ppn'] : '0';
+$e_kat = isset($_POST['e_kat']) ? $_POST['e_kat'] : 'tidak';
+
 $exp = explode("/", $expired);
 $expired_stok = $exp[2] . "/" . $exp[1] . "/" . $exp[0];
 $hariini = date("d/m/Y");
@@ -80,11 +82,12 @@ if ($cek == 0) {
 		//update
 		// $result = $db->query("UPDATE gobat SET volume='$total',harga='$hargappn',hargalama='$hargalama',nobatch='$nobatch',expired='$expired',terbaru='$hariini' WHERE id_obat='$id_obat'");
 		//insert
-		$result2 = $db->query("INSERT INTO itemfaktur(id_faktur,tanggal,namaobat,id_obat,volume,harga,diskon,ppn,total,harga_satuan,nobatch,expired,sumber,merk,jenis,pabrikan) VALUES ('$id_faktur','$hariini','$namaobat','$id_obat','$volume','$harga','$diskon','$hargappn','$totalharga_ppn','$harga_ppn_inc','$nobatch','$expired','$sumber_dana','$merk','$jenis','$pabrikan')");
+		$result2 = $db->query("INSERT INTO itemfaktur(id_faktur,tanggal,namaobat,id_obat,volume,harga,diskon,ppn,total,harga_satuan,nobatch,expired,sumber,e_kat,merk,jenis,pabrikan) VALUES ('$id_faktur','$hariini','$namaobat','$id_obat','$volume','$harga','$diskon','$hargappn','$totalharga_ppn','$harga_ppn_inc','$nobatch','$expired','$sumber_dana','$e_kat','$merk','$jenis','$pabrikan')");
 		//db hasil
-		$result3 = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `id_faktur`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`, `aktif`, `created_at`, `keterangan`)VALUES (:id_obat,:id_faktur,:sumber,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:aktif,:created_at,:keterangan)");
+		$result3 = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `id_faktur`,`e_kat`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`, `aktif`, `created_at`, `keterangan`)VALUES (:id_obat,:id_faktur,:e_kat,:sumber,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:aktif,:created_at,:keterangan)");
 		$result3->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
 		$result3->bindParam(":id_faktur", $id_faktur, PDO::PARAM_INT);
+		$result3->bindParam(":e_kat", $e_kat, PDO::PARAM_STR);
 		$result3->bindParam(":sumber", $sumber_dana, PDO::PARAM_STR);
 		$result3->bindParam(":merk", $merk, PDO::PARAM_STR);
 		$result3->bindParam(":jenis", $jenis, PDO::PARAM_STR);

@@ -117,6 +117,7 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                             <th>No. Batch</th>
                                             <th>Expiry date</th>
                                             <th>Sumber</th>
+                                            <th>Harga E-Katalog</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -129,6 +130,12 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                 $merk_pabrik = isset($r2['merk']) ? $r2['merk'] : '';
                                             } else {
                                                 $merk_pabrik = isset($r2['pabrikan']) ? $r2['pabrikan'] : '';
+                                            }
+                                            $e_kat = isset($r2['e_kat']) ? $r2['e_kat'] : '';
+                                            if($e_kat=='ya'){
+                                                $e_kat_label = '<i class="fa fa-check text-green"></i>';
+                                            }else{
+                                                $e_kat_label = '<i class="fa fa-times text-danger"></i>';
                                             }
                                             echo "<tr>
                                                     <td>" . $r2['tanggal'] . "</td>
@@ -144,6 +151,7 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                     <td>" . $r2['nobatch'] . "</td>
                                                     <td>" . $r2['expired'] . "</td>
                                                     <td>" . $r2['sumber'] . "</td>
+                                                    <td>".$e_kat_label."</td>
                                                 </tr>";
                                         }
                                         ?>

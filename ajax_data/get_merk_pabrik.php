@@ -21,6 +21,8 @@ if ($jenis == 'generik') {
 	$groupBy = 'GROUP BY pabrikan';
 } else if ($jenis == 'non generik') {
 	$groupBy = 'GROUP BY merk';
+} else if ($jenis == 'bmhp') {
+	$groupBy = 'GROUP BY pabrikan';
 } else {
 	$groupBy = '';
 }
@@ -28,8 +30,8 @@ $stmt = $db->query("SELECT jenis,merk,pabrikan FROM kartu_stok_gobat WHERE id_ob
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $total_data = $stmt->rowCount();
 $feedback_data = [
-	"total_data"=>0,
-	"content"=>[]
+	"total_data" => 0,
+	"content" => []
 ];
 if ($total_data > 0) {
 	foreach ($data as $d) {

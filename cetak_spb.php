@@ -2,6 +2,7 @@
 session_start();
 include("../inc/pdo.conf.php");
 include("../inc/version.php");
+include("../inc/set_gfarmasi.php");
 date_default_timezone_set('Asia/Jakarta');
 $namauser = $_SESSION['namauser'];
 $password = $_SESSION['password'];
@@ -31,7 +32,7 @@ $date = new DateTime($tanggal_order);
 // echo $date->format('d F Y'); // 31-07-2012
 $limit_sk = strtotime("2020-08-25");
 //get data spb
-$cetak_spb = $db->query("SELECT ob.*,kg.harga_beli,kg.expired,kg.no_batch,g.satuan FROM obatkeluar ob INNER JOIN kartu_stok_gobat kg ON(kg.id_kartu=ob.id_kartu) INNER JOIN gobat g ON(g.id_obat=kg.id_obat) WHERE id_parent='" . $id_parent . "' ORDER BY ob.namaobat ASC");
+$cetak_spb = $db->query("SELECT ob.*,kg.harga_beli,kg.expired,kg.no_batch,g.satuan,g.kadar,g.satuan_kadar,g.satuan_jual,g.kemasan FROM obatkeluar ob INNER JOIN kartu_stok_gobat kg ON(kg.id_kartu=ob.id_kartu) INNER JOIN gobat g ON(g.id_obat=kg.id_obat) WHERE id_parent='" . $id_parent . "' ORDER BY ob.namaobat ASC");
 $cetak = $cetak_spb->fetchAll(PDO::FETCH_ASSOC);
 //ttd
 $get_ttd = $db->query("SELECT * FROM pegawai WHERE nip LIKE '" . $nip . "'");
@@ -119,9 +120,20 @@ $ttd_kasubag = "196509291988031008";
                             <?php
                             $i = 1;
                             foreach ($cetak as $row) {
+                                //config view nama_barang
+                                $namaobat = isset($row['namaobat']) ? $row['namaobat'] : '';
+                                $kadar = isset($row['kadar']) ? $row['kadar'] : '';
+                                $satuan_kadar = isset($row['satuan_kadar']) ? $row['satuan_kadar'] : '';
+                                $satuan_jual = isset($row['satuan_jual']) ? $row['satuan_jual'] : '';
+                                $kemasan = isset($row['kemasan']) ? $row['kemasan'] : '';
+                                $jenis = isset($row['jenis']) ? $row['jenis'] : '';
+                                $merk = isset($row['merk']) ? $row['merk'] : '';
+                                $pabrikan = isset($row['pabrikan']) ? $row['pabrikan'] : '';
+                                $nama_view = viewNamaBarang($namaobat,$kadar,$satuan_kadar,$satuan_jual,$kemasan,$jenis,$pabrikan,$merk);
+
                                 echo "<tr>
                                         <td align='center'>" . $i++ . "</td>
-                                        <td>" . $row['namaobat'] . "</td>
+                                        <td>" . $nama_view . "</td>
                                         <td align='center'>" . substr($row['expired'], 0, 10) . "</td>
                                         <td align='center'>" . $row['no_batch'] . "</td>
                                         <td align='center'>" . $row['volume'] . "</td>

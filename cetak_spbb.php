@@ -30,7 +30,7 @@ $date = new DateTime($tanggal_order);
 // echo $date->format('d F Y'); // 31-07-2012
 
 //get data spb
-$cetak_spb = $db->query("SELECT ob.*,kg.harga_beli,kg.expired,kg.no_batch,g.satuan FROM obatkeluar ob INNER JOIN kartu_stok_gobat kg ON(kg.id_kartu=ob.id_kartu) INNER JOIN gobat g ON(g.id_obat=kg.id_obat) WHERE id_parent='" . $id_parent . "'");
+$cetak_spb = $db->query("SELECT ob.*,kg.harga_beli,kg.expired,kg.no_batch,g.satuan,g.kadar,g.satuan_kadar,g.satuan_jual,g.kemasan FROM obatkeluar ob INNER JOIN kartu_stok_gobat kg ON(kg.id_kartu=ob.id_kartu) INNER JOIN gobat g ON(g.id_obat=kg.id_obat) WHERE id_parent='" . $id_parent . "'");
 $cetak = $cetak_spb->fetchAll(PDO::FETCH_ASSOC);
 //ttd
 $get_ttd = $db->query("SELECT * FROM pegawai WHERE nip LIKE '196509291988031008'");
@@ -117,13 +117,22 @@ $ttd_scan = $ttd['ttd_scan'];
                             $i = 1;
                             $all_item = 0;
                             foreach ($cetak as $row) {
+                                $namaobat = isset($row['namaobat']) ? $row['namaobat'] : '';
+                                $kadar = isset($row['kadar']) ? $row['kadar'] : '';
+                                $satuan_kadar = isset($row['satuan_kadar']) ? $row['satuan_kadar'] : '';
+                                $satuan_jual = isset($row['satuan_jual']) ? $row['satuan_jual'] : '';
+                                $kemasan = isset($row['kemasan']) ? $row['kemasan'] : '';
+                                $jenis = isset($row['jenis']) ? $row['jenis'] : '';
+                                $merk = isset($row['merk']) ? $row['merk'] : '';
+                                $pabrikan = isset($row['pabrikan']) ? $row['pabrikan'] : '';
+                                $nama_view = viewNamaBarang($namaobat, $kadar, $satuan_kadar, $satuan_jual, $kemasan, $jenis, $pabrikan, $merk);
                                 $total = $row['harga_beli'] * $row['volume'];
                                 $all_item += $total;
                                 echo "<tr>
                                         <td align='center'>" . $i++ . "</td>
                                         <td align='center'>" . $row['volume'] . "</td>
                                         <td align='center'>" . $row['satuan'] . "</td>
-                                        <td>" . $row['namaobat'] . "</td>
+                                        <td>" . $nama_view . "</td>
                                         <td align='right'>" . number_format($row['harga_beli'], $digit_akhir, ',', '.') . "</td>
                                         <td align='right'>" . number_format($total, $digit_akhir, ',', '.') . "</td>
                                         <td align='center'>-</td>

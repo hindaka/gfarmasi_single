@@ -86,7 +86,7 @@
             <li class="header text-yellow">DOKUMEN</li>
             <li class="treeview">
               <a href="#">
-                <i class="fa fa-book"></i> <span>Cetak Dokumen <span class="label label-warning">Update</span></span> <i class="fa fa-angle-left pull-right"></i>
+                <i class="fa fa-book"></i> <span>Cetak Dokumen</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
                 <li><a href="bast.php"><i class="fa fa-circle-o"></i> Berita Acara Serah Terima</a></li>
@@ -99,7 +99,8 @@
               <li><a href="laporan_obat_covid.php"><i class="fa fa-list"></i> Pelaporan Obat Covid</a></li>
             </li> -->
             <li class="header text-orange">PENGELOLAAN STOK</li>
-            <li><a href="master_obat_single.php"><i class="fa fa-circle-o"></i> MASTER OBAT <span class="label label-success">New</span></a></li>
+            <li><a href="master_obat_single.php"><i class="fa fa-circle-o"></i> Master Obat</a></li>
+            <li><a href="find_obat.php"><i class="fa fa-circle-o"></i> Pencarian Obat</a></li>
             <!-- <li class="treeview">
               <a href="#">
                 <i class="fa fa-book"></i> <span>Data Stok Obat</span> <i class="fa fa-angle-left pull-right"></i>

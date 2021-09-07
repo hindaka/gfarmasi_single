@@ -122,6 +122,7 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                 <th>Volume Keluar</th>
                                                 <th>Volume Sisa</th>
                                                 <th>Harga Beli (+ ppn)</th>
+                                                <th>Harga E-Katalog</th>
                                                 <th>Keterangan</th>
                                             </tr>
                                         </thead>
@@ -149,6 +150,12 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                 }else{
                                                     $sd = '<span class="label label-default">'.$stok['sumber_dana'].'</span>';
                                                 }
+                                                $e_kat = isset($stok['e_kat']) ? $stok['e_kat'] : '';
+                                                if($e_kat=='ya'){
+                                                    $e_kat_label = '<i class="fa fa-check text-green"></i>';
+                                                }else{
+                                                    $e_kat_label = '<i class="fa fa-times text-danger"></i>';
+                                                }
                                                 echo "<tr class='" . $bgcolor . "'>
                                                         <td>" . $stok['created_at'] . "</td>
                                                         <td><a href='#'>" . $no_faktur . "</a></td>
@@ -165,6 +172,7 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                         <td>" . $stok['volume_out'] . "</td>
                                                         <td>" . $stok['volume_sisa'] . "</td>
                                                         <td>Rp " . number_format($stok['harga_beli'], $digit_akhir, ',', '.') . "</td>
+                                                        <td>".$e_kat_label."</td>  
                                                         <td>" . $stok['keterangan'] . "</td>
                                                     </tr>";
                                             }

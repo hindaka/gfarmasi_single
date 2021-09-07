@@ -105,7 +105,7 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                         <div class="box box-primary">
                             <div class="box-header">
                                 <i class="fa fa-user"></i>
-                                <h3 class="box-title">Data Obat</h3>
+                                <h3 class="box-title">Form Tambah Data Obat Masuk</h3>
                             </div><!-- /.box-header -->
                             <!-- form start -->
                             <form role="form" action="tambahacc.php?id=<?php echo $id_faktur; ?>&sumber=<?php echo $sumber; ?>" method="post">
@@ -135,7 +135,7 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-xs-6 col-md-3">
+                                        <div id="merk_block" class="col-xs-6 col-md-3">
                                             <div class="form-group">
                                                 <label for="">Merk</label>
                                                 <select name="merk" id="merk" class="form-control select_merk" style="width:100%;">
@@ -143,7 +143,7 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-xs-6 col-md-3">
+                                        <div id="pabrik_block" class="col-xs-6 col-md-3">
                                             <div class="form-group">
                                                 <label for="">Pabrikan</label>
                                                 <select name="pabrikan" id="pabrikan" class="form-control select_pabrikan" style="width:100%;">
@@ -152,49 +152,58 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                             </div>
                                         </div>
                                     </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-xs-6 col-md-4">
-                                            <div class="form-group">
-                                                <label for="volume">Volume terkecil <span style="color:red">*</span></label>
-                                                <input type="number" class="form-control" id="volume" name="volume" placeholder="Volume" autocomplete="off" min="1" required>
+                                    <fieldset>
+                                        <legend>Detail Rincian</legend>
+                                        <div class="row">
+                                            <div class="col-xs-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="volume">Volume terkecil <span style="color:red">*</span></label>
+                                                    <input type="number" class="form-control" id="volume" name="volume" placeholder="Volume" autocomplete="off" min="1" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="harga">Harga Beli <span style="color:red">*</span></label>
+                                                    <input type="text" class="form-control" id="harga" name="harga" placeholder="Harga" autocomplete="off" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="diskon">Diskon (%) <span style="color:red">*</span></label>
+                                                    <input type="text" class="form-control" id="diskon" name="diskon" placeholder="Diskon" autocomplete="off" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="">PPN <span style="color:red">*</span></label>
+                                                    <select name="ppn" id="ppn" class="form-control" required>
+                                                        <option value=""> Pilih PPN </option>
+                                                        <option value="10">10%</option>
+                                                        <option value="0">Tidak Kena PPN</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="nobatch">No. Batch <span style="color:red">*</span></label>
+                                                    <input type="text" class="form-control" id="nobatch" name="nobatch" placeholder="No. Batch" autocomplete="off" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="expired">Expired Date <span style="color:red">*</span></label>
+                                                    <input type="text" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="">Harga E-katalog <span style="color:red">*</span></label>
+                                                    <input type="radio" name="e_kat" id="e_kat1" value="ya" required> Ya &nbsp;&nbsp;
+                                                    <input type="radio" name="e_kat" id="e_kat2" value="tidak" required> Tidak
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-6 col-md-4">
-                                            <div class="form-group">
-                                                <label for="harga">Harga Beli <span style="color:red">*</span></label>
-                                                <input type="text" class="form-control" id="harga" name="harga" placeholder="Harga" autocomplete="off" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-6 col-md-4">
-                                            <div class="form-group">
-                                                <label for="diskon">Diskon (%) <span style="color:red">*</span></label>
-                                                <input type="text" class="form-control" id="diskon" name="diskon" placeholder="Diskon" autocomplete="off" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-6 col-md-4">
-                                            <div class="form-group">
-                                                <label for="">PPN <span style="color:red">*</span></label>
-                                                <select name="ppn" id="ppn" class="form-control" required>
-                                                    <option value=""> Pilih PPN </option>
-                                                    <option value="10">10%</option>
-                                                    <option value="0">Tidak Kena PPN</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-6 col-md-4">
-                                            <div class="form-group">
-                                                <label for="nobatch">No. Batch <span style="color:red">*</span></label>
-                                                <input type="text" class="form-control" id="nobatch" name="nobatch" placeholder="No. Batch" autocomplete="off" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-6 col-md-4">
-                                            <div class="form-group">
-                                                <label for="expired">Expired Date <span style="color:red">*</span></label>
-                                                <input type="text" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" required>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </fieldset>
                                 </div><!-- /.box-body -->
                                 <div class="box-footer">
                                     <button type="submit" class="btn btn-primary"> <i class="fa fa-plus"></i> Tambah</button>
@@ -347,6 +356,10 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
 
         }
         $(function() {
+            let merk_block = $('#merk_block');
+            let pabrik_block = $('#pabrik_block');
+            merk_block.hide();
+            pabrik_block.hide();
             $("#example1").dataTable();
             $('.selectpicker').select2({
                 placeholder: "Pilih Obat/Bmhp",
@@ -390,6 +403,8 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                             swal('Info', 'Data Merk/Pabrikan Tidak Ditemukan', 'info');
                         }
                         if (jenis == 'generik') {
+                            pabrik_block.show();
+                            merk_block.hide();
                             content.forEach(function(data) {
                                 var option = new Option(data.pabrikan, data.pabrikan, true, true);
                                 $('#pabrikan').append(option).trigger('change');
@@ -397,13 +412,26 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                             $('#pabrikan').val('');
                             $('#pabrikan').trigger('change');
                         } else if (jenis == 'non generik') {
+                            merk_block.show();
+                            pabrik_block.hide();
                             content.forEach(function(data) {
                                 var option = new Option(data.merk, data.merk, true, true);
                                 $('#merk').append(option).trigger('change');
                             });
                             $('#merk').val('');
                             $('#merk').trigger('change');
+                        } else if (jenis == 'bmhp') {
+                            pabrik_block.show();
+                            merk_block.hide();
+                            content.forEach(function(data) {
+                                var option = new Option(data.pabrikan, data.pabrikan, true, true);
+                                $('#pabrikan').append(option).trigger('change');
+                            });
+                            $('#pabrikan').val('');
+                            $('#pabrikan').trigger('change');
                         } else {
+                            pabrik_block.hide();
+                            merk_block.hide();
                             $('#pabrikan').val('');
                             $('#pabrikan').trigger('change');
                             $('#merk').val('');
@@ -415,48 +443,6 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                     }
                 });
             });
-            // $('#pabrikan').change(function(pb){
-            //     pb.preventDefault();
-            //     let val = $(this).val();
-
-            // });
-            // $('#id_obat').change(function(event) {
-            //     var id_obat = $('#id_obat').val();
-            //     $.ajax({
-            //         type: "POST",
-            //         url: "get_data_obat.php",
-            //         data: {
-            //             'id_obat': id_obat,
-            //         },
-            //         dataType: 'json',
-            //         success: function(respon) {
-            //             var hargalama;
-            //             var satuan = respon['satuan'];
-            //             if (respon == 0) {
-            //                 hargalama = "Rp. 0";
-            //             } else {
-            //                 hargalama = "Rp. " + respon['harga_baru'];
-            //             }
-            //             document.getElementById('hargalama').value = hargalama;
-            //             document.getElementById('satuan').value = satuan;
-            //             $('.select_merk').val(null).trigger('change');
-            //             let merk = respon['merk'];
-            //             if (merk != '') {
-            //                 let sp = merk.split("|");
-            //                 sp.forEach(function(data) {
-            //                     var option = new Option(data, data, true, true);
-            //                     $('#merk').append(option).trigger('change');
-            //                 });
-            //                 $('#merk').val('');
-            //                 $('#merk').trigger('change');
-            //             }
-            //         },
-            //         error: function(e) {
-            //             // $("#result").text(e.responseText);
-            //             console.log("ERROR : ", e.responseText);
-            //         }
-            //     });
-            // });
         });
         //Date range picker
         $('#expired').datepicker({

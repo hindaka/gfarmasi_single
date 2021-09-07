@@ -45,6 +45,7 @@ Data rekapitulasi Obat Masuk Gudang Farmasi Periode <?php echo $gabung1; ?> - <?
             <th>No. Batch</th>
             <th>Expiry date</th>
             <th>Sumber</th>
+            <th>Harga E-katalog</th>
         </tr>
     </thead>
     <tbody>
@@ -57,6 +58,12 @@ Data rekapitulasi Obat Masuk Gudang Farmasi Periode <?php echo $gabung1; ?> - <?
                 $merk_pabrik = isset($r2['merk']) ? $r2['merk'] : '';
             } else {
                 $merk_pabrik = isset($r2['pabrikan']) ? $r2['pabrikan'] : '';
+            }
+            $e_kat = isset($r2['e_kat']) ? $r2['e_kat'] : '';
+            if ($e_kat == 'ya') {
+                $e_kat_label = "ya";
+            } else {
+                $e_kat_label = 'tidak';
             }
             echo "<tr>
 					<td>" . $r2['time'] . "</td>
@@ -73,6 +80,7 @@ Data rekapitulasi Obat Masuk Gudang Farmasi Periode <?php echo $gabung1; ?> - <?
 					<td>" . $r2['nobatch'] . "</td>
 					<td>" . $r2['expired'] . "</td>
 					<td>" . $r2['sumber'] . "</td>
+                    <td>".$e_kat_label."</td>
 				</tr>";
         }
         ?>

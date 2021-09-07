@@ -101,7 +101,7 @@ function konversi($bln)
 }
 $bulan = konversi($split[1]);
 //get_rincian
-$get_rincian = $db->query("SELECT i.*,g.satuan FROM itemfaktur i INNER JOIN faktur f ON(f.id_faktur=i.id_faktur) LEFT JOIN gobat g ON(i.id_obat=g.id_obat) WHERE i.id_faktur='" . $fp['id_faktur'] . "'");
+$get_rincian = $db->query("SELECT i.*,g.satuan,g.kadar,g.satuan_kadar,g.satuan_jual,g.kemasan FROM itemfaktur i INNER JOIN faktur f ON(f.id_faktur=i.id_faktur) LEFT JOIN gobat g ON(i.id_obat=g.id_obat) WHERE i.id_faktur='" . $fp['id_faktur'] . "'");
 $rincian = $get_rincian->fetchAll(PDO::FETCH_ASSOC);
 $limit_sk = strtotime("2020-08-25");
 //ttd
@@ -251,16 +251,26 @@ $ttd_kasubag = "196509291988031008";
                         <?php
                         $i = 1;
                         foreach ($rincian as $row) {
+                            //config view nama_barang
+                            $namaobat = isset($row['namaobat']) ? $row['namaobat'] : '';
+                            $kadar = isset($row['kadar']) ? $row['kadar'] : '';
+                            $satuan_kadar = isset($row['satuan_kadar']) ? $row['satuan_kadar'] : '';
+                            $satuan_jual = isset($row['satuan_jual']) ? $row['satuan_jual'] : '';
+                            $kemasan = isset($row['kemasan']) ? $row['kemasan'] : '';
+                            $jenis = isset($row['jenis']) ? $row['jenis'] : '';
+                            $merk = isset($row['merk']) ? $row['merk'] : '';
+                            $pabrikan = isset($row['pabrikan']) ? $row['pabrikan'] : '';
+                            $nama_view = viewNamaBarang($namaobat,$kadar,$satuan_kadar,$satuan_jual,$kemasan,$jenis,$pabrikan,$merk);
                             echo "<tr>
-                <td>" . $i++ . "</td>
-                <td align='left'>" . $row['namaobat'] . "</td>
-                <td align='right'>" . $row['volume'] . "</td>
-                <td align='center'>" . $row['satuan'] . "</td>
-                <td align='right'>Rp " . number_format($row['harga'], $digit_akhir, ',', '.') . "</td>
-                <td align='center'>" . $row['diskon'] . "</td>
-                <td align='right'>Rp " . number_format($row['total'], $digit_akhir, ',', '.') . "</td>
-                <td>Reg. " . $row['id_faktur'] . "</td>
-              </tr>";
+                                    <td>" . $i++ . "</td>
+                                    <td align='left'>" . $nama_view . "</td>
+                                    <td align='right'>" . $row['volume'] . "</td>
+                                    <td align='center'>" . $row['satuan'] . "</td>
+                                    <td align='right'>Rp " . number_format($row['harga'], $digit_akhir, ',', '.') . "</td>
+                                    <td align='center'>" . $row['diskon'] . "</td>
+                                    <td align='right'>Rp " . number_format($row['total'], $digit_akhir, ',', '.') . "</td>
+                                    <td>Reg. " . $row['id_faktur'] . "</td>
+                                </tr>";
                         }
                         ?>
                     </table>

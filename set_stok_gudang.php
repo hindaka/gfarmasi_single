@@ -117,7 +117,7 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                 <!-- general form elements -->
                 <div class="row">
                     <!-- left column -->
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="box box-primary">
                             <div class="box-header">
                                 <i class="fa fa-user"></i>
@@ -160,6 +160,14 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                                         </select>
                                     </div>
                                     <div class="form-group">
+                                        <label for="">Harga E-Katalog <span style="color:red">*</span></label>
+                                        <select name="e_kat" id="e_kat" class="form-control" required>
+                                            <option value="">Pilih Salah Satu</option>
+                                            <option value="ya">Ya</option>
+                                            <option value="tidak">Tidak</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="">Jenis <span style="color:red">*</span></label>
                                         <select name="jenis" id="jenis" class="form-control" required>
                                             <option value="">---Pilih Salah Satu---</option>
@@ -173,13 +181,6 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                                             <label for="">Merk</label>
                                             <select name="merk" id="merk" class="form-control select_merk" style="width:100%">
                                                 <option value=""></option>
-                                                <!-- <?php
-                                                        if ($total_data > 0) {
-                                                            for ($i = 0; $i < $total_data; $i++) {
-                                                                echo '<option value="' . $split[$i] . '">' . $split[$i] . '</option>';
-                                                            }
-                                                        }
-                                                        ?> -->
                                             </select>
                                         </div>
                                     </div>
@@ -189,7 +190,6 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                                             <select name="pabrikan" id="pabrikan" class="form-control select_pabrikan" style="width:100%">
                                                 <option value=""></option>
                                             </select>
-                                            <!-- <input type="text" name="pabrikan" id="pabrikan" class="form-control" placeholder="Masukan Nama Pabrikan Jika jenis generik"> -->
                                         </div>
                                     </div>
                                 </div><!-- /.box-body -->
@@ -200,7 +200,7 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                         </div>
                     </div><!-- /.left column -->
                     <!-- right column -->
-                    <div class="col-md-7">
+                    <div class="col-md-8">
                         <div class="box box-primary">
                             <div class="box-header">
                                 <i class="fa fa-users"></i>
@@ -221,6 +221,7 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                                                 <th>Pabrikan</th>
                                                 <th>Merk</th>
                                                 <th>Sumber Dana</th>
+                                                <th>Harga Ekatalog</th>
                                                 <th>Hapus</th>
                                             </tr>
                                         </thead>
@@ -486,6 +487,19 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                         }
                     },
                     {
+                        "searchable":false,
+                        "data": 'e_kat',
+                        "render": function(data, type, full, meta) {
+                            let e_kat_label='';
+                            if(data=='ya'){
+                                e_kat_label = '<i class="fa fa-check text-green"></i>';
+                            }else{
+                                e_kat_label = '<i class="fa fa-times text-danger"></i>';
+                            }
+                            return e_kat_label;
+                        }
+                    },
+                    {
                         "data": null,
                         "render": function(data, type, full, meta) {
                             return '<button class="btn btn-sm btn-danger" onclick="peringatan(' + data.id_temp + ')"><i class="fa fa-trash"></i> Hapus</button>';
@@ -516,6 +530,7 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                 var id_warehouse = $("#id_warehouse").val();
                 var merk = $('#merk').val();
                 var sumber_dana = $('#sumber_dana').val();
+                var e_kat = $('#e_kat').val();
                 var jenis = $('#jenis').val();
                 var pabrikan = $('#pabrikan').val();
                 if (id_obat == "") {
@@ -535,6 +550,9 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                     return;
                 } else if (sumber_dana == "") {
                     swal('Peringatan', 'Silakan Isi Sumber Dana Terlebih Dahulu', 'warning');
+                    return;
+                } else if (e_kat == "") {
+                    swal('Peringatan', 'Silakan Pilih Harga E-katalog Terlebih Dahulu', 'warning');
                     return;
                 } else if (jenis == "") {
                     swal('Peringatan', 'Silakan Isi Jenis Terlebih Dahulu', 'warning');
@@ -562,6 +580,7 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                             'expired': expired,
                             'merk': merk,
                             'sumber_dana': sumber_dana,
+                            'e_kat': e_kat,
                             'jenis': jenis,
                             'pabrikan': pabrikan
                         },

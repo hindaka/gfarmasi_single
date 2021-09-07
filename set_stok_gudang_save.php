@@ -34,6 +34,7 @@ if ($check > 0) {
 	foreach ($get_all as $row) {
 		//insert kartu stok gobat
 		$sumber = isset($row['sumber_dana']) ? $row['sumber_dana'] : '';
+		$e_kat = isset($row['e_kat']) ? $row['e_kat'] : '';
 		// harga yang dinput harus sudah include ppn
 		$hargabeli = isset($row['harga_beli']) ? $row['harga_beli'] : '';
 		$volume_input = isset($row['volume']) ? $row['volume'] : 0;
@@ -64,9 +65,10 @@ if ($check > 0) {
 			$volume_sisa = $row['volume'];
 		}
 		//db hasil
-		$result3 = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`,`sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`, `aktif`, `created_at`, `keterangan`)VALUES (:id_obat,:sumber,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:aktif,:created_at,:keterangan)");
+		$result3 = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`,`sumber_dana`,`e_kat`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`, `aktif`, `created_at`, `keterangan`)VALUES (:id_obat,:sumber,:e_kat,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:aktif,:created_at,:keterangan)");
 		$result3->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
 		$result3->bindParam(":sumber", $sumber, PDO::PARAM_STR);
+		$result3->bindParam(":e_kat", $e_kat, PDO::PARAM_STR);
 		$result3->bindParam(":merk", $merk, PDO::PARAM_STR);
 		$result3->bindParam(":jenis", $jenis, PDO::PARAM_STR);
 		$result3->bindParam(":pabrikan", $pabrikan, PDO::PARAM_STR);

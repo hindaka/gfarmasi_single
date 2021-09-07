@@ -132,21 +132,46 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                                         </select>
                                     </div>
                                     <div class="form-group">
+                                        <label for="">Jenis <span style="color:red">*</span></label>
+                                        <select name="jenis" id="jenis" class="form-control" required>
+                                            <option value="">---Pilih Salah Satu---</option>
+                                            <option value="generik">Generik</option>
+                                            <option value="non generik">Non Generik</option>
+                                            <option value="bmhp">Bmhp</option>
+                                        </select>
+                                    </div>
+                                    <div id="merk_block">
+                                        <div class="form-group">
+                                            <label for="">Merk</label>
+                                            <select name="merk" id="merk" class="form-control select_merk" style="width:100%">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="pabrik_block">
+                                        <div class="form-group">
+                                            <label for="">Pabrikan</label>
+                                            <select name="pabrikan" id="pabrikan" class="form-control select_pabrikan" style="width:100%">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="volume">Volume <span style="color:red;">*</span></label>
                                         <input type="number" class="form-control" id="volume" name="volume" placeholder="Masukan Jumlah Barang" min="0" required>
                                         <input type="text" name="volume_akhir" id="volume_akhir">
                                     </div>
                                     <div class="form-group">
                                         <label for="harga_beli">Harga Beli + PPN <span style="color:red;">*</span></label>
-                                        <input type="number" class="form-control" id="harga_ppn" name="harga_ppn" placeholder="Masukan Harga PPN" min="0" readonly>
+                                        <input type="number" class="form-control" id="harga_ppn" name="harga_ppn" placeholder="Masukan Harga PPN" min="0" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="nobatch"><br>No. Batch <span style="color:red;">*</span></label>
-                                        <input type="text" class="form-control" id="nobatch" name="nobatch" placeholder="No. Batch" autocomplete="off" readonly>
+                                        <input type="text" class="form-control" id="nobatch" name="nobatch" placeholder="No. Batch" autocomplete="off" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="expired">Tanggal Kadaluarsa <span style="color:red;">*</span></label>
-                                        <input type="text" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" readonly>
+                                        <input type="text" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="">Sumber Dana <span style="color:red">*</span></label>
@@ -158,23 +183,6 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                                             }
                                             ?>
                                         </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="">Jenis <span style="color:red">*</span></label>
-                                        <select name="jenis" id="jenis" class="form-control" required>
-                                            <option value="">---Pilih Salah Satu---</option>
-                                            <option value="generik">Generik</option>
-                                            <option value="non generik">Non Generik</option>
-                                            <option value="bmhp">Bmhp</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="">Merk</label>
-                                        <input type="text" name="merk" id="merk" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="">Pabrikan</label>
-                                        <input type="text" name="pabrikan" id="pabrikan" class="form-control" placeholder="Masukan Nama Pabrikan Jika jenis generik">
                                     </div>
                                     <div class="form-group">
                                         <label for="tuslah">Tuslah <span style="color:red;">*</span></label><br>
@@ -310,6 +318,26 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
             $('input[name="tuslah"]').removeAttr('checked').iCheck('update');
         }
         $(function() {
+            let merk_block = $('#merk_block');
+            let pabrik_block = $('#pabrik_block');
+            merk_block.hide();
+            pabrik_block.hide();
+            $('#jenis').change(function() {
+                let jenis_selected = $(this).val();
+                if (jenis_selected == 'generik') {
+                    merk_block.hide();
+                    pabrik_block.show();
+                } else if (jenis_selected == 'non generik') {
+                    merk_block.show();
+                    pabrik_block.hide();
+                } else if (jenis_selected == 'bmhp') {
+                    merk_block.hide();
+                    pabrik_block.show();
+                } else {
+                    merk_block.hide();
+                    pabrik_block.hide();
+                }
+            });
             var master_pegawai = $('#example1').DataTable({
                 "processing": true,
                 "serverSide": true,
