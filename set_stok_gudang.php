@@ -331,7 +331,7 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                 }
             });
             let id_obat = $('#id_obat').val();
-            $(".select_pabrikan").select2({
+            $(".select_pabrikan").select2({                            
                 ajax: {
                     url: "ajax_data/get_pabrik_kartu.php",
                     dataType: 'json',
