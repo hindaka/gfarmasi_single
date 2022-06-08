@@ -27,7 +27,7 @@ if ($mode == 'draft') {
     try {
         $db->beginTransaction();
         //get list obatkeluar
-        $list_obatkeluar = $db->query("SELECT ob.id_obatkeluar,ob.id_parent,ob.id_kartu,ob.id_obat,ob.id_warehouse,ob.sumber,k.merk,k.volume_out,k.expired,k.no_batch,k.harga_beli,k.harga_jual_non_tuslah,ob.id_tuslah,ob.ket_tuslah FROM obatkeluar ob INNER JOIN warehouse w ON(w.id_warehouse=ob.id_warehouse) INNER JOIN kartu_stok_gobat k ON(k.id_kartu=ob.id_kartu) WHERE ob.id_parent='" . $id_parent . "'");
+        $list_obatkeluar = $db->query("SELECT ob.id_obatkeluar,ob.id_parent,ob.id_kartu,ob.id_obat,ob.id_warehouse,ob.sumber,k.merk,k.jenis,k.volume_out,k.expired,k.no_batch,k.harga_beli,k.harga_jual_non_tuslah,ob.id_tuslah,ob.ket_tuslah FROM obatkeluar ob INNER JOIN warehouse w ON(w.id_warehouse=ob.id_warehouse) INNER JOIN kartu_stok_gobat k ON(k.id_kartu=ob.id_kartu) WHERE ob.id_parent='" . $id_parent . "'");
         $list_keluar = $list_obatkeluar->fetchAll(PDO::FETCH_ASSOC);
         foreach ($list_keluar as $row) {
             $id_warehouse = isset($row['id_warehouse']) ? $row['id_warehouse'] : 0;
