@@ -17,6 +17,9 @@ if ($tipes[0] != 'Gfarmasi') {
 include "../inc/anggota_check.php";
 $id_faktur = isset($_GET["id"]) ? $_GET['id'] : '';
 $sumber = isset($_GET['sumber']) ? $_GET['sumber'] : '';
+// get faktur
+$header = $db->query("SELECT * FROM faktur WHERE id_faktur='$id_faktur'");
+$head = $header->fetch(PDO::FETCH_ASSOC);
 //tampilkan data tindakan
 $h3 = $db->query("SELECT * FROM itemfaktur WHERE id_faktur='$id_faktur'");
 $data3 = $h3->fetchAll(PDO::FETCH_ASSOC);
@@ -175,12 +178,8 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                             </div>
                                             <div class="col-xs-6 col-md-4">
                                                 <div class="form-group">
-                                                    <label for="">PPN <span style="color:red">*</span></label>
-                                                    <select name="ppn" id="ppn" class="form-control" required>
-                                                        <option value=""> Pilih PPN </option>
-                                                        <option value="10">10%</option>
-                                                        <option value="0">Tidak Kena PPN</option>
-                                                    </select>
+                                                    <label for="">PPN (%)</label>
+                                                    <input type="text" name="ppn" id="ppn" class="form-control" value="<?php echo $head['ppn_persen']; ?>" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-xs-6 col-md-4">

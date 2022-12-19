@@ -203,6 +203,16 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label for="">PPN <span style="color:red">*</span></label>
+                                <select name="ppn" id="ppn" class="form-control" required>
+                                    <option value=""> Pilih PPN </option>
+                                    <option value="10">10%</option>
+                                    <option value="11">11%</option>
+                                    <option value="12">12%</option>
+                                    <option value="0">Tidak Kena PPN</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="petugas">Petugas Penerima Faktur <span style="color:red">*</span></label>
                                 <select class="form-control selectpicker" data-live-search="true" name="petugas" required>
                                     <option value="">---Pilih Petugas---</option>

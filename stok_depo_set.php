@@ -2,6 +2,7 @@
 session_start();
 include("../inc/pdo.conf.php");
 include("../inc/version.php");
+date_default_timezone_set('Asia/jakarta');
 $namauser = $_SESSION['namauser'];
 $password = $_SESSION['password'];
 $tipe = $_SESSION['tipe'];
@@ -23,6 +24,8 @@ $h3 = $db->query("SELECT * FROM temp_stok_awal WHERE id_warehouse='" . $id_wareh
 $total_data = $h3->rowCount();
 $get_sumber = $db->query("SELECT * FROM kelola_sumber_dana WHERE delete_stat=1 ORDER BY nama_sumber ASC");
 $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
+$h4 = $db->query("SELECT * FROM gobat");
+$obat_all = $h4->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html>
@@ -40,7 +43,7 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
     <!-- daterange picker -->
     <link href="../plugins/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
     <!-- BootsrapSelect -->
-    <link href="../plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+    <link href="../plugins/select2/select2.min.css" rel="stylesheet" type="text/css" />
     <!-- DATA TABLES -->
     <link href="../plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     <!-- iCheck for checkboxes and radio inputs -->
@@ -129,6 +132,46 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                                         <label for="namaobat">Nama obat <span style="color:red">*</span></label>
                                         <select class="form-control select_obat" name="id_obat" id="id_obat" style="width:100%;" required>
                                             <option value=""></option>
+                                            <?php
+                                            foreach ($obat_all as $d) {
+                                                echo '<option value="' . $d['id_obat'] . '">' . $d['nama'] . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="volume">Volume <span style="color:red;">*</span></label>
+                                        <input type="number" class="form-control" id="volume" placeholder="Masukan Jumlah Barang" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="harga_beli">Harga Beli + PPN <span style="color:red;">*</span></label>
+                                        <input type="number" class="form-control" id="harga_ppn" name="harga_ppn" placeholder="Masukan Harga PPN" min="0" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nobatch">No. Batch <span style="color:red;">*</span></label>
+                                        <input type="text" class="form-control" id="nobatch" name="nobatch" placeholder="No. Batch" autocomplete="off" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="expired">Tanggal Kadaluarsa <span style="color:red;">*</span></label>
+                                        <input type="text" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Sumber Dana <span style="color:red">*</span></label>
+                                        <select name="sumber_dana" id="sumber_dana" class="form-control" required>
+                                            <option value="">---Pilih Salah Satu---</option>
+                                            <?php
+                                            foreach ($data_sumber as $ds) {
+                                                echo '<option value="' . $ds['nama_sumber'] . '">' . $ds['nama_sumber'] . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Harga E-Katalog <span style="color:red">*</span></label>
+                                        <select name="e_kat" id="e_kat" class="form-control" required>
+                                            <option value="">Pilih Salah Satu</option>
+                                            <option value="ya">Ya</option>
+                                            <option value="tidak">Tidak</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -155,34 +198,6 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                                                 <option value=""></option>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="volume">Volume <span style="color:red;">*</span></label>
-                                        <input type="number" class="form-control" id="volume" name="volume" placeholder="Masukan Jumlah Barang" min="0" required>
-                                        <input type="text" name="volume_akhir" id="volume_akhir">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="harga_beli">Harga Beli + PPN <span style="color:red;">*</span></label>
-                                        <input type="number" class="form-control" id="harga_ppn" name="harga_ppn" placeholder="Masukan Harga PPN" min="0" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="nobatch"><br>No. Batch <span style="color:red;">*</span></label>
-                                        <input type="text" class="form-control" id="nobatch" name="nobatch" placeholder="No. Batch" autocomplete="off" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="expired">Tanggal Kadaluarsa <span style="color:red;">*</span></label>
-                                        <input type="text" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="">Sumber Dana <span style="color:red">*</span></label>
-                                        <select name="sumber_dana" id="sumber_dana" class="form-control" required>
-                                            <option value="">---Pilih Salah Satu---</option>
-                                            <?php
-                                            foreach ($data_sumber as $ds) {
-                                                echo '<option value="' . $ds['nama_sumber'] . '">' . $ds['nama_sumber'] . '</option>';
-                                            }
-                                            ?>
-                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="tuslah">Tuslah <span style="color:red;">*</span></label><br>
@@ -223,7 +238,6 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                                                 <th>Expired</th>
                                                 <th>Tuslah</th>
                                                 <th>Sumber Dana</th>
-                                                <th>Merk</th>
                                                 <th>Alasan</th>
                                                 <th>Hapus</th>
                                             </tr>
@@ -257,7 +271,7 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
     <!-- date-picker -->
     <script src="../plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
     <!-- BootsrapSelect -->
-    <script src="../plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+    <script src="../plugins/select2/select2.full.min.js" type="text/javascript"></script>
     <!-- typeahead -->
     <script src="../plugins/typeahead/typeahead.bundle.js" type="text/javascript"></script>
     <!-- iCheck 1.0.1 -->
@@ -312,8 +326,8 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
             // reset input in form
             document.getElementById("myForm").reset();
             // reset selectpicker
-            $("#id_obat").val('');
-            $("#id_obat").selectpicker("refresh");
+            // $("#id_obat").val('');
+            // $("#id_obat").selectpicker("refresh");
             //reset icheck radio button
             $('input[name="tuslah"]').removeAttr('checked').iCheck('update');
         }
@@ -338,14 +352,114 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                     pabrik_block.hide();
                 }
             });
+            $(".select_pabrikan").select2({
+                ajax: {
+                    url: "ajax_data/get_pabrik_kartu.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            id_obat: $('#id_obat').val(),
+                            page: params.page
+                        };
+                    },
+                    processResults: function(data, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 30) < data.total_count
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Masukan Nama Pabrikan yang dicari',
+                allowClear: true,
+                minimumInputLength: 1,
+                templateResult: formatRepo,
+                templateSelection: formatRepoSelection,
+            });
+            $(".select_merk").select2({
+                ajax: {
+                    url: "ajax_data/get_merk_kartu.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            id_obat: $('#id_obat').val(),
+                            page: params.page
+                        };
+                    },
+                    processResults: function(data, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 30) < data.total_count
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Masukan Nama Merk yang dicari',
+                allowClear: true,
+                minimumInputLength: 1,
+                templateResult: formatRepo,
+                templateSelection: formatRepoSelection,
+            });
+
+            function formatRepo(repo) {
+                let text_name = '';
+                if (repo.loading) {
+                    return repo.text;
+                } else {
+                    if (repo.flag == 'new') {
+                        text_name = "<span>" + repo.nama + "</span> Tambahkan Sebagai Data Baru";
+                    } else {
+                        text_name = "<span>" + repo.nama + "</span>";
+                    }
+                    var $container = $(
+                        "<div class='select2-result clearfix'>" +
+                        "<div class='select2-result__nama'>" + text_name + "</div>" +
+                        "</div>"
+                    );
+                    return $container;
+                }
+            }
+
+            function formatRepoSelection(repo) {
+                let text_name = '';
+                if (repo.id == '') {
+                    text_name = repo.text;
+                } else {
+                    text_name = repo.nama;
+                }
+                return text_name;
+            }
             var master_pegawai = $('#example1').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": "ajax_data/data_temp_stok2.php?w=<?php echo $id_warehouse; ?>",
                 "columns": [{
-                        "data": 'nama',
+                        "data": null,
                         "render": function(data, type, full, meta) {
-                            return data;
+                            let nama_obat = data.nama+"<br><span style='font-size:10px'>Merk: "+data.merk;
+                            nama_obat+="<br>Jenis:"+data.jenis;
+                            nama_obat+="<br>Pabrikan:"+data.pabrikan+"</span>";
+                            return nama_obat;
                         }
                     },
                     {
@@ -399,12 +513,6 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                         }
                     },
                     {
-                        "data": 'merk',
-                        "render": function(data, type, full, meta) {
-                            return data;
-                        }
-                    },
-                    {
                         "data": 'alasan',
                         "render": function(data, type, full, meta) {
                             return data;
@@ -432,97 +540,10 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                 autoclose: true
             });
             $(".select_obat").select2({
-                ajax: {
-                    url: "ajax_data/get_obat_keluar.php",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            q: params.term, // search term
-                            page: params.page
-                        };
-                    },
-                    processResults: function(data, params) {
-                        console.log(data);
-                        // parse the results into the format expected by Select2
-                        // since we are using custom formatting functions we do not need to
-                        // alter the remote JSON data, except to indicate that infinite
-                        // scrolling can be used
-                        params.page = params.page || 1;
-
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 30) < data.total_count
-                            }
-                        };
-                    },
-                    cache: true
-                },
                 placeholder: 'Pilih Obat',
-                allowClear: true,
-                minimumInputLength: 1,
-                templateResult: formatRepo,
-                templateSelection: formatRepoSelection
+                width: 'resolve'
             });
 
-            function formatRepo(repo) {
-                if (repo.loading) {
-                    return repo.text;
-                }
-                let text_name = '';
-                if (repo.jenis == 'generik') {
-                    text_name += repo.nama_obat + " (<b style='color:blue'>" + repo.merk_pabrik + "</b>)| stok: " + repo.volume_kartu_akhir;
-                } else if (repo.jenis == 'non generik') {
-                    text_name += repo.nama_obat + " (<b style='color:green'>" + repo.merk_pabrik + "</b>)| stok: " + repo.volume_kartu_akhir;
-                } else {
-                    text_name += repo.nama_obat + " | stok : " + repo.volume_kartu_akhir;
-                }
-                var $container = $(
-                    "<div class='select2-result-obat clearfix'>" +
-                    "<div class='select2-result-obat__namaobat'>" + text_name + "</div>" +
-                    "</div>"
-                );
-
-                // var $container = $(
-                //     "<div class='select2-result-repository clearfix'>" +
-                //     "<div class='select2-result-repository__avatar'><img src='" + repo.owner.avatar_url + "' /></div>" +
-                //     "<div class='select2-result-repository__meta'>" +
-                //     "<div class='select2-result-repository__title'></div>" +
-                //     "<div class='select2-result-repository__description'></div>" +
-                //     "<div class='select2-result-repository__statistics'>" +
-                //     "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> </div>" +
-                //     "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> </div>" +
-                //     "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> </div>" +
-                //     "</div>" +
-                //     "</div>" +
-                //     "</div>"
-                // );
-
-                // $container.find(".select2-result-repository__title").text(repo.full_name);
-                // $container.find(".select2-result-repository__description").text(repo.description);
-                // $container.find(".select2-result-repository__forks").append(repo.forks_count + " Forks");
-                // $container.find(".select2-result-repository__stargazers").append(repo.stargazers_count + " Stars");
-                // $container.find(".select2-result-repository__watchers").append(repo.watchers_count + " Watchers");
-
-                return $container;
-            }
-
-            function formatRepoSelection(repo) {
-                let text_name = '';
-                if (repo.id == '') {
-                    text_name = repo.text;
-                } else {
-                    if (repo.jenis == 'generik') {
-                        text_name += repo.nama_obat + " (" + repo.merk_pabrik + ")| stok: " + repo.volume_kartu_akhir;
-                    } else if (repo.jenis == 'non generik') {
-                        text_name += repo.nama_obat + " (" + repo.merk_pabrik + ")| stok: " + repo.volume_kartu_akhir;
-                    } else {
-                        text_name += repo.nama_obat + " | stok : " + repo.volume_kartu_akhir;
-                    }
-                }
-                return text_name;
-            }
             // $('#id_obat').change(function() {
             //     let selectedItem = $(this).val();
             //     let sp = selectedItem.split("|");
@@ -556,17 +577,16 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
             // });
             $('#btnTambah').click(function(event) {
                 event.preventDefault();
-                let selectedItem = $('#id_obat').val();
-                let sp = selectedItem.split("|");
-                let id_obat = sp[0];
+                let id_obat = $('#id_obat').val();
                 var volume = $("#volume").val();
-                var volume_akhir = $('#volume_akhir').val();
-
                 var harga_ppn = $("#harga_ppn").val();
                 var nobatch = $("#nobatch").val();
                 var expired = $("#expired").val();
                 var merk = $('#merk').val();
                 var sumber_dana = $('#sumber_dana').val();
+                var e_kat = $('#e_kat').val();
+                var jenis = $('#jenis').val();
+                var pabrikan = $('#pabrikan').val();
                 var tuslah = $("input[name='tuslah']:checked").val();
                 var alasan = $("#alasan").val();
                 if (id_obat == "") {
@@ -575,14 +595,32 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                 } else if ((volume == "") || (volume == 0)) {
                     swal('Peringatan', 'Silakan Isi Volume terlebih dahulu dan tidak boleh kurang dari 1', 'warning');
                     return;
-                } else if (parseInt(volume) > parseInt(volume_akhir)) {
-                    swal('Peringatan', 'Volume yang akan diinput melebihi jumlah stok yang tersedia : ' + volume_akhir, 'warning');
+                } else if ((harga_ppn == "") || (harga_ppn == 0)) {
+                    swal('Peringatan', 'Silakan Isi Harga Beli Terlebih Dahulu dan tidak boleh 0', 'warning');
                     return;
                 } else if (nobatch == "") {
                     swal('Peringatan', 'Silakan Isi Nomor Batch Terlebih Dahulu', 'warning');
                     return;
                 } else if (expired == "") {
                     swal('Peringatan', 'Silakan Isi Tanggal Kadaluarsa Terlebih Dahulu', 'warning');
+                    return;
+                } else if (sumber_dana == "") {
+                    swal('Peringatan', 'Silakan Isi Sumber Dana Terlebih Dahulu', 'warning');
+                    return;
+                } else if (e_kat == "") {
+                    swal('Peringatan', 'Silakan Pilih Harga E-katalog Terlebih Dahulu', 'warning');
+                    return;
+                } else if (jenis == "") {
+                    swal('Peringatan', 'Silakan Isi Jenis Terlebih Dahulu', 'warning');
+                    return;
+                } else if ((jenis == "generik") && (pabrikan == '')) {
+                    swal('Peringatan', 'Silakan Isi Pabrikan Terlebih Dahulu', 'warning');
+                    return;
+                } else if ((jenis == "non generik") && (merk == '')) {
+                    swal('Peringatan', 'Silakan Isi Merk Terlebih Dahulu', 'warning');
+                    return;
+                } else if ((jenis == "bmhp") && (pabrikan == '')) {
+                    swal('Peringatan', 'Silakan Isi Pabrikan Terlebih Dahulu', 'warning');
                     return;
                 } else if (tuslah == "") {
                     swal('Peringatan', "Silakan Isi Tuslah Terlebih Dahulu", 'warning');
@@ -604,6 +642,9 @@ $data_sumber = $get_sumber->fetchAll(PDO::FETCH_ASSOC);
                             'expired': expired,
                             'sumber_dana': sumber_dana,
                             'merk': merk,
+                            'e_kat': e_kat,
+                            'jenis': jenis,
+                            'pabrikan': pabrikan,
                             'tuslah': tuslah,
                             'alasan': alasan
                         },

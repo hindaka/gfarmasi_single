@@ -155,9 +155,9 @@ $ttd_kasubag = "196509291988031008";
             <td class='bottom'><img src="clip_image002.png" /></td>
             <td class='bottom'>
                 <div align="center">
-                    <span style="font-size:18px;font-weight:bold;">PEMERINTAH KOTA BANDUNG<br>RUMAH SAKIT KHUSUS IBU DAN ANAK</span><br>
+                    <span style="font-size:18px;font-weight:bold;">PEMERINTAH KOTA BANDUNG<br>RUMAH SAKIT UMUM DAERAH BANDUNG KIWARI</span><br>
                     Jl. KH. Wahid Hasyim (Kopo) Nomor. 311 Tlp. (022) 86037777 IGD. (022) 5200505 Bandung<br />
-                    Email : sekretariat@rskiakotabandung.com <br />
+                    Email : sekretariat@rsudbandungkiwari.or.id <br />
                 </div>
             </td>
         </tr>

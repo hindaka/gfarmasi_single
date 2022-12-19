@@ -57,6 +57,7 @@ try {
 		$pabrikan = isset($data_kartu[$i]['pabrikan']) ? $data_kartu[$i]['pabrikan'] : '';
 		$expired = isset($data_kartu[$i]['expired']) ? $data_kartu[$i]['expired'] : '';
 		$no_batch = isset($data_kartu[$i]['no_batch']) ? $data_kartu[$i]['no_batch'] : '';
+		$ppn_tipe = isset($data_kartu[$i]['ppn_tipe']) ? $data_kartu[$i]['ppn_tipe'] : '';
 		$harga_beli = isset($data_kartu[$i]['harga_beli']) ? $data_kartu[$i]['harga_beli'] : '';
 		$harga_jual = isset($data_kartu[$i]['harga_jual_non_tuslah']) ? $data_kartu[$i]['harga_jual_non_tuslah'] : '';
 		$sumber_dana = isset($data_kartu[$i]['sumber_dana']) ? $data_kartu[$i]['sumber_dana'] : '';
@@ -76,23 +77,24 @@ try {
 			$sisa_keluar = 0;
 			$volume_in_ruangan = $volume_out;
 			$volume_kartu_awal = $volume_out;
-			$volume_sisa = $volume_kartu_akhir - $volume_out;
+			$volume_sisa = $volume_kartu_akhir;
 		} else {
 			// stok tidak tercukupi
 			$sisa_keluar = $volume_out - $volume_kartu_akhir;
 			$volume_in_ruangan = $volume_kartu_akhir;
-			if ($volume_out > $volume_kartu_akhir) {
-				$volume_sisa = $volume_out - $volume_kartu_akhir;
-			}
-			$volume = $volume_kartu_akhir;
+			// if ($volume_out > $volume_kartu_akhir) {
+			// 	$volume_sisa = 0;
+			// }
+			$volume_sisa = 0;
 			$volume_out = $volume_kartu_akhir;
 			$volume_kartu_awal = $volume_kartu_akhir;
+			$volume_kartu_akhir=0;
 		}
 		//update volume_kartu_akhir berdasarkan data on point
 		$update_vol = $db->query("UPDATE kartu_stok_gobat SET volume_kartu_akhir='" . $volume_kartu_akhir . "' WHERE id_kartu='" . $id_kartu . "'");
 		//insert ke kartu_stok_gobat
-		$ins_kartu = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `sumber_dana`,`e_kat`,`jenis`,`merk`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`, `keterangan`, `ref`)
-	VALUES (:id_obat,:sumber,:e_kat,:jenis,:merk,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:keterangan,:ref)");
+		$ins_kartu = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `sumber_dana`,`e_kat`,`jenis`,`merk`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual_non_tuslah`, `keterangan`, `ref`)
+	VALUES (:id_obat,:sumber,:e_kat,:jenis,:merk,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:keterangan,:ref)");
 		$ins_kartu->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
 		$ins_kartu->bindParam(":sumber", $sumber_dana, PDO::PARAM_STR);
 		$ins_kartu->bindParam(":e_kat", $e_kat, PDO::PARAM_STR);
@@ -108,8 +110,9 @@ try {
 		$ins_kartu->bindParam(":volume_out", $volume_out, PDO::PARAM_INT);
 		$ins_kartu->bindParam(":expired", $expired, PDO::PARAM_STR);
 		$ins_kartu->bindParam(":no_batch", $no_batch, PDO::PARAM_STR);
-		$ins_kartu->bindParam(":harga_beli", $harga_beli, PDO::PARAM_INT);
-		$ins_kartu->bindParam(":harga_jual", $harga_jual, PDO::PARAM_INT);
+		$ins_kartu->bindParam(":ppn_tipe", $ppn_tipe, PDO::PARAM_STR);
+		$ins_kartu->bindParam(":harga_beli", $harga_beli,);
+		$ins_kartu->bindParam(":harga_jual", $harga_jual,);
 		$ins_kartu->bindParam(":keterangan", $keterangan, PDO::PARAM_STR);
 		$ins_kartu->bindParam(":ref", $id_kartu, PDO::PARAM_INT);
 		$ins_kartu->execute();

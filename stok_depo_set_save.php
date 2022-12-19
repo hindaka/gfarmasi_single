@@ -29,10 +29,13 @@ $tujuan = "-";
 $get_tuslah = $db->query("SELECT * FROM tuslah WHERE aktif='y'");
 $item_tuslah = $get_tuslah->fetch(PDO::FETCH_ASSOC);
 //check data
-$get_check = $db->query("SELECT t.* FROM temp_stok_awal t INNER JOIN gobat g ON(t.id_obat=g.id_obat) WHERE t.id_warehouse='".$id_warehouse."' AND t.sync='n' AND t.created_at LIKE '%".$today."%' ORDER BY expired ASC");
-$check = $get_check->rowCount();
-if($check>0){
-	$get_all = $get_check->fetchAll(PDO::FETCH_ASSOC);
+$get_check = $db->query("SELECT COUNT(*) as total FROM temp_stok_awal t WHERE t.id_warehouse='".$id_warehouse."' AND t.sync='n' AND t.created_at LIKE '%".$today."%' ORDER BY t.expired ASC");
+$check = $get_check->fetch(PDO::FETCH_ASSOC);
+$total_row = isset($check['total']) ? $check['total'] : 0;
+echo $total_row;
+if($total_row>0){
+	$get_item = $db->query("SELECT t.* FROM temp_stok_awal t INNER JOIN gobat g ON(t.id_obat=g.id_obat) WHERE t.id_warehouse='".$id_warehouse."' AND t.sync='n' AND t.created_at LIKE '%".$today."%' ORDER BY t.expired ASC"); 
+	$get_all = $get_item->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($get_all as $row) {
 		//insert into warehouse, kartu stok ruangan
 		//hitung ppn (diinput user langsung hargabeli + ppn)
@@ -49,8 +52,13 @@ if($check>0){
 		$aktif='ya';
 		$keterangan = isset($row['alasan']) ? $row['alasan'] : '';
 		$sumber_dana = isset($row['sumber_dana']) ? $row['sumber_dana'] : '';
+		$e_kat = isset($row['e_kat']) ? $row['e_kat'] : '';
 		$expired = isset($row['expired']) ? $row['expired'] : '';
 		$no_batch = isset($row['no_batch']) ? $row['no_batch'] : '';
+		$ppn_tipe = isset($row['ppn_tipe']) ? $row['ppn_tipe'] : '';
+		$merk = isset($row['merk']) ? $row['merk'] : '';
+		$jenis = isset($row['jenis']) ? $row['jenis'] : '';
+		$pabrikan = isset($row['pabrikan']) ? $row['pabrikan'] : '';
 		$id_obat = isset($row['id_obat']) ? $row['id_obat'] : '';
 		
 		$ref =0;
@@ -62,12 +70,15 @@ if($check>0){
 			//update stok jika data sudah ada
 			$up = $db->query("UPDATE warehouse_stok SET stok=stok+".$row['volume']." WHERE id_warehouse_stok='".$ware['id_warehouse_stok']."'");
 			//insert into kartustok_ruangan
-			$stok_ruangan = $db->prepare("INSERT INTO `kartu_stok_ruangan`(`id_kartu_gobat`, `id_obat`, `id_warehouse`, `sumber_dana`,`merk`, `volume_kartu_awal`, `volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual`, `id_tuslah`,`ket_tuslah`, `aktif`, `created_at`, `keterangan`, `ref`, `mem_id`) VALUES (:id_kartu_gobat,:id_obat,:id_warehouse,:sumber_dana,:merk,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:id_tuslah,:ket_tuslah,:aktif,:created_at,:keterangan,:ref,:mem_id)");
+			$stok_ruangan = $db->prepare("INSERT INTO `kartu_stok_ruangan`(`id_kartu_gobat`, `id_obat`, `id_warehouse`,`e_kat`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`, `volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual`, `id_tuslah`,`ket_tuslah`, `aktif`, `created_at`, `keterangan`, `ref`, `mem_id`) VALUES (:id_kartu_gobat,:id_obat,:id_warehouse,:e_kat,:sumber_dana,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:id_tuslah,:ket_tuslah,:aktif,:created_at,:keterangan,:ref,:mem_id)");
 			$stok_ruangan->bindParam(":id_kartu_gobat",$id_kartu_gobat,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":id_obat",$id_obat,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":id_warehouse",$id_warehouse,PDO::PARAM_INT);
+			$stok_ruangan->bindParam(":e_kat",$e_kat,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":sumber_dana",$sumber_dana,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":merk",$merk,PDO::PARAM_STR);
+			$stok_ruangan->bindParam(":jenis",$jenis,PDO::PARAM_STR);
+			$stok_ruangan->bindParam(":pabrikan",$pabrikan,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":volume_kartu_awal",$volume,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":volume_kartu_akhir",$volume,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":volume_sisa",$volume,PDO::PARAM_INT);
@@ -77,11 +88,12 @@ if($check>0){
 			$stok_ruangan->bindParam(":volume_out",$volume_out,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":expired",$expired,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":no_batch",$no_batch,PDO::PARAM_STR);
+			$stok_ruangan->bindParam(":ppn_tipe",$ppn_tipe,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":harga_beli",$hargappn);
 			$stok_ruangan->bindParam(":harga_jual",$harga_jual);
 			$stok_ruangan->bindParam(":id_tuslah",$item_tuslah['id_tuslah'],PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":ket_tuslah",$row['tuslah'],PDO::PARAM_INT);
-			$stok_ruangan->bindParam(":aktif",$aktif,PDO::PARAM_INT);
+			$stok_ruangan->bindParam(":aktif",$aktif,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":created_at",$full_date,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":keterangan",$keterangan,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":ref",$ref,PDO::PARAM_STR);
@@ -99,12 +111,14 @@ if($check>0){
 			$ins->execute();
 
 			//insert into kartustok_ruangan
-			$stok_ruangan = $db->prepare("INSERT INTO `kartu_stok_ruangan`(`id_kartu_gobat`, `id_obat`, `id_warehouse`, `sumber_dana`,`merk`, `volume_kartu_awal`, `volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual`, `id_tuslah`,`ket_tuslah`, `aktif`, `created_at`, `keterangan`, `ref`, `mem_id`) VALUES (:id_kartu_gobat,:id_obat,:id_warehouse,:sumber_dana,:merk,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:id_tuslah,:ket_tuslah,:aktif,:created_at,:keterangan,:ref,:mem_id)");
+			$stok_ruangan = $db->prepare("INSERT INTO `kartu_stok_ruangan`(`id_kartu_gobat`, `id_obat`, `id_warehouse`,`e_kat`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`, `volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual`, `id_tuslah`,`ket_tuslah`, `aktif`, `created_at`, `keterangan`, `ref`, `mem_id`) VALUES (:id_kartu_gobat,:id_obat,:id_warehouse,:e_kat,:sumber_dana,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:id_tuslah,:ket_tuslah,:aktif,:created_at,:keterangan,:ref,:mem_id)");
 			$stok_ruangan->bindParam(":id_kartu_gobat",$id_kartu_gobat,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":id_obat",$id_obat,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":id_warehouse",$id_warehouse,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":sumber_dana",$sumber_dana,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":merk",$merk,PDO::PARAM_STR);
+			$stok_ruangan->bindParam(":jenis",$jenis,PDO::PARAM_STR);
+			$stok_ruangan->bindParam(":pabrikan",$pabrikan,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":volume_kartu_awal",$volume,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":volume_kartu_akhir",$volume,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":volume_sisa",$volume,PDO::PARAM_INT);
@@ -114,11 +128,12 @@ if($check>0){
 			$stok_ruangan->bindParam(":volume_out",$volume_out,PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":expired",$expired,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":no_batch",$no_batch,PDO::PARAM_STR);
+			$stok_ruangan->bindParam(":ppn_tipe",$ppn_tipe,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":harga_beli",$hargappn);
 			$stok_ruangan->bindParam(":harga_jual",$harga_jual);
 			$stok_ruangan->bindParam(":id_tuslah",$item_tuslah['id_tuslah'],PDO::PARAM_INT);
 			$stok_ruangan->bindParam(":ket_tuslah",$row['tuslah'],PDO::PARAM_INT);
-			$stok_ruangan->bindParam(":aktif",$aktif,PDO::PARAM_INT);
+			$stok_ruangan->bindParam(":aktif",$aktif,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":created_at",$full_date,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":keterangan",$keterangan,PDO::PARAM_STR);
 			$stok_ruangan->bindParam(":ref",$ref,PDO::PARAM_STR);
@@ -130,6 +145,6 @@ if($check>0){
 	} //end foreach
 	echo "<script language=\"JavaScript\">window.location = \"stok_depo.php?status=1\"</script>";
 }else{
-	echo "<script language=\"JavaScript\">window.location = \"stok_depo_set.php?warehouse=".$id_warehouse."&status=1\"</script>";
+	// echo "<script language=\"JavaScript\">window.location = \"stok_depo_set.php?warehouse=".$id_warehouse."&status=1\"</script>";
 }
 ?>

@@ -68,6 +68,12 @@ if ($cek == 0) {
 	if ($ppn == '10') {
 		$hargappn = $totalharga * 0.1;
 		$inc_ppn = $harga_beli * 0.1;
+	} else if ($ppn == '11') {
+		$hargappn = $totalharga * 0.11;
+		$inc_ppn = $harga_beli * 0.11;
+	} else if ($ppn == '12') {
+		$hargappn = $totalharga * 0.12;
+		$inc_ppn = $harga_beli * 0.12;
 	} else {
 		$hargappn = 0;
 		$inc_ppn = 0;
@@ -82,9 +88,9 @@ if ($cek == 0) {
 		//update
 		// $result = $db->query("UPDATE gobat SET volume='$total',harga='$hargappn',hargalama='$hargalama',nobatch='$nobatch',expired='$expired',terbaru='$hariini' WHERE id_obat='$id_obat'");
 		//insert
-		$result2 = $db->query("INSERT INTO itemfaktur(id_faktur,tanggal,namaobat,id_obat,volume,harga,diskon,ppn,total,harga_satuan,nobatch,expired,sumber,e_kat,merk,jenis,pabrikan) VALUES ('$id_faktur','$hariini','$namaobat','$id_obat','$volume','$harga','$diskon','$hargappn','$totalharga_ppn','$harga_ppn_inc','$nobatch','$expired','$sumber_dana','$e_kat','$merk','$jenis','$pabrikan')");
+		$result2 = $db->query("INSERT INTO itemfaktur(id_faktur,tanggal,namaobat,id_obat,volume,harga,diskon,ppn,ppn_text,total,harga_satuan,nobatch,expired,sumber,e_kat,merk,jenis,pabrikan) VALUES ('$id_faktur','$hariini','$namaobat','$id_obat','$volume','$harga','$diskon','$hargappn','$ppn','$totalharga_ppn','$harga_ppn_inc','$nobatch','$expired','$sumber_dana','$e_kat','$merk','$jenis','$pabrikan')");
 		//db hasil
-		$result3 = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `id_faktur`,`e_kat`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`, `aktif`, `created_at`, `keterangan`)VALUES (:id_obat,:id_faktur,:e_kat,:sumber,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:aktif,:created_at,:keterangan)");
+		$result3 = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `id_faktur`,`e_kat`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual_non_tuslah`, `aktif`, `created_at`, `keterangan`)VALUES (:id_obat,:id_faktur,:e_kat,:sumber,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:aktif,:created_at,:keterangan)");
 		$result3->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
 		$result3->bindParam(":id_faktur", $id_faktur, PDO::PARAM_INT);
 		$result3->bindParam(":e_kat", $e_kat, PDO::PARAM_STR);
@@ -101,6 +107,7 @@ if ($cek == 0) {
 		$result3->bindParam(":volume_out", $volume_out, PDO::PARAM_INT);
 		$result3->bindParam(":expired", $expired_stok, PDO::PARAM_STR);
 		$result3->bindParam(":no_batch", $nobatch, PDO::PARAM_STR);
+		$result3->bindParam(":ppn_tipe", $ppn, PDO::PARAM_STR);
 		$result3->bindParam(":harga_beli", $harga_ppn_inc);
 		$result3->bindParam(":harga_jual", $harga_jual);
 		$result3->bindParam(":aktif", $aktif, PDO::PARAM_STR);
@@ -108,7 +115,7 @@ if ($cek == 0) {
 		$result3->bindParam(":keterangan", $keterangan, PDO::PARAM_STR);
 		$result3->execute();
 		$db->commit();
-		//action
+		// action
 		if ($result3) {
 			echo "<script language=\"JavaScript\">window.location = \"tambah.php?id=" . $id_faktur . "&sumber=" . $sumber_dana . "\"</script>";
 		} else {

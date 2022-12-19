@@ -52,9 +52,9 @@ $ttd_scan = $ttd['ttd_scan'];
             <td width="93"><img src="clip_image002.png" width="140" height="89" /></td>
             <td width="758">
                 <div align="center">PEMERINTAH KOTA BANDUNG<br />
-                    <strong>RUMAH SAKIT KHUSUS IBU DAN ANAK</strong><br />
+                    <strong>RUMAH SAKIT UMUM DAERAH BANDUNG KIWARI</strong><br />
                     Jl. KH. Wahid Hasyim (Kopo) Nomor. 311 Tlp. (022) 86037777 IGD. (022) 5200505 Bandung<br />
-                    Email : sekretariat@rskiakotabandung.com <br />
+                    Email : sekretariat@rsudbandungkiwari.or.id <br />
                 </div>
             </td>
         </tr>

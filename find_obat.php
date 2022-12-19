@@ -16,21 +16,24 @@ if ($tipes[0] != 'Gfarmasi') {
 include "../inc/anggota_check.php";
 $keysearch = isset($_GET['keysearch']) ? trim($_GET['keysearch']) : '';
 $crypt = isset($_GET['crypt']) ? base64_decode(trim($_GET['crypt'])) : 'false';
+$tahun = "%" . date('Y') . "%";
 if ($crypt == "true") {
     $in_out = 'masuk';
     $key = $keysearch . "%";
     $volume_kartu_akhir = 0;
-    $get_data_depo = $db->prepare("SELECT ks.id_obat,ks.id_warehouse,ks.merk,SUM(ks.volume_kartu_akhir) as jumlah_akhir,w.nama_ruang,ks.sumber_dana,g.nama FROM kartu_stok_ruangan ks INNER JOIN gobat g ON(ks.id_obat=g.id_obat) INNER JOIN warehouse w ON(ks.id_warehouse=w.id_warehouse) WHERE g.nama LIKE :key AND in_out=:in_out GROUP BY id_obat,id_warehouse,sumber_dana ASC");
+    $get_data_depo = $db->prepare("SELECT ks.id_obat,ks.id_warehouse,ks.merk,SUM(ks.volume_kartu_akhir) as jumlah_akhir,w.nama_ruang,ks.sumber_dana,g.nama FROM kartu_stok_ruangan ks INNER JOIN gobat g ON(ks.id_obat=g.id_obat) INNER JOIN warehouse w ON(ks.id_warehouse=w.id_warehouse) WHERE g.nama LIKE :key AND in_out=:in_out AND created_at=:created_at GROUP BY id_obat,id_warehouse,sumber_dana ASC");
     $get_data_depo->bindParam(":key", $key, PDO::PARAM_STR);
     $get_data_depo->bindParam(":in_out", $in_out, PDO::PARAM_STR);
+    $get_data_depo->bindParam(":created_at", $tahun, PDO::PARAM_STR);
     $get_data_depo->execute();
     $data_depo = $get_data_depo->fetchAll(PDO::FETCH_ASSOC);
     $total_data_depo = $get_data_depo->rowCount();
 
-    $get_stok_gudang = $db->prepare("SELECT kg.id_obat,kg.merk,kg.sumber_dana,kg.volume_kartu_akhir as jumlah_akhir,g.nama,kg.harga_beli FROM kartu_stok_gobat kg INNER JOIN gobat g ON(kg.id_obat=g.id_obat) WHERE g.nama LIKE :key AND kg.in_out=:in_out AND kg.volume_kartu_akhir<>:volume_kartu_akhir");
+    $get_stok_gudang = $db->prepare("SELECT kg.id_obat,kg.merk,kg.sumber_dana,kg.volume_kartu_akhir as jumlah_akhir,g.nama,kg.harga_beli FROM kartu_stok_gobat kg INNER JOIN gobat g ON(kg.id_obat=g.id_obat) WHERE g.nama LIKE :key AND kg.in_out=:in_out AND kg.volume_kartu_akhir<>:volume_kartu_akhir AND created_at=:created_at");
     $get_stok_gudang->bindParam(":key", $key, PDO::PARAM_STR);
     $get_stok_gudang->bindParam(":in_out", $in_out, PDO::PARAM_STR);
     $get_stok_gudang->bindParam(":volume_kartu_akhir", $volume_kartu_akhir, PDO::PARAM_INT);
+    $get_stok_gudang->bindParam(":created_at", $tahun, PDO::PARAM_STR);
     $get_stok_gudang->execute();
     $data_gudang = $get_stok_gudang->fetchAll(PDO::FETCH_ASSOC);
     $total_data_gudang = $get_stok_gudang->rowCount();

@@ -27,13 +27,14 @@ if ($mode == 'draft') {
     try {
         $db->beginTransaction();
         //get list obatkeluar
-        $list_obatkeluar = $db->query("SELECT ob.id_obatkeluar,ob.id_parent,ob.id_kartu,ob.id_obat,ob.id_warehouse,ob.sumber,k.merk,k.jenis,k.volume_out,k.expired,k.no_batch,k.harga_beli,k.harga_jual_non_tuslah,ob.id_tuslah,ob.ket_tuslah FROM obatkeluar ob INNER JOIN warehouse w ON(w.id_warehouse=ob.id_warehouse) INNER JOIN kartu_stok_gobat k ON(k.id_kartu=ob.id_kartu) WHERE ob.id_parent='" . $id_parent . "'");
+        $list_obatkeluar = $db->query("SELECT ob.id_obatkeluar,ob.id_parent,ob.id_kartu,ob.id_obat,ob.id_warehouse,ob.sumber,k.merk,k.jenis,k.pabrikan,k.volume_out,k.expired,k.no_batch,k.ppn_tipe,k.harga_beli,k.harga_jual_non_tuslah,ob.id_tuslah,ob.ket_tuslah FROM obatkeluar ob INNER JOIN warehouse w ON(w.id_warehouse=ob.id_warehouse) INNER JOIN kartu_stok_gobat k ON(k.id_kartu=ob.id_kartu) WHERE ob.id_parent='" . $id_parent . "'");
         $list_keluar = $list_obatkeluar->fetchAll(PDO::FETCH_ASSOC);
         foreach ($list_keluar as $row) {
             $id_warehouse = isset($row['id_warehouse']) ? $row['id_warehouse'] : 0;
             $id_obat = isset($row['id_obat']) ? $row['id_obat'] : 0;
             $expired = isset($row['expired']) ? $row['expired'] : '';
             $no_batch = isset($row['no_batch']) ? $row['no_batch'] : '';
+            $ppn_tipe = isset($row['ppn_tipe']) ? $row['ppn_tipe'] : '11';
             //update sync
             $obat_keluar = $db->query("UPDATE obatkeluar SET sync='sudah' WHERE id_kartu='" . $row['id_kartu'] . "'");
             // check tersedia gak di warehouse stok
@@ -91,9 +92,10 @@ if ($mode == 'draft') {
             $expired = isset($row['expired']) ? $row['expired'] : '';
             $no_batch = isset($row['no_batch']) ? $row['no_batch'] : '';
             $id_kartu_gobat = isset($row['id_kartu']) ? $row['id_kartu'] : '';
+            $reff = NULL;
             $keterangan_ruangan = "Barang dari gudang";
             // insert ke kartu_stok_ruangan + tuslah / id_tuslah
-            $ins_ruangan = $db->prepare("INSERT INTO `kartu_stok_ruangan`(`id_kartu_gobat`, `id_obat`,`id_warehouse`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`, `volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual`, `id_tuslah`,`ket_tuslah`, `created_at`, `keterangan`)VALUES (:id_kartu_gobat,:id_obat,:id_warehouse,:sumber_dana,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual,:id_tuslah,:ket_tuslah,:created_at,:keterangan)");
+            $ins_ruangan = $db->prepare("INSERT INTO `kartu_stok_ruangan`(`id_kartu_gobat`, `id_obat`,`id_warehouse`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`, `volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual`, `id_tuslah`,`ket_tuslah`, `created_at`,`ref`, `keterangan`)VALUES (:id_kartu_gobat,:id_obat,:id_warehouse,:sumber_dana,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:id_tuslah,:ket_tuslah,:created_at,:ref,:keterangan)");
             $ins_ruangan->bindParam(":id_kartu_gobat", $id_kartu_gobat, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":id_warehouse", $id_warehouse, PDO::PARAM_INT);
@@ -110,11 +112,13 @@ if ($mode == 'draft') {
             $ins_ruangan->bindParam(":volume_out", $volume_out_ruangan, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":expired", $expired, PDO::PARAM_STR);
             $ins_ruangan->bindParam(":no_batch", $no_batch, PDO::PARAM_STR);
+            $ins_ruangan->bindParam(":ppn_tipe", $ppn_tipe, PDO::PARAM_STR);
             $ins_ruangan->bindParam(":harga_beli", $harga_beli, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":harga_jual", $harga_jual, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":id_tuslah", $id_tuslah, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":ket_tuslah", $tuslah, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":created_at", $created_at_ruangan, PDO::PARAM_STR);
+            $ins_ruangan->bindParam(":ref", $reff, PDO::PARAM_STR);
             $ins_ruangan->bindParam(":keterangan", $keterangan_ruangan, PDO::PARAM_STR);
             $ins_ruangan->execute();
             //update kartu_stok_gobat booked menjadi keluar
@@ -129,9 +133,9 @@ if ($mode == 'draft') {
             $up_parent = $db->query("UPDATE obatkeluar_parent SET status_keluar='posting' WHERE id_obatkeluar_parent='" . $id_parent . "'");
         }
         $db->commit();
+        echo "<script language=\"JavaScript\">window.location = \"list_keluar_draft.php?status=1\"</script>";
     } catch (PDOException $e) {
         echo $e->getMessage() . " getLine :" . $e->getLine();
         $db->rollBack();
     }
 }
-echo "<script language=\"JavaScript\">window.location = \"list_keluar_draft.php?status=1\"</script>";

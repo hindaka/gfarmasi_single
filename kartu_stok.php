@@ -49,6 +49,8 @@ if ($filter == 'on') {
         $h2->bindParam(":jenis", $jenis, PDO::PARAM_STR);
         $h2->bindParam(":pabrikan", $pabrikan, PDO::PARAM_STR);
     } else {
+        $h2 = $db->prepare("SELECT * FROM kartu_stok_gobat WHERE " . $qr . " id_obat=:id_obat ORDER BY id_kartu ASC");
+        $h2->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
     }
     $h2->execute();
     $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
@@ -154,7 +156,7 @@ if ($filter == 'on') {
                                                     <label for="">&nbsp;</label>
                                                     <select name="transaksi" id="transaksi" class="form-control" required>
                                                         <option value="">--Pilih Transaksi--</option>
-                                                        <option value="All">All</option>
+                                                        <option value="all">All</option>
                                                         <option value="masuk">Barang Masuk</option>
                                                         <option value="keluar">Barang Keluar</option>
                                                     </select>
@@ -163,6 +165,7 @@ if ($filter == 'on') {
                                                     <label for="">&nbsp;</label>
                                                     <select name="jenis" id="jenis" class="form-control" required>
                                                         <option value="">Pilih Jenis</option>
+                                                        <option value="all">All</option>
                                                         <option value="generik">Generik</option>
                                                         <option value="non generik">Non Generik</option>
                                                         <option value="bmhp">BMHP</option>
@@ -301,7 +304,7 @@ if ($filter == 'on') {
     <script type="text/javascript">
         function resetForm() {
             let id_obat = $('#o').val();
-            window.location="kartu_stok.php?o="+id_obat;
+            window.location = "kartu_stok.php?o=" + id_obat;
         }
         $(function() {
             $("#example1").dataTable();
@@ -320,6 +323,9 @@ if ($filter == 'on') {
                 } else if (jenis_selected == 'bmhp') {
                     merk_block.hide();
                     pabrikan_block.show();
+                } else if (jenis_selected == 'all') {
+                    merk_block.hide();
+                    pabrikan_block.hide();
                 } else {
                     merk_block.hide();
                     pabrikan_block.show();
