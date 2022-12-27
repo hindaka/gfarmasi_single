@@ -20,6 +20,7 @@ $id_warehouse = isset($_POST['id_warehouse']) ? $_POST['id_warehouse'] : '';
 $id_obat = isset($_POST['id_obat']) ? $_POST['id_obat'] : '';
 $volume = isset($_POST['volume']) ? $_POST['volume'] : '';
 $harga_beli = isset($_POST['harga_beli']) ? $_POST['harga_beli'] : '';
+$harga_beli = trim(str_replace(",", ".", $harga_beli));
 $no_batch = isset($_POST['nobatch']) ? $_POST['nobatch'] : '';
 $expired = isset($_POST['expired']) ? $_POST['expired'] : '';
 $merk = isset($_POST['merk']) ? $_POST['merk'] : '';
@@ -48,7 +49,7 @@ try {
         $ins->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
         $ins->bindParam(":id_warehouse", $id_warehouse, PDO::PARAM_INT);
         $ins->bindParam(":volume", $volume, PDO::PARAM_INT);
-        $ins->bindParam(":harga_beli", $harga_beli, PDO::PARAM_INT);
+        $ins->bindParam(":harga_beli", $harga_beli, PDO::PARAM_STR);
         $ins->bindParam(":no_batch", $no_batch, PDO::PARAM_STR);
         $ins->bindParam(":expired", $new_date, PDO::PARAM_STR);
         $ins->bindParam(":merk", $merk, PDO::PARAM_STR);

@@ -50,14 +50,14 @@
                 <i class="fa fa-calendar"></i> <span>Rekap Transaksi</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <!-- <li><a href="rmasuk.php"><i class="fa fa-circle-o"></i> Faktur</a></li>
+                <!-- <li><a href="rmasuk.php"><i class="fa fa-circle-o"></i> Faktur</a></li> -->
                 <li><a href="raw_masuk.php"><i class="fa fa-circle-o"></i> RAW Faktur</a></li>
-                <li><a href="rekap_retur_supplier.php"><i class="fa fa-circle-o"></i> Rekap Retur Ke Supplier</a></li>
+                <!-- <li><a href="rekap_retur_supplier.php"><i class="fa fa-circle-o"></i> Rekap Retur Ke Supplier</a></li>
                 <li><a href="rekap_retur_depo.php"><i class="fa fa-circle-o"></i><span class="label label-success">New</span>Rekap Retur Depo</a></li>
                 <li><a href="rekap_set_stok.php"><i class="fa fa-circle-o"></i><span class="label label-success">New</span>Rekap Set Stok</a></li>
                 <li><a href="rekap_set_stok_gudang.php"><i class="fa fa-circle-o"></i><span class="label label-success">New</span>Rekap Set Stok Gudang Farmasi</a></li>
-                <li><a href="rekap_retur_transaksi.php"><i class="fa fa-circle-o"></i><span class="label label-success">New</span>Rekap Retur Transaksi</a></li>
-                <li><a href="faktur.php"><i class="fa fa-circle-o"></i> History Retur Faktur</a></li> -->
+                <li><a href="rekap_retur_transaksi.php"><i class="fa fa-circle-o"></i><span class="label label-success">New</span>Rekap Retur Transaksi</a></li> -->
+                <li><a href="faktur.php"><i class="fa fa-circle-o"></i> History Retur Faktur</a></li>
                 <li><a href="romasuk.php"><i class="fa fa-circle-o"></i> Obat Masuk</a></li>
                 <li class="treeview">
                   <a href="#">

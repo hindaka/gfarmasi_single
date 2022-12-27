@@ -34,22 +34,22 @@ if ($filter == 'on') {
         $qr = "";
     }
     if ($jenis == 'generik') {
-        $h2 = $db->prepare("SELECT * FROM kartu_stok_gobat WHERE " . $qr . " id_obat=:id_obat AND jenis=:jenis AND pabrikan LIKE :pabrikan ORDER BY id_kartu ASC");
+        $h2 = $db->prepare("SELECT k.*,IFNULL(a.nama,'-') as petugas FROM kartu_stok_gobat k LEFT JOIN anggota a ON(k.mem_id=a.mem_id) WHERE " . $qr . " id_obat=:id_obat AND jenis=:jenis AND pabrikan LIKE :pabrikan ORDER BY id_kartu ASC");
         $h2->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
         $h2->bindParam(":jenis", $jenis, PDO::PARAM_STR);
         $h2->bindParam(":pabrikan", $pabrikan, PDO::PARAM_STR);
     } else if ($jenis == 'non generik') {
-        $h2 = $db->prepare("SELECT * FROM kartu_stok_gobat WHERE " . $qr . " id_obat=:id_obat AND jenis=:jenis AND merk LIKE :merk ORDER BY id_kartu ASC");
+        $h2 = $db->prepare("SELECT k.*,IFNULL(a.nama,'-') as petugas FROM kartu_stok_gobat k LEFT JOIN anggota a ON(k.mem_id=a.mem_id) WHERE " . $qr . " id_obat=:id_obat AND jenis=:jenis AND merk LIKE :merk ORDER BY id_kartu ASC");
         $h2->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
         $h2->bindParam(":jenis", $jenis, PDO::PARAM_STR);
         $h2->bindParam(":merk", $merk, PDO::PARAM_STR);
     } else if ($jenis == 'bmhp') {
-        $h2 = $db->prepare("SELECT * FROM kartu_stok_gobat WHERE " . $qr . " id_obat=:id_obat AND jenis=:jenis AND pabrikan LIKE :pabrikan ORDER BY id_kartu ASC");
+        $h2 = $db->prepare("SELECT k.*,IFNULL(a.nama,'-') as petugas FROM kartu_stok_gobat k LEFT JOIN anggota a ON(k.mem_id=a.mem_id) WHERE " . $qr . " id_obat=:id_obat AND jenis=:jenis AND pabrikan LIKE :pabrikan ORDER BY id_kartu ASC");
         $h2->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
         $h2->bindParam(":jenis", $jenis, PDO::PARAM_STR);
         $h2->bindParam(":pabrikan", $pabrikan, PDO::PARAM_STR);
     } else {
-        $h2 = $db->prepare("SELECT * FROM kartu_stok_gobat WHERE " . $qr . " id_obat=:id_obat ORDER BY id_kartu ASC");
+        $h2 = $db->prepare("SELECT k.*,IFNULL(a.nama,'-') as petugas FROM kartu_stok_gobat k LEFT JOIN anggota a ON(k.mem_id=a.mem_id) WHERE " . $qr . " id_obat=:id_obat ORDER BY id_kartu ASC");
         $h2->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
     }
     $h2->execute();
@@ -217,6 +217,7 @@ if ($filter == 'on') {
                                                 <th>Harga Beli (+ ppn)</th>
                                                 <th>Harga E-Katalog</th>
                                                 <th>Keterangan</th>
+                                                <th>Petugas</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -268,6 +269,7 @@ if ($filter == 'on') {
                                                             <td>Rp " . number_format($stok['harga_beli'], $digit_akhir, ',', '.') . "</td>
                                                             <td>" . $e_kat_label . "</td>  
                                                             <td>" . $stok['keterangan'] . "</td>
+                                                            <td>" . $stok['petugas'] . "</td>
                                                         </tr>";
                                                 }
                                             }

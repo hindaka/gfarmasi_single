@@ -17,6 +17,7 @@ include "../inc/anggota_check.php";
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="UTF-8">
 	<title>SIMRS <?php echo $version_gfarmasi; ?> | <?php echo $r1["tipe"]; ?></title>
@@ -114,7 +115,7 @@ include "../inc/anggota_check.php";
 								<h3 class="box-title">Data Obat Rumah Sakit yang ada di gudang</h3>
 								<div class="btn-group pull-right">
 									<button onclick="window.location.href='baru.php'" class="btn btn-primary"><i class="fa fa-plus"></i> Tambah obat</button>
-									<button onclick="window.location.href='export.php?sumber=APBD'" class="btn btn-success pull-right"><i class="fa fa-download"></i> Export Data</button>
+									<button onclick="window.location.href='export_single.php'" class="btn btn-success pull-right"><i class="fa fa-download"></i> Export Data</button>
 								</div>
 							</div><!-- /.box-header -->
 							<div class="box-body">
@@ -124,6 +125,7 @@ include "../inc/anggota_check.php";
 											<tr class="bg-blue">
 												<th>#</th>
 												<th>No. ID</th>
+												<th>Reff ID Lama</th>
 												<th>Kategori</th>
 												<th>Nama Obat / Bmhp</th>
 												<th>Nama Fornas</th>
@@ -181,6 +183,9 @@ include "../inc/anggota_check.php";
 					}, {
 						"searchable": true,
 						"data": 'id_obat'
+					}, {
+						"searchable": true,
+						"data": 'old_id_ref'
 					},
 					{
 						"searchable": true,

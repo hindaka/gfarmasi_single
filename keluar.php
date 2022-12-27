@@ -217,9 +217,9 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                                         foreach ($data3 as $r3) {
                                             $volumeformat = number_format($r3['volume'], 0, ",", ".");
                                             $e_kat = isset($r3['e_kat']) ? $r3['e_kat'] : 'tidak';
-                                            if($e_kat=='ya'){
+                                            if ($e_kat == 'ya') {
                                                 $e_kat_label = '<i class="fa fa-check text-green"></i>';
-                                            }else{
+                                            } else {
                                                 $e_kat_label = '<i class="fa fa-times text-danger"></i>';
                                             }
                                             echo "<tr>
@@ -227,7 +227,7 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                                                     <td>" . $r3['sumber'] . "</td>
                                                     <td>" . $volumeformat . "</td>
                                                     <td>" . $e_kat_label . "</td>
-                                                    <td>" . number_format($r3['harga_beli'], $digit_akhir, ',', '.') . "</td>
+                                                    <td>" . $r3['harga_beli'] . "</td>
                                                     <td>" . $r3['no_batch'] . "</td>
                                                     <td>" . $r3['expired'] . "</td>
                                                     <td><a class='btn btn-sm btn-danger' href='hapuskeluar.php?parent=" . $id_parent . "&id=" . $r3['id_obatkeluar'] . "&kartu=" . $r3['id_kartu'] . "&type=" . $tipe . "'><i class='fa fa-trash'></i> Hapus</a></td>

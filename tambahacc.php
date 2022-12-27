@@ -15,6 +15,7 @@ if ($tipes[0] != 'Gfarmasi') {
 	exit;
 }
 include "../inc/anggota_check.php";
+$mem_id = isset($r1['mem_id']) ? $r1['mem_id'] : NULL;
 //get var
 $id_faktur = isset($_GET["id"]) ? $_GET['id'] : '';
 $sumber_dana = isset($_GET['sumber']) ? $_GET['sumber'] : '';
@@ -23,7 +24,8 @@ $merk = isset($_POST["merk"]) ? $_POST['merk'] : '';
 $jenis = isset($_POST["jenis"]) ? $_POST['jenis'] : '';
 $pabrikan = isset($_POST["pabrikan"]) ? $_POST['pabrikan'] : '';
 $volume = isset($_POST["volume"]) ? $_POST['volume'] : '';
-$harga = isset($_POST["harga"]) ? $_POST['harga'] : '';
+$harga = isset($_POST["harga"]) ? trim($_POST['harga']) : '';
+$harga = str_replace(",", ".", $harga);
 $diskon = isset($_POST["diskon"]) ? $_POST['diskon'] : '';
 $nobatch = isset($_POST["nobatch"]) ? $_POST['nobatch'] : '';
 $expired = isset($_POST["expired"]) ? $_POST['expired'] : '';
@@ -81,7 +83,6 @@ if ($cek == 0) {
 	$harga_ppn_inc = $harga_beli + $inc_ppn;
 	$totalharga_ppn = $totalharga + $hargappn;
 	$totalharga_jual = $totalharga_ppn + ($totalharga_ppn * 0.2);
-
 	$harga_jual = ($harga_beli + $inc_ppn) + ($harga_beli + $inc_ppn) * 0.2;
 	try {
 		$db->beginTransaction();
@@ -90,7 +91,7 @@ if ($cek == 0) {
 		//insert
 		$result2 = $db->query("INSERT INTO itemfaktur(id_faktur,tanggal,namaobat,id_obat,volume,harga,diskon,ppn,ppn_text,total,harga_satuan,nobatch,expired,sumber,e_kat,merk,jenis,pabrikan) VALUES ('$id_faktur','$hariini','$namaobat','$id_obat','$volume','$harga','$diskon','$hargappn','$ppn','$totalharga_ppn','$harga_ppn_inc','$nobatch','$expired','$sumber_dana','$e_kat','$merk','$jenis','$pabrikan')");
 		//db hasil
-		$result3 = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `id_faktur`,`e_kat`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual_non_tuslah`, `aktif`, `created_at`, `keterangan`)VALUES (:id_obat,:id_faktur,:e_kat,:sumber,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:aktif,:created_at,:keterangan)");
+		$result3 = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `id_faktur`,`e_kat`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual_non_tuslah`, `aktif`, `created_at`, `keterangan`,`mem_id`)VALUES (:id_obat,:id_faktur,:e_kat,:sumber,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:aktif,:created_at,:keterangan,:mem_id)");
 		$result3->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
 		$result3->bindParam(":id_faktur", $id_faktur, PDO::PARAM_INT);
 		$result3->bindParam(":e_kat", $e_kat, PDO::PARAM_STR);
@@ -113,6 +114,7 @@ if ($cek == 0) {
 		$result3->bindParam(":aktif", $aktif, PDO::PARAM_STR);
 		$result3->bindParam(":created_at", $created_at, PDO::PARAM_STR);
 		$result3->bindParam(":keterangan", $keterangan, PDO::PARAM_STR);
+		$result3->bindParam(":mem_id", $mem_id, PDO::PARAM_STR);
 		$result3->execute();
 		$db->commit();
 		// action

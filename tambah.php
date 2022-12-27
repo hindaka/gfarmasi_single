@@ -101,7 +101,6 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
             <section class="content">
                 <div class="alert alert-info">Tanda <span style="color:red">*</span> Wajib diisi <br>klik Tombol Simpan untuk menyimpan seluruh data faktur. Data tidak akan tersimpan jika tombol simpan tidak diklik</div>
                 <!-- general form elements -->
-                <!-- general form elements -->
                 <div class="row">
                     <!-- left column -->
                     <div class="col-md-12">
@@ -239,7 +238,7 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                         $subtot = 0;
                                         $total = 0;
                                         foreach ($data3 as $r3) {
-                                            $volumeformat = number_format($r3['volume'], $digit_akhir, ",", ".");
+                                            $volumeformat = number_format($r3['volume'], 0, ",", ".");
                                             $hargaformat = number_format($r3['harga'], $digit_akhir, ",", ".");
                                             $totalformat = number_format($r3['total'], $digit_akhir, ",", ".");
                                             $ppnformat = number_format($r3['ppn'], $digit_akhir, ",", ".");
@@ -393,8 +392,10 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                         "jenis": jenis
                     },
                     success: function(response) {
+                        console.log(response);
                         let res = JSON.parse(response);
                         let content = res.content;
+                        console.log(content);
                         let total_data = res.total_data;
                         if (total_data > 0) {
                             swal('Info', 'Data Merk/Pabrikan Ditemukan sebanyak ' + total_data + ' data', 'info');
@@ -421,13 +422,17 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                             $('#merk').trigger('change');
                         } else if (jenis == 'bmhp') {
                             pabrik_block.show();
-                            merk_block.hide();
+                            merk_block.show();
                             content.forEach(function(data) {
                                 var option = new Option(data.pabrikan, data.pabrikan, true, true);
                                 $('#pabrikan').append(option).trigger('change');
+                                var option = new Option(data.merk, data.merk, true, true);
+                                $('#merk').append(option).trigger('change');
                             });
                             $('#pabrikan').val('');
                             $('#pabrikan').trigger('change');
+                            $('#merk').val('');
+                            $('#merk').trigger('change');
                         } else {
                             pabrik_block.hide();
                             merk_block.hide();

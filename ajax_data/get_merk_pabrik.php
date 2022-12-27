@@ -22,7 +22,7 @@ if ($jenis == 'generik') {
 } else if ($jenis == 'non generik') {
 	$groupBy = 'GROUP BY merk';
 } else if ($jenis == 'bmhp') {
-	$groupBy = 'GROUP BY pabrikan';
+	$groupBy = 'GROUP BY merk,pabrikan';
 } else {
 	$groupBy = '';
 }

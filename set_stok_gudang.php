@@ -138,7 +138,7 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                                     </div>
                                     <div class="form-group">
                                         <label for="harga_beli">Harga Beli + PPN <span style="color:red;">*</span></label>
-                                        <input type="number" class="form-control" id="harga_ppn" name="harga_ppn" placeholder="Masukan Harga PPN" min="0" required>
+                                        <input type="text" class="form-control" id="harga_ppn" name="harga_ppn" placeholder="Masukan Harga PPN" min="0" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="nobatch">No. Batch <span style="color:red;">*</span></label>
@@ -323,7 +323,7 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                     merk_block.show();
                     pabrik_block.hide();
                 } else if (jenis_selected == 'bmhp') {
-                    merk_block.hide();
+                    merk_block.show();
                     pabrik_block.show();
                 } else {
                     merk_block.hide();
@@ -331,7 +331,7 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                 }
             });
             let id_obat = $('#id_obat').val();
-            $(".select_pabrikan").select2({                            
+            $(".select_pabrikan").select2({
                 ajax: {
                     url: "ajax_data/get_pabrik_kartu.php",
                     dataType: 'json',
@@ -487,13 +487,13 @@ $nama_obat = isset($obat['nama']) ? $obat['nama'] : '';
                         }
                     },
                     {
-                        "searchable":false,
+                        "searchable": false,
                         "data": 'e_kat',
                         "render": function(data, type, full, meta) {
-                            let e_kat_label='';
-                            if(data=='ya'){
+                            let e_kat_label = '';
+                            if (data == 'ya') {
                                 e_kat_label = '<i class="fa fa-check text-green"></i>';
-                            }else{
+                            } else {
                                 e_kat_label = '<i class="fa fa-times text-danger"></i>';
                             }
                             return e_kat_label;

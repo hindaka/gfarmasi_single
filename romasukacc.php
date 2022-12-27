@@ -2,6 +2,7 @@
 session_start();
 include("../inc/pdo.conf.php");
 include("../inc/version.php");
+include("../inc/set_gfarmasi.php");
 $namauser = $_SESSION['namauser'];
 $password = $_SESSION['password'];
 $tipe = $_SESSION['tipe'];
@@ -132,9 +133,9 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                 $merk_pabrik = isset($r2['pabrikan']) ? $r2['pabrikan'] : '';
                                             }
                                             $e_kat = isset($r2['e_kat']) ? $r2['e_kat'] : '';
-                                            if($e_kat=='ya'){
+                                            if ($e_kat == 'ya') {
                                                 $e_kat_label = '<i class="fa fa-check text-green"></i>';
-                                            }else{
+                                            } else {
                                                 $e_kat_label = '<i class="fa fa-times text-danger"></i>';
                                             }
                                             echo "<tr>
@@ -144,14 +145,14 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                     <td>" . $jenis . "</td>
                                                     <td>" . $merk_pabrik . "</td>
                                                     <td>" . $r2['volume'] . "</td>
-                                                    <td>" . $r2['harga'] . "</td>
+                                                    <td>" . number_format($r2['harga'], $digit_akhir, ',', '.') . "</td>
                                                     <td>" . $r2['diskon'] . "</td>
                                                     <td>" . $r2['ppn'] . "</td>
                                                     <td>" . $r2['total'] . "</td>
                                                     <td>" . $r2['nobatch'] . "</td>
                                                     <td>" . $r2['expired'] . "</td>
                                                     <td>" . $r2['sumber'] . "</td>
-                                                    <td>".$e_kat_label."</td>
+                                                    <td>" . $e_kat_label . "</td>
                                                 </tr>";
                                         }
                                         ?>

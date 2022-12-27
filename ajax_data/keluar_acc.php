@@ -15,6 +15,7 @@ if ($tipes[0] != 'Gfarmasi') {
 	exit;
 }
 include "../../inc/anggota_check.php";
+$mem_id = isset($r1['mem_id']) ? $r1['mem_id'] : NULL;
 //get var
 $id_parent = isset($_POST['parent']) ? $_POST['parent'] : '';
 $tipe = isset($_POST['type']) ? $_POST['type'] : '';
@@ -39,8 +40,10 @@ if ($jenis == 'generik') {
 	$flag = "k.pabrikan LIKE '" . $merk_pabrikan . "'";
 } else if ($jenis == 'non generik') {
 	$flag = "k.merk LIKE '" . $merk_pabrikan . "'";
-} else {
+} else if ($jenis == 'bmhp') {
 	$flag = "k.merk LIKE '" . $merk_pabrikan . "'";
+} else {
+	$flag = "k.pabrikan LIKE '" . $merk_pabrikan . "'";
 }
 try {
 	$stmt = $db->query("SELECT k.*,g.nama FROM kartu_stok_gobat k INNER JOIN gobat g ON(k.id_obat=g.id_obat) WHERE k.in_out='masuk' AND k.volume_kartu_akhir>0 AND k.id_obat='" . $id_obat . "' AND k.jenis='" . $jenis . "' AND $flag ORDER BY k.expired ASC");
@@ -88,13 +91,13 @@ try {
 			$volume_sisa = 0;
 			$volume_out = $volume_kartu_akhir;
 			$volume_kartu_awal = $volume_kartu_akhir;
-			$volume_kartu_akhir=0;
+			$volume_kartu_akhir = 0;
 		}
 		//update volume_kartu_akhir berdasarkan data on point
 		$update_vol = $db->query("UPDATE kartu_stok_gobat SET volume_kartu_akhir='" . $volume_kartu_akhir . "' WHERE id_kartu='" . $id_kartu . "'");
 		//insert ke kartu_stok_gobat
-		$ins_kartu = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `sumber_dana`,`e_kat`,`jenis`,`merk`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual_non_tuslah`, `keterangan`, `ref`)
-	VALUES (:id_obat,:sumber,:e_kat,:jenis,:merk,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:keterangan,:ref)");
+		$ins_kartu = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `sumber_dana`,`e_kat`,`jenis`,`merk`,`pabrikan`, `volume_kartu_awal`,`volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual_non_tuslah`, `keterangan`, `ref`,`mem_id`)
+	VALUES (:id_obat,:sumber,:e_kat,:jenis,:merk,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:keterangan,:ref,:mem_id)");
 		$ins_kartu->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
 		$ins_kartu->bindParam(":sumber", $sumber_dana, PDO::PARAM_STR);
 		$ins_kartu->bindParam(":e_kat", $e_kat, PDO::PARAM_STR);
@@ -111,10 +114,11 @@ try {
 		$ins_kartu->bindParam(":expired", $expired, PDO::PARAM_STR);
 		$ins_kartu->bindParam(":no_batch", $no_batch, PDO::PARAM_STR);
 		$ins_kartu->bindParam(":ppn_tipe", $ppn_tipe, PDO::PARAM_STR);
-		$ins_kartu->bindParam(":harga_beli", $harga_beli,);
-		$ins_kartu->bindParam(":harga_jual", $harga_jual,);
+		$ins_kartu->bindParam(":harga_beli", $harga_beli);
+		$ins_kartu->bindParam(":harga_jual", $harga_jual);
 		$ins_kartu->bindParam(":keterangan", $keterangan, PDO::PARAM_STR);
 		$ins_kartu->bindParam(":ref", $id_kartu, PDO::PARAM_INT);
+		$ins_kartu->bindParam(":mem_id", $mem_id, PDO::PARAM_STR);
 		$ins_kartu->execute();
 		$id_kartu_lasts = $db->lastInsertId();
 		//insert ke obatkeluar

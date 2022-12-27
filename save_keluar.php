@@ -15,6 +15,7 @@ if ($tipes[0] != 'Gfarmasi') {
     exit;
 }
 include "../inc/anggota_check.php";
+$mem_id = isset($r1['mem_id']) ? $r1['mem_id'] : NULL;
 //get var
 $id_parent = isset($_GET['parent']) ? $_GET['parent'] : '';
 $mode = isset($_GET['mode']) ? $_GET['mode'] : 'draft';
@@ -94,8 +95,9 @@ if ($mode == 'draft') {
             $id_kartu_gobat = isset($row['id_kartu']) ? $row['id_kartu'] : '';
             $reff = NULL;
             $keterangan_ruangan = "Barang dari gudang";
+            $created_at_ruangan = date('Y-m-d H:i:s');
             // insert ke kartu_stok_ruangan + tuslah / id_tuslah
-            $ins_ruangan = $db->prepare("INSERT INTO `kartu_stok_ruangan`(`id_kartu_gobat`, `id_obat`,`id_warehouse`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`, `volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual`, `id_tuslah`,`ket_tuslah`, `created_at`,`ref`, `keterangan`)VALUES (:id_kartu_gobat,:id_obat,:id_warehouse,:sumber_dana,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:id_tuslah,:ket_tuslah,:created_at,:ref,:keterangan)");
+            $ins_ruangan = $db->prepare("INSERT INTO `kartu_stok_ruangan`(`id_kartu_gobat`, `id_obat`,`id_warehouse`, `sumber_dana`,`merk`,`jenis`,`pabrikan`, `volume_kartu_awal`, `volume_kartu_akhir`, `volume_sisa`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`,`ppn_tipe`, `harga_beli`, `harga_jual`, `id_tuslah`,`ket_tuslah`, `created_at`,`ref`, `keterangan`,`mem_id`)VALUES (:id_kartu_gobat,:id_obat,:id_warehouse,:sumber_dana,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:volume_sisa,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:ppn_tipe,:harga_beli,:harga_jual,:id_tuslah,:ket_tuslah,:created_at,:ref,:keterangan,:mem_id)");
             $ins_ruangan->bindParam(":id_kartu_gobat", $id_kartu_gobat, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":id_obat", $id_obat, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":id_warehouse", $id_warehouse, PDO::PARAM_INT);
@@ -113,13 +115,14 @@ if ($mode == 'draft') {
             $ins_ruangan->bindParam(":expired", $expired, PDO::PARAM_STR);
             $ins_ruangan->bindParam(":no_batch", $no_batch, PDO::PARAM_STR);
             $ins_ruangan->bindParam(":ppn_tipe", $ppn_tipe, PDO::PARAM_STR);
-            $ins_ruangan->bindParam(":harga_beli", $harga_beli, PDO::PARAM_INT);
-            $ins_ruangan->bindParam(":harga_jual", $harga_jual, PDO::PARAM_INT);
+            $ins_ruangan->bindParam(":harga_beli", $harga_beli, PDO::PARAM_STR);
+            $ins_ruangan->bindParam(":harga_jual", $harga_jual, PDO::PARAM_STR);
             $ins_ruangan->bindParam(":id_tuslah", $id_tuslah, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":ket_tuslah", $tuslah, PDO::PARAM_INT);
             $ins_ruangan->bindParam(":created_at", $created_at_ruangan, PDO::PARAM_STR);
             $ins_ruangan->bindParam(":ref", $reff, PDO::PARAM_STR);
             $ins_ruangan->bindParam(":keterangan", $keterangan_ruangan, PDO::PARAM_STR);
+            $ins_ruangan->bindParam(":mem_id", $mem_id, PDO::PARAM_STR);
             $ins_ruangan->execute();
             //update kartu_stok_gobat booked menjadi keluar
             $update_kartu = $db->query("UPDATE kartu_stok_gobat SET in_out='keluar' WHERE id_kartu='" . $id_kartu_gobat . "'");
