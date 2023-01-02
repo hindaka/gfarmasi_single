@@ -14,19 +14,13 @@ if ($tipes[0] != 'Gfarmasi') {
     exit;
 }
 include "../inc/anggota_check.php";
-
-$h4 = $db->query("SELECT id_warehouse,nama_ruang FROM warehouse");
-$data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
-//get data pegawai
-$data_pegawai = $db->query("SELECT id_pegawai,nama,nip FROM pegawai ORDER BY nama ASC");
-$pegawai = $data_pegawai->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
-    <title>SIMRS <?php echo $version_gfarmasi; ?> | <?php echo $r1["tipe"]; ?></title>
+    <title>SIMRS <?php echo $version; ?> | <?php echo $r1["tipe"]; ?></title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -36,8 +30,6 @@ $pegawai = $data_pegawai->fetchAll(PDO::FETCH_ASSOC);
     <link href="../plugins/ionicons/2.0.0/ionicon.min.css" rel="stylesheet" type="text/css" />
     <!-- daterange picker -->
     <link href="../plugins/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
-    <!-- BootsrapSelect -->
-    <link href="../plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
     <!-- DATA TABLES -->
     <link href="../plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
@@ -59,112 +51,123 @@ $pegawai = $data_pegawai->fetchAll(PDO::FETCH_ASSOC);
         <?php
         include "header.php";
         include "menu_index.php"; ?>
+        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
             <!-- pesan feedback -->
             <?php if (isset($_GET['status']) && ($_GET['status'] == "1")) { ?><div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <center>
                         <h4><i class="icon fa fa-check"></i>Berhasil</h4>Data obat telah diinput
                     </center>
                 </div>
-            <?php } else if (isset($_GET['status']) && ($_GET['status'] == "2")) { ?><div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <?php } else if (isset($_GET['status']) && ($_GET['status'] == "2")) { ?><div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <center>
-                        <h4><i class="icon fa fa-ban"></i>Peringatan!</h4>Data obat tidak ditemukan
+                        <h4><i class="icon fa fa-check"></i>Berhasil</h4>Data Obat telah diproses
                     </center>
                 </div>
             <?php } else if (isset($_GET['status']) && ($_GET['status'] == "3")) { ?><div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <center>
-                        <h4><i class="icon fa fa-ban"></i>Peringatan!</h4>Stok obat tidak mencukupi
-                    </center>
-                </div>
-            <?php } else if (isset($_GET['status']) && ($_GET['status'] == "4")) { ?><div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <center>
-                        <h4><i class="icon fa fa-check"></i>Peringatan!</h4>Transaksi Obat Keluar Berhasil dibatalkan
+                        <h4><i class="icon fa fa-ban"></i>Peringatan!</h4>Data Obat gagal disimpan
                     </center>
                 </div>
             <?php } ?>
             <!-- end pesan -->
-            <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    Transaksi
-                    <small>obat keluar</small>
+                    Tambah
+                    <small>data obat</small>
                 </h1>
                 <ol class="breadcrumb">
                     <li><a href="index.php"><i class="fa fa-dashboard"></i> Home</a></li>
-                    <li>Transaksi</li>
-                    <li class="active">Obat Keluar</li>
+                    <li>Tambah</li>
+                    <li class="active">Data Obat</li>
                 </ol>
             </section>
+
             <!-- Main content -->
             <section class="content">
-                <div class="alert alert-info">field yang bertandakan <span style="color:red">*</span> Wajib diisi / dipilih</div>
-
-                <!-- left column -->
-                <div class="box box-primary">
+                <div class="alert alert-info">Field yang bertandakan <span style="color:red">*</span> <b>WAJIB</b> diisi dengan <b>BAIK & BENAR</b></div>
+                <div class="box">
                     <div class="box-header">
                         <i class="fa fa-user"></i>
-                        <h3 class="box-title">Pilih Warehouse / Mini Depo Tujuan Pengeluaran Barang</h3>
+                        <h3 class="box-title">Input data obat</h3>
                     </div><!-- /.box-header -->
                     <!-- form start -->
-                    <form role="form" action="obat_keluar_acc.php" method="post">
+                    <form role="form" action="baru_master_acc.php" method="post">
                         <div class="box-body">
                             <div class="form-group">
-                                <label for="tanggal">Tanggal Pengeluaran Barang <span style="color:red">*</span></label>
-                                <input type="datetime-local" class="form-control" name="tanggal_keluar" id="tanggal_keluar" required>
+                                <label for="namaobat">NAMA OBAT <span style="color:red;">* (Nama generik + Kadar + Satuan kadar + Bentuk Sediaan + Kemasan)</span></label>
+                                <input type="text" class="form-control" id="namaobat" name="namaobat" placeholder="Nama Obat" required>
                             </div>
                             <div class="form-group">
-                                <label for="warehouse">Warehouse <span style="color:red">*</span></label>
-                                <select class="form-control selectpicker" data-live-search="true" name="warehouse" required>
-                                    <option value="">Pilih Warehouse</option>
-                                    <?php
-                                    foreach ($data4 as $r4) {
-                                        $nama_ruang = $r4["nama_ruang"];
-                                        echo "<option value='" . $r4['id_warehouse'] . "'>" . $nama_ruang . "</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                            <!-- <div class="form-group">
-                                <label for="sumber_dana">Sumber Dana <span style="color:red">*</span></label>
-                                <select class="form-control" name="sumber_dana" required>
-                                    <option value="">---Pilih Sumber Dana Obat---</option>
-                                    <option value="APBD">APBD</option>
-                                    <option value="BLUD" selected>BLUD</option>
-                                </select>
-                            </div> -->
-                            <input type="hidden" id="sumber_dana" name="sumber_dana" value="BLUD">
-                            <div class="form-group">
-                                <label for="pemesan">Nama Pemesan <span style="color:red">*</span></label>
-                                <!-- <input type="text" class="form-control" name="pemesan" placeholder="Masukan Nama Pemesan disini." required> -->
-                                <select class="form-control selectpicker" name="pemesan" data-live-search="true" required>
-                                    <option value="">---Pilih Nama Pemesan---</option>
-                                    <?php
-                                    foreach ($pegawai as $p) {
-                                        echo "<option value='" . $p['id_pegawai'] . "'>" . $p['nama'] . "</option>";
-                                    }
-                                    ?>
+                                <label for="jenis">JENIS/KATEGORI <span style="color:red;">*</span></label>
+                                <select class="form-control" name="kategori" id="kategori" required>
+                                    <option value="Obat">OBAT</option>
+                                    <option value="NMHP">BHP</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="jabatan">Jabatan <span style="color:red">*</span></label>
-                                <input type="text" class="form-control" name="jabatan" placeholder="Masukan Jabatan Pemesan" required>
+                                <label for="kemasan">KADAR <span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" id="kadar" name="kadar" placeholder="Kemasan" required>
                             </div>
-                            <!-- <div class="form-group">
-						  <label for="nip">NIP / NIK</label>
-						  <input type="text" class="form-control" name="nip" placeholder="Masukan NIP/NIK pemesan" required>
-						</div> -->
-                        </div><!-- /.box-body -->
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-md btn-primary">Lanjutkan</button>
-                        </div>
-                </div>
+                            <div class="form-group">
+                                <label for="kemasan">SATUAN KADAR <span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" id="satuan_kadar" name="satuan_kadar" placeholder="Kemasan" required>
+                            </div>
 
+                            <div class="form-group">
+                                <label for="satuan">SATUAN JUAL <span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" id="satuan_jual" name="satuan_jual" placeholder="Satuan" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bentuk">BENTUK SEDIAAN <span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" id="bentuk" name="bentuk" placeholder="Bentuk" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="kemasan">KEMASAN <span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" id="kemasan" name="kemasan" placeholder="Kemasan" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="spesifikasi">SPESIFIKASI OBAT <span style="color:red;">*</span></label>
+                                <textarea name="spesifikasi" rows="3" class="form-control" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="fornas">FORNAS <span style="color:red;">*</span></label>
+                                <select class="form-control" name="fornas" required>
+                                    <option value="">Pilih Fornas</option>
+                                    <option value="-">Bukan FORNAS</option>
+                                    <option value="GF">Generik Formularium</option>
+                                    <option value="GNF">Generik Non Formularium</option>
+                                    <option value="NGF">Non Generik Formularium</option>
+                                    <option value="NGNF">Non Generik Non Formularium</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="formularium">FORMULARIUM RS <span style="color:red;">*</span></label>
+                                <select class="form-control" name="formularium" required>
+                                    <option value="">Pilih FORMULARIUM RS</option>
+                                    <option value="ya">Ya</option>
+                                    <option value="tidak">Tidak</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="keterangan">KETERANGAN / CATATAN TAMBAHAN <span style="color:red;">*</span></label>
+                                <textarea name="keterangan" rows="3" class="form-control"></textarea>
+                            </div>
+                        </div><!-- /.box-body -->
+
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </section><!-- /.content -->
         </div><!-- /.content-wrapper -->
         <!-- static footer -->
         <?php include "footer.php"; ?>
         <!-- /.static footer -->
     </div><!-- ./wrapper -->
+
     <!-- jQuery 2.1.3 -->
     <script src="../plugins/jQuery/jQuery-2.1.3.min.js"></script>
     <!-- Bootstrap 3.3.2 JS -->
@@ -176,8 +179,6 @@ $pegawai = $data_pegawai->fetchAll(PDO::FETCH_ASSOC);
     <script src="../plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
     <!-- date-picker -->
     <script src="../plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
-    <!-- BootsrapSelect -->
-    <script src="../plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <!-- typeahead -->
     <script src="../plugins/typeahead/typeahead.bundle.js" type="text/javascript"></script>
     <!-- FastClick -->
@@ -188,11 +189,19 @@ $pegawai = $data_pegawai->fetchAll(PDO::FETCH_ASSOC);
     <script type="text/javascript">
         $(function() {
             $("#example1").dataTable();
+            $('#example2').dataTable({
+                "bPaginate": true,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bSort": true,
+                "bInfo": true,
+                "bAutoWidth": false
+            });
         });
         //Date range picker
-        $('#expired').datepicker({
+        $('#tanggalf').datepicker({
             format: 'dd/mm/yyyy',
-            startView: 2,
+            todayHighlight: true,
             autoclose: true
         });
     </script>

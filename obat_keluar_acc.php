@@ -86,7 +86,7 @@ $bulan_romawi = getRomawi($bulan);
 // 	$dana = "BLUD-FAR";
 // }
 $dana = "FARMASI";
-$rs = "RSKIA";
+$rs = "RSUDBK";
 $tahun = substr($tanggal_keluar,0,4);
 
 try {

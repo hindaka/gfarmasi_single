@@ -160,7 +160,7 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <!-- <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Cara Bayar <span style="color:red">*</span></label>
                                         <select name="cara_bayar" id="cara_bayar" class="form-control" required>
@@ -169,7 +169,8 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                             <option value="GU">GU</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> -->
+                                <input type="hidden" id="cara_bayar" name="cara_bayar" value="LS">
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Pembayaran Tunai <span style="color:red">*</span></label>
@@ -190,18 +191,21 @@ $petugas = $get_petugas->fetchAll(PDO::FETCH_ASSOC);
                                         </select>
                                     </div>
                                 </div> -->
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="perusahaan">Perusahaan <span style="color:red">*</span></label>
+                                        <select class=" form-control selectpicker" data-live-search="true" name="perusahaan" required>
+                                            <option value="">---Pilih Supplier---</option>
+                                            <?php
+                                            foreach ($supplier as $s) {
+                                                echo "<option value='" . $s['nama_perusahaan'] . "'>" . $s['nama_perusahaan'] . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="perusahaan">Perusahaan <span style="color:red">*</span></label>
-                                <select class=" form-control selectpicker" data-live-search="true" name="perusahaan" required>
-                                    <option value="">---Pilih Supplier---</option>
-                                    <?php
-                                    foreach ($supplier as $s) {
-                                        echo "<option value='" . $s['nama_perusahaan'] . "'>" . $s['nama_perusahaan'] . "</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
+
                             <div class="form-group">
                                 <label for="">PPN <span style="color:red">*</span></label>
                                 <select name="ppn" id="ppn" class="form-control" required>

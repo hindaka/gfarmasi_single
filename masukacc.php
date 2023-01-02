@@ -101,7 +101,7 @@ if ($row == 1) {
 		// }
 		$dana = "FARMASI/BASTBP";
 
-		$rs = "RSKIA";
+		$rs = "RSUDBK";
 		$tahun = $split_date[2];
 		if ($dana_pembayaran == 'apbd') {
 			$dana_p = "ya";

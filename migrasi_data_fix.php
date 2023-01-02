@@ -1,0 +1,106 @@
+<?php
+session_start();
+include("../inc/pdo.conf.php");
+include("../inc/version.php");
+$namauser = $_SESSION['namauser'];
+$password = $_SESSION['password'];
+$tipe = $_SESSION['tipe'];
+$tipes = explode('-', $tipe);
+if ($tipes[0] != 'Gfarmasi') {
+    unset($_SESSION['tipe']);
+    unset($_SESSION['namauser']);
+    unset($_SESSION['password']);
+    header("location:../index.php?status=2");
+    exit;
+}
+include "../inc/anggota_check.php";
+$id_obat = isset($_POST['id_obat']) ? $_POST['id_obat'] : '';
+$filter = isset($_POST['filter']) ? $_POST['filter'] : '';
+$total_data = isset($_POST['total_data']) ? $_POST['total_data'] : 0;
+$id_obat_lama = isset($_POST['id_obat_lama']) ? $_POST['id_obat_lama'] : '';
+$sumber_dana = isset($_POST['sumber_dana']) ? $_POST['sumber_dana'] : '';
+$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : '';
+$merk = isset($_POST['merk']) ? $_POST['merk'] : '';
+$pabrikan = isset($_POST['pabrikan']) ? $_POST['pabrikan'] : '';
+$harga_beli = isset($_POST['hna']) ? $_POST['hna'] : '';
+$harga_jual_non_tuslah = isset($_POST['hna_jual']) ? $_POST['hna_jual'] : '';
+$no_batch = isset($_POST['no_batch']) ? $_POST['no_batch'] : '';
+$expired = isset($_POST['expired']) ? $_POST['expired'] : '';
+$vol = isset($_POST['vol']) ? $_POST['vol'] : '';
+$mem_id = $r1['mem_id'];
+$today = date('Y-m-d H:i:s');
+$keterangan = "(Migrasi Single ID)";
+$in_out = 'masuk';
+$tujuan = 'Migrasi Data';
+$volume_out = 0;
+$ins_kartu = $db->prepare("INSERT INTO `kartu_stok_gobat`(`id_obat`, `sumber_dana`, `merk`, `jenis`, `pabrikan`, `volume_kartu_awal`, `volume_kartu_akhir`, `in_out`, `tujuan`, `volume_in`, `volume_out`, `expired`, `no_batch`, `harga_beli`, `harga_jual_non_tuslah`,`created_at`, `keterangan`, `mem_id`) VALUES (:id_obat,:sumber_dana,:merk,:jenis,:pabrikan,:volume_kartu_awal,:volume_kartu_akhir,:in_out,:tujuan,:volume_in,:volume_out,:expired,:no_batch,:harga_beli,:harga_jual_non_tuslah,:created_at,:keterangan,:mem_id)");
+$stmt = $db->prepare("INSERT INTO `migrasi_obat`(`id_obat`, `id_obat_lama`, `jenis`, `merk`, `pabrikan`, `sumber_dana`, `harga_beli`, `harga_jual_non_tuslah`,`no_batch`,`expired`,`vol`) VALUES (:id_obat,:id_obat_lama,:jenis,:merk,:pabrikan,:sumber_dana,:harga_beli,:harga_jual_non_tuslah,:no_batch,:expired,:vol)");
+if ($total_data == 1) {
+    $stmt->bindParam(":id_obat", $id_obat);
+    $stmt->bindParam(":id_obat_lama", $id_obat_lama[0]);
+    $stmt->bindParam(":jenis", $jenis[0]);
+    $stmt->bindParam(":merk", $merk[0]);
+    $stmt->bindParam(":pabrikan", $pabrikan[0]);
+    $stmt->bindParam(":sumber_dana", $sumber_dana[0]);
+    $stmt->bindParam(":harga_beli", $harga_beli[0]);
+    $stmt->bindParam(":harga_jual_non_tuslah", $harga_jual_non_tuslah[0]);
+    $stmt->bindParam(":no_batch", $no_batch[0]);
+    $stmt->bindParam(":expired", $expired[0]);
+    $stmt->bindParam(":vol", $vol[0]);
+    $stmt->execute();
+    //ins_kartu
+    $ins_kartu->bindParam(":id_obat", $id_obat);
+    $ins_kartu->bindParam(":sumber_dana", $sumber_dana[0]);
+    $ins_kartu->bindParam(":merk", $merk[0]);
+    $ins_kartu->bindParam(":jenis", $jenis[0]);
+    $ins_kartu->bindParam(":pabrikan", $pabrikan[0]);
+    $ins_kartu->bindParam(":volume_kartu_awal", $volume_kartu_awal);
+    $ins_kartu->bindParam(":volume_kartu_akhir", $vol[0]);
+    $ins_kartu->bindParam(":in_out", $in_out);
+    $ins_kartu->bindParam(":tujuan", $tujuan);
+    $ins_kartu->bindParam(":volume_in", $vol[0]);
+    $ins_kartu->bindParam(":volume_out", $volume_out);
+    $ins_kartu->bindParam(":expired", $expired[0]);
+    $ins_kartu->bindParam(":no_batch", $no_batch[0]);
+    $ins_kartu->bindParam(":harga_beli", $harga_beli[0]);
+    $ins_kartu->bindParam(":harga_jual_non_tuslah", $harga_jual_non_tuslah[0]);
+    $ins_kartu->bindParam(":created_at", $today);
+    $ins_kartu->bindParam(":keterangan", $keterangan);
+    $ins_kartu->bindParam(":mem_id", $mem_id);
+    $ins_kartu->execute();
+} else {
+    for ($i = 0; $i < count($id_obat_lama); $i++) {
+        $stmt->bindParam(":id_obat", $id_obat);
+        $stmt->bindParam(":id_obat_lama", $id_obat_lama[$i]);
+        $stmt->bindParam(":jenis", $jenis[$i]);
+        $stmt->bindParam(":merk", $merk[$i]);
+        $stmt->bindParam(":pabrikan", $pabrikan[$i]);
+        $stmt->bindParam(":sumber_dana", $sumber_dana[$i]);
+        $stmt->bindParam(":harga_beli", $harga_beli[$i]);
+        $stmt->bindParam(":harga_jual_non_tuslah", $harga_jual_non_tuslah[$i]);
+        $stmt->bindParam(":no_batch", $no_batch[$i]);
+        $stmt->bindParam(":expired", $expired[$i]);
+        $stmt->bindParam(":vol", $vol[0]);
+        $stmt->execute();
+        $ins_kartu->bindParam(":id_obat", $id_obat);
+        $ins_kartu->bindParam(":sumber_dana", $sumber_dana[$i]);
+        $ins_kartu->bindParam(":merk", $merk[$i]);
+        $ins_kartu->bindParam(":jenis", $jenis[$i]);
+        $ins_kartu->bindParam(":pabrikan", $pabrikan[$i]);
+        $ins_kartu->bindParam(":volume_kartu_awal", $volume_kartu_awal);
+        $ins_kartu->bindParam(":volume_kartu_akhir", $vol[$i]);
+        $ins_kartu->bindParam(":in_out", $in_out);
+        $ins_kartu->bindParam(":tujuan", $tujuan);
+        $ins_kartu->bindParam(":volume_in", $vol[$i]);
+        $ins_kartu->bindParam(":volume_out", $volume_out);
+        $ins_kartu->bindParam(":expired", $expired[$i]);
+        $ins_kartu->bindParam(":no_batch", $no_batch[$i]);
+        $ins_kartu->bindParam(":harga_beli", $harga_beli[$i]);
+        $ins_kartu->bindParam(":harga_jual_non_tuslah", $harga_jual_non_tuslah[$i]);
+        $ins_kartu->bindParam(":created_at", $today);
+        $ins_kartu->bindParam(":keterangan", $keterangan);
+        $ins_kartu->bindParam(":mem_id", $mem_id);
+        $ins_kartu->execute();
+    }
+}
+header('location: migrasi_data_acc.php?jenis=' . $filter);

@@ -18,12 +18,12 @@ include "../inc/anggota_check.php";
 $sumber = isset($_GET["sumber"]) ? $_GET['sumber'] : 'APBD';
 $hariini = date("d/m/Y");
 //mysql data pasien
-$h2 = $db->query("SELECT kg.id_obat,g.nama,g.kadar,g.satuan,g.satuan_jual,g.kemasan,kg.jenis,kg.merk,kg.pabrikan,SUM(kg.volume_kartu_akhir) as stok,kg.harga_beli,kg.no_batch,kg.expired,g.flag_single_id,g.old_id_ref FROM kartu_stok_gobat kg INNER JOIN gobat g ON(kg.id_obat=g.id_obat) WHERE in_out='masuk' GROUP BY kg.id_obat,kg.no_batch,kg.harga_beli ORDER BY g.nama ASC");
+$h2 = $db->query("SELECT kg.id_obat,g.nama,g.kategori,g.kadar,g.jenis as jenis_kat,g.satuan,g.satuan_jual,g.kemasan,kg.jenis,kg.merk,kg.pabrikan,SUM(kg.volume_kartu_akhir) as stok,kg.harga_beli,kg.no_batch,kg.expired,g.flag_single_id,g.old_id_ref FROM kartu_stok_gobat kg INNER JOIN gobat g ON(kg.id_obat=g.id_obat) WHERE in_out='masuk' AND volume_kartu_akhir>0 GROUP BY kg.id_obat,kg.no_batch,kg.harga_beli ORDER BY g.nama ASC");
 $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
 $total_data = $h2->rowCount();
 //EXCEL
-// header("Content-type: application/vnd.ms-excel");
-// header("Content-Disposition: attachment; filename=stok-gudangfarmasi-" . $hariini . ".xls");
+header("Content-type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename=stok-gudangfarmasi-" . $hariini . ".xls");
 ?>
 Data stok Obat Gudang Farmasi, per <?php echo $hariini; ?>
 <table id="example1" class="table table-bordered table-striped" border="1">
@@ -54,10 +54,18 @@ Data stok Obat Gudang Farmasi, per <?php echo $hariini; ?>
                 $merk = isset($r2['merk']) ? $r2['merk'] : '';
                 $pabrikan = isset($r2['pabrikan']) ? $r2['pabrikan'] : '';
                 $nama_text = viewNamaBarang($nama, $kadar, $satuan_kadar, $satuan_jual, $kemasan, $jenis, $pabrikan, $merk);
+                $new_master = isset($r2['flag_single_id']) ? $r2['flag_single_id'] : 'old';
+                $jenis_kat = isset($r2['jenis_kat']) ? $r2['jenis_kat'] : '';
+                $kategori = isset($r2['kategori']) ? $r2['kategori'] : '';
+                if ($new_master == 'old') {
+                    $new_kat = $jenis_kat;
+                } else {
+                    $new_kat = $kategori;
+                }
                 echo "<tr>
                         <td>" . $r2['id_obat'] . "</td>
                         <td>" . $nama_text . "</td>
-                        <td>" . $jenis . "</td>
+                        <td>" . $new_kat . "</td>
                         <td>" . $r2['stok'] . "</td>
                         <td>" . $r2['satuan_jual'] . "</td>
                         <td>" . $r2['harga_beli'] . "</td>
@@ -71,4 +79,3 @@ Data stok Obat Gudang Farmasi, per <?php echo $hariini; ?>
         ?>
     </tbody>
 </table>
-<?php echo $total_data; ?>

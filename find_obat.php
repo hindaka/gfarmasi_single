@@ -2,6 +2,7 @@
 session_start();
 include("../inc/pdo.conf.php");
 include("../inc/version.php");
+include("../inc/set_gfarmasi.php");
 $namauser = $_SESSION['namauser'];
 $password = $_SESSION['password'];
 $tipe = $_SESSION['tipe'];
@@ -21,20 +22,11 @@ if ($crypt == "true") {
     $in_out = 'masuk';
     $key = $keysearch . "%";
     $volume_kartu_akhir = 0;
-    $get_data_depo = $db->prepare("SELECT ks.id_obat,ks.id_warehouse,ks.merk,SUM(ks.volume_kartu_akhir) as jumlah_akhir,w.nama_ruang,ks.sumber_dana,g.nama FROM kartu_stok_ruangan ks INNER JOIN gobat g ON(ks.id_obat=g.id_obat) INNER JOIN warehouse w ON(ks.id_warehouse=w.id_warehouse) WHERE g.nama LIKE :key AND in_out=:in_out AND created_at=:created_at GROUP BY id_obat,id_warehouse,sumber_dana ASC");
-    $get_data_depo->bindParam(":key", $key, PDO::PARAM_STR);
-    $get_data_depo->bindParam(":in_out", $in_out, PDO::PARAM_STR);
-    $get_data_depo->bindParam(":created_at", $tahun, PDO::PARAM_STR);
-    $get_data_depo->execute();
+    $get_data_depo = $db->query("SELECT a.id_obat,a.id_warehouse,a.kadar,a.satuan_kadar,a.bentuk_sediaan,a.satuan_jual,a.kemasan,a.harga_beli,a.nama,SUM(a.volume_kartu_akhir) as jumlah_akhir,a.no_batch,a.expired,a.sumber_dana,a.jenis, a.merk_pabrik FROM (SELECT k.id_obat,k.id_warehouse,g.kadar,g.satuan_kadar,g.bentuk_sediaan,g.satuan_jual,g.kemasan,k.harga_beli,g.nama,k.volume_kartu_akhir,k.no_batch,k.expired,k.sumber_dana,k.jenis, CASE WHEN(k.jenis='generik') THEN k.pabrikan WHEN(k.jenis='non generik') THEN k.merk ELSE k.merk END AS 'merk_pabrik' FROM kartu_stok_ruangan k INNER JOIN gobat g ON(k.id_obat=g.id_obat) WHERE k.volume_kartu_akhir>0 AND k.in_out='masuk') as a WHERE a.nama LIKE '" . $key . "' OR a.merk_pabrik LIKE '" . $key . "' GROUP BY a.id_obat,a.jenis,a.merk_pabrik,a.id_warehouse ORDER BY a.nama ASC");
     $data_depo = $get_data_depo->fetchAll(PDO::FETCH_ASSOC);
     $total_data_depo = $get_data_depo->rowCount();
 
-    $get_stok_gudang = $db->prepare("SELECT kg.id_obat,kg.merk,kg.sumber_dana,kg.volume_kartu_akhir as jumlah_akhir,g.nama,kg.harga_beli FROM kartu_stok_gobat kg INNER JOIN gobat g ON(kg.id_obat=g.id_obat) WHERE g.nama LIKE :key AND kg.in_out=:in_out AND kg.volume_kartu_akhir<>:volume_kartu_akhir AND created_at=:created_at");
-    $get_stok_gudang->bindParam(":key", $key, PDO::PARAM_STR);
-    $get_stok_gudang->bindParam(":in_out", $in_out, PDO::PARAM_STR);
-    $get_stok_gudang->bindParam(":volume_kartu_akhir", $volume_kartu_akhir, PDO::PARAM_INT);
-    $get_stok_gudang->bindParam(":created_at", $tahun, PDO::PARAM_STR);
-    $get_stok_gudang->execute();
+    $get_stok_gudang = $db->query("SELECT a.id_obat,a.kadar,a.satuan_kadar,a.bentuk_sediaan,a.satuan_jual,a.kemasan,a.harga_beli,a.nama,SUM(a.volume_kartu_akhir) as jumlah_akhir,a.no_batch,a.expired,a.sumber_dana,a.jenis, a.merk_pabrik FROM (SELECT k.id_obat,g.kadar,g.satuan_kadar,g.bentuk_sediaan,g.satuan_jual,g.kemasan,k.harga_beli,g.nama,k.volume_kartu_akhir,k.no_batch,k.expired,k.sumber_dana,k.jenis, CASE WHEN(k.jenis='generik') THEN k.pabrikan WHEN(k.jenis='non generik') THEN k.merk ELSE k.merk END AS 'merk_pabrik' FROM kartu_stok_gobat k INNER JOIN gobat g ON(k.id_obat=g.id_obat) WHERE k.volume_kartu_akhir>0 AND k.in_out='masuk') as a WHERE a.nama LIKE '" . $key . "' OR a.merk_pabrik LIKE '" . $key . "' GROUP BY a.id_obat,a.jenis,a.merk_pabrik ORDER BY a.nama ASC");
     $data_gudang = $get_stok_gudang->fetchAll(PDO::FETCH_ASSOC);
     $total_data_gudang = $get_stok_gudang->rowCount();
 } else {
@@ -131,7 +123,6 @@ if ($crypt == "true") {
                                                     <th>Id Obat Farmasi</th>
                                                     <th>Nama Depo</th>
                                                     <th>Nama Obat</th>
-                                                    <th>Merk</th>
                                                     <th>Jumlah</th>
                                                     <th>Sumber Dana</th>
                                                 </tr>
@@ -140,11 +131,29 @@ if ($crypt == "true") {
                                                 <?php
                                                 if ($total_data_depo > 0) {
                                                     foreach ($data_depo as $dd) {
+                                                        $nama = isset($dd['nama']) ? $dd['nama'] : '';
+                                                        $kadar = isset($dd['kadar']) ? $dd['kadar'] : '';
+                                                        $satuan_kadar = isset($dd['satuan_kadar']) ? $dd['satuan_kadar'] : '';
+                                                        $satuan_jual = isset($dd['satuan_jual']) ? $dd['satuan_jual'] : '';
+                                                        $kemasan = isset($dd['kemasan']) ? $dd['kemasan'] : '';
+                                                        $jenis = isset($dd['jenis']) ? $dd['jenis'] : '';
+                                                        $pabrikan = isset($dd['merk_pabrik']) ? $dd['merk_pabrik'] : '';
+                                                        $merk = isset($dd['merk_pabrik']) ? $dd['merk_pabrik'] : '';
+                                                        $nama_text = viewNamaBarang($nama, $kadar, $satuan_kadar, $satuan_jual, $kemasan, $jenis, $pabrikan, $merk);
+                                                        $id_warehouse = isset($dd['id_warehouse']) ? $dd['id_warehouse'] : 0;
+                                                        if ($id_warehouse == 7) {
+                                                            $nama_ruang = "FARMASI LT.2";
+                                                        } else if ($id_warehouse == '57') {
+                                                            $nama_ruang = "Depo IGD";
+                                                        } else if ($id_warehouse == '63') {
+                                                            $nama_ruang = "Depo OK";
+                                                        } else {
+                                                            $nama_ruang = "-";
+                                                        }
                                                         echo '<tr>
                                                                 <td>' . $dd['id_obat'] . '</td>
-                                                                <td>' . $dd['nama_ruang'] . '</td>
-                                                                <td>' . $dd['nama'] . '</td>
-                                                                <td>' . $dd['merk'] . '</td>
+                                                                <td>' . $nama_ruang . '</td>
+                                                                <td>' . $nama_text . '</td>
                                                                 <td>' . $dd['jumlah_akhir'] . '</td>
                                                                 <td>' . $dd['sumber_dana'] . '</td>
                                                             </tr>';
@@ -171,7 +180,6 @@ if ($crypt == "true") {
                                                 <tr class="success">
                                                     <th>ID obat Gudang</th>
                                                     <th>Nama Obat</th>
-                                                    <th>Merk</th>
                                                     <th>Jumlah</th>
                                                     <th>Harga Beli</th>
                                                     <th>Sumber Dana</th>
@@ -181,10 +189,18 @@ if ($crypt == "true") {
                                                 <?php
                                                 if ($total_data_gudang > 0) {
                                                     foreach ($data_gudang as $dd) {
+                                                        $nama = isset($dd['nama']) ? $dd['nama'] : '';
+                                                        $kadar = isset($dd['kadar']) ? $dd['kadar'] : '';
+                                                        $satuan_kadar = isset($dd['satuan_kadar']) ? $dd['satuan_kadar'] : '';
+                                                        $satuan_jual = isset($dd['satuan_jual']) ? $dd['satuan_jual'] : '';
+                                                        $kemasan = isset($dd['kemasan']) ? $dd['kemasan'] : '';
+                                                        $jenis = isset($dd['jenis']) ? $dd['jenis'] : '';
+                                                        $pabrikan = isset($dd['merk_pabrik']) ? $dd['merk_pabrik'] : '';
+                                                        $merk = isset($dd['merk_pabrik']) ? $dd['merk_pabrik'] : '';
+                                                        $nama_text = viewNamaBarang($nama, $kadar, $satuan_kadar, $satuan_jual, $kemasan, $jenis, $pabrikan, $merk);
                                                         echo '<tr>
                                                             <td>' . $dd['id_obat'] . '</td>
-                                                            <td>' . $dd['nama'] . '</td>
-                                                            <td>' . $dd['merk'] . '</td>
+                                                            <td>' . $nama_text . '</td>
                                                             <td>' . $dd['jumlah_akhir'] . '</td>
                                                             <td>' . $dd['harga_beli'] . '</td>
                                                             <td>' . $dd['sumber_dana'] . '</td>
