@@ -20,10 +20,11 @@ try {
     $all_stok = $db->query("SELECT k.id_obat,SUM(k.volume_kartu_akhir) as sisa_stok,k.no_batch,k.expired,k.harga_beli,k.harga_jual_non_tuslah,k.sumber_dana FROM kartu_stok_gobat k INNER JOIN gobat g ON(k.id_obat=g.id_obat) WHERE k.in_out='masuk' AND k.volume_kartu_akhir>0 AND g.flag_single_id='old' AND g.jenis!='bhp' GROUP BY k.id_obat,k.no_batch,k.expired,k.harga_beli ORDER BY k.id_obat ASC");
     $all = $all_stok->fetchAll(PDO::FETCH_ASSOC);
     $total_data_sisa = $all_stok->rowCount();
-    echo '<pre>' . print_r($all, 1) . '</pre>';
+    // echo '<pre>' . print_r($all, 1) . '</pre>';
     $total_match_data = 0;
     $total_new_data = 0;
     $terdaftar = 0;
+    $total_data_update = 0;
     //find data id_obat_lama yang tersimpan pada kartu_stok_gobat & migrasi_data
     // $migrasi_data = $db->prepare("SELECT id_migrasi,id_obat,id_obat_lama,vol FROM migrasi_obat WHERE id_obat_lama=:id_obat_lama");
     $migrasi_data = $db->prepare("SELECT * FROM migrasi_obat WHERE id_obat_lama=:id_obat_lama AND no_batch=:no_batch AND expired=:expired AND harga_beli=:harga_beli");
@@ -48,12 +49,13 @@ try {
         $vol_lama = isset($mg['vol']) ? $mg['vol'] : 0;
         $id_obat_single = isset($mg['id_obat']) ? $mg['id_obat'] : 0;
         $total_kartu_migrasi = 0;
-        if ($total_found >=1) {
+        if ($total_found >= 1) {
+            $total_match_data++;
             if ($vol_lama != $sisa_stok) {
-                $total_match_data++;
+                $total_data_update++;
                 echo $id_obat_lama . '-' . $sisa_stok . '-' . $no_batch_baru . '-' . $total_found . '<pre>' . print_r($mg, 1) . '</pre>';
-                $update_migrasi = $db->query("UPDATE migrasi_obat SET vol='" . $sisa_stok . "' WHERE id_obat_lama='" . $id_obat_lama . "' AND no_batch='" . $no_batch_baru . "' AND expired='" . $expired_baru . "' AND harga_beli='" . $harga_beli_baru . "'");
-                $update_kartu = $db->query("UPDATE kartu_stok_gobat SET volume_kartu_akhir='" . $sisa_stok . "',volume_in='" . $sisa_stok . "',volume_kartu_awal='" . $sisa_stok . "' WHERE id_obat='" . $id_obat_single . "' AND no_batch='" . $no_batch_baru . "' AND expired='" . $expired_baru . "' AND harga_beli='" . $harga_beli_baru . "' AND keterangan LIKE '(Migrasi Single ID)'");
+                // $update_migrasi = $db->query("UPDATE migrasi_obat SET vol='" . $sisa_stok . "' WHERE id_obat_lama='" . $id_obat_lama . "' AND no_batch='" . $no_batch_baru . "' AND expired='" . $expired_baru . "' AND harga_beli='" . $harga_beli_baru . "'");
+                // $update_kartu = $db->query("UPDATE kartu_stok_gobat SET volume_kartu_akhir='" . $sisa_stok . "',volume_in='" . $sisa_stok . "',volume_kartu_awal='" . $sisa_stok . "' WHERE id_obat='" . $id_obat_single . "' AND no_batch='" . $no_batch_baru . "' AND expired='" . $expired_baru . "' AND harga_beli='" . $harga_beli_baru . "' AND keterangan LIKE '(Migrasi Single ID)'");
             } else {
                 // sisa stok terakhir sama dengan saat migrasi
             }
@@ -96,7 +98,7 @@ try {
             } else {
                 // new_data cannot be eksekusi karena belum dimapping
                 $total_new_data++;
-                echo "new ".$id_obat_lama . "-" . $no_batch_baru . '-' . $sisa_stok . '-' . $check_jenis->rowCount() . "<br>";
+                echo "new " . $id_obat_lama . "-" . $no_batch_baru . '-' . $sisa_stok . '-' . $check_jenis->rowCount() . "<br>";
                 echo '<pre>' . print_r($gj, 1) . '</pre>';
                 $ins_kartu = $db->prepare("INSERT INTO `migrasi_obat`(`id_obat`, `id_obat_lama`, `jenis`, `merk`, `pabrikan`, `sumber_dana`, `harga_beli`, `harga_jual_non_tuslah`, `no_batch`, `expired`, `vol`) VALUES (:id_obat,:id_obat_lama,:jenis,:merk,:pabrikan,:sumber_dana,:harga_beli,:harga_jual_non_tuslah,:no_batch,:expired,:vol)");
                 $ins_kartu->bindParam(":id_obat", $id_obat_new);
@@ -159,6 +161,7 @@ try {
     echo 'All Data Sisa Stok : ' . $total_data_sisa . "<br>";
     // echo 'Id obat lama terdaftar : ' . $terdaftar . "<br>";
     echo "Match Data : " . $total_match_data . "<br>";
+    echo "Data yang harus diupdate : " . $total_data_update . "<br>";
     echo "New Data : " . $total_new_data . "<br>";
 } catch (PDOException $th) {
     $db->rollBack();

@@ -31,8 +31,8 @@ $nobatch = isset($_POST["nobatch"]) ? $_POST['nobatch'] : '';
 $expired = isset($_POST["expired"]) ? $_POST['expired'] : '';
 $ppn = isset($_POST['ppn']) ? $_POST['ppn'] : '0';
 $e_kat = isset($_POST['e_kat']) ? $_POST['e_kat'] : 'tidak';
-
-$exp = explode("/", $expired);
+// echo '<pre>' . print_r($_POST, 1) . '</pre>';
+$exp = explode("-", $expired);
 $expired_stok = $exp[2] . "/" . $exp[1] . "/" . $exp[0];
 $hariini = date("d/m/Y");
 $in_out = "masuk";
@@ -106,7 +106,7 @@ if ($cek == 0) {
 		$result3->bindParam(":tujuan", $tujuan, PDO::PARAM_STR);
 		$result3->bindParam(":volume_in", $volume_in, PDO::PARAM_INT);
 		$result3->bindParam(":volume_out", $volume_out, PDO::PARAM_INT);
-		$result3->bindParam(":expired", $expired_stok, PDO::PARAM_STR);
+		$result3->bindParam(":expired", $expired, PDO::PARAM_STR);
 		$result3->bindParam(":no_batch", $nobatch, PDO::PARAM_STR);
 		$result3->bindParam(":ppn_tipe", $ppn, PDO::PARAM_STR);
 		$result3->bindParam(":harga_beli", $harga_ppn_inc);

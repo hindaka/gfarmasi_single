@@ -190,10 +190,15 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
                                             <div class="col-xs-6 col-md-4">
                                                 <div class="form-group">
                                                     <label for="expired">Expired Date <span style="color:red">*</span></label>
-                                                    <input type="text" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" required>
+                                                    <input type="date" class="form-control" id="expired" name="expired" placeholder="Expired Date" autocomplete="off" required>
                                                 </div>
                                             </div>
-                                            <div class="col-xs-12 col-md-12">
+                                            <div class="col-xs-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="">ID FAKTUR : <?= $id_faktur; ?><span style="color:red">*</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="">Harga E-katalog <span style="color:red">*</span></label>
                                                     <input type="radio" name="e_kat" id="e_kat1" value="ya" required> Ya &nbsp;&nbsp;
@@ -449,11 +454,11 @@ $data4 = $h4->fetchAll(PDO::FETCH_ASSOC);
             });
         });
         //Date range picker
-        $('#expired').datepicker({
-            format: 'dd/mm/yyyy',
-            startView: 2,
-            autoclose: true
-        });
+        // $('#expired').datepicker({
+        //     format: 'dd/mm/yyyy',
+        //     startView: 2,
+        //     autoclose: true
+        // });
     </script>
 
 </body>
