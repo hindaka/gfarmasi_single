@@ -147,8 +147,8 @@ $data2 = $h2->fetchAll(PDO::FETCH_ASSOC);
                                                     <td>" . $r2['volume'] . "</td>
                                                     <td>" . number_format($r2['harga'], $digit_akhir, ',', '.') . "</td>
                                                     <td>" . $r2['diskon'] . "</td>
-                                                    <td>" . $r2['ppn'] . "</td>
-                                                    <td>" . $r2['total'] . "</td>
+                                                    <td>" . number_format($r2['ppn'], $digit_akhir, ',', '.') . "</td>
+                                                    <td>" . number_format($r2['total'], $digit_akhir, ',', '.') . "</td>
                                                     <td>" . $r2['nobatch'] . "</td>
                                                     <td>" . $r2['expired'] . "</td>
                                                     <td>" . $r2['sumber'] . "</td>

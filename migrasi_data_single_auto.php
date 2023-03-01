@@ -49,13 +49,14 @@ try {
         $vol_lama = isset($mg['vol']) ? $mg['vol'] : 0;
         $id_obat_single = isset($mg['id_obat']) ? $mg['id_obat'] : 0;
         $total_kartu_migrasi = 0;
-        if ($total_found >= 1) {
+        if ($total_found > 0) {
             $total_match_data++;
             if ($vol_lama != $sisa_stok) {
                 $total_data_update++;
-                echo $id_obat_lama . '-' . $sisa_stok . '-' . $no_batch_baru . '-' . $total_found . '<pre>' . print_r($mg, 1) . '</pre>';
-                // $update_migrasi = $db->query("UPDATE migrasi_obat SET vol='" . $sisa_stok . "' WHERE id_obat_lama='" . $id_obat_lama . "' AND no_batch='" . $no_batch_baru . "' AND expired='" . $expired_baru . "' AND harga_beli='" . $harga_beli_baru . "'");
-                // $update_kartu = $db->query("UPDATE kartu_stok_gobat SET volume_kartu_akhir='" . $sisa_stok . "',volume_in='" . $sisa_stok . "',volume_kartu_awal='" . $sisa_stok . "' WHERE id_obat='" . $id_obat_single . "' AND no_batch='" . $no_batch_baru . "' AND expired='" . $expired_baru . "' AND harga_beli='" . $harga_beli_baru . "' AND keterangan LIKE '(Migrasi Single ID)'");
+                // echo $id_obat_lama . '-' . $sisa_stok . '-' . $no_batch_baru . '-' . $total_found . '<pre>' . print_r($mg, 1) . '</pre>';
+                echo "need update stok - sudah terdaftar dimigrasi : " . $id_obat_lama . '-' . $sisa_stok . '-' . $no_batch_baru . '-' . $total_found . '<br>';
+                $update_migrasi = $db->query("UPDATE migrasi_obat SET vol='" . $sisa_stok . "' WHERE id_obat_lama='" . $id_obat_lama . "' AND no_batch='" . $no_batch_baru . "' AND expired='" . $expired_baru . "' AND harga_beli='" . $harga_beli_baru . "'");
+                $update_kartu = $db->query("UPDATE kartu_stok_gobat SET volume_kartu_akhir='" . $sisa_stok . "',volume_in='" . $sisa_stok . "',volume_kartu_awal='" . $sisa_stok . "' WHERE id_obat='" . $id_obat_single . "' AND no_batch='" . $no_batch_baru . "' AND expired='" . $expired_baru . "' AND harga_beli='" . $harga_beli_baru . "' AND keterangan LIKE '(Migrasi Single ID)'");
             } else {
                 // sisa stok terakhir sama dengan saat migrasi
             }
@@ -66,10 +67,9 @@ try {
             // $total_kartu_migrasi = $check_kartu->rowCount();
             // echo " total kartu : " . $total_kartu_migrasi . "<br>";
             //update data migrasi dan kartu_stok_gobat
-
-
         } else {
             //jika data tidak ditemukan insert data baru tersebut kedalam tabel migrasi dan kartu_stok_gobat
+            // echo "tidak terdaftar pada table migrasi : " . $id_obat_lama . '-' . $sisa_stok . '-' . $no_batch_baru . '- count table migrasi : ' . $total_found . '<br>';
             $check_jenis->bindParam(":id_obat_lama", $id_obat_lama, PDO::PARAM_INT);
             $check_jenis->execute();
             $gj = $check_jenis->fetch(PDO::FETCH_ASSOC);
@@ -78,10 +78,14 @@ try {
             $merk = isset($gj['merk']) ? $gj['merk'] : '';
             $pabrikan = isset($gj['pabrikan']) ? $gj['pabrikan'] : '';
             $vol_ref = isset($gj['vol']) ? $gj['vol'] : '';
+            //get nama obat
+            $get_nama = $db->query("SELECT nama FROM gobat WHERE id_obat='" . $id_obat_lama . "' LIMIT 1");
+            $n = $get_nama->fetch(PDO::FETCH_ASSOC);
+            $nama_obat_lama = isset($n['nama']) ? $n['nama'] : '';
             if ($check_jenis->rowCount() >= 1) {
                 //old-data
-                echo $id_obat_lama . "-" . $no_batch_baru . '-' . $sisa_stok . '-' . $harga_beli_baru . ' (' . $expired_baru . ')' . $check_jenis->rowCount() . "<br>";
-                echo '<pre>' . print_r($gj, 1) . '</pre>';
+                // echo "old_data : " . $id_obat_lama . "-" . $no_batch_baru . '-' . $sisa_stok . '-' . $harga_beli_baru . ' (' . $expired_baru . ')' . $check_jenis->rowCount() . " id_single : " . $id_obat_new . "<br>";
+                // echo '<pre>' . print_r($gj, 1) . '</pre>';
                 $ins_kartu = $db->prepare("INSERT INTO `migrasi_obat`(`id_obat`, `id_obat_lama`, `jenis`, `merk`, `pabrikan`, `sumber_dana`, `harga_beli`, `harga_jual_non_tuslah`, `no_batch`, `expired`, `vol`) VALUES (:id_obat,:id_obat_lama,:jenis,:merk,:pabrikan,:sumber_dana,:harga_beli,:harga_jual_non_tuslah,:no_batch,:expired,:vol)");
                 $ins_kartu->bindParam(":id_obat", $id_obat_new);
                 $ins_kartu->bindParam(":id_obat_lama", $id_obat_lama);
@@ -98,8 +102,8 @@ try {
             } else {
                 // new_data cannot be eksekusi karena belum dimapping
                 $total_new_data++;
-                echo "new " . $id_obat_lama . "-" . $no_batch_baru . '-' . $sisa_stok . '-' . $check_jenis->rowCount() . "<br>";
-                echo '<pre>' . print_r($gj, 1) . '</pre>';
+                echo "<span style='color:red;background-color:yellow;'>need mapping : " . $id_obat_lama . "-" . $nama_obat_lama . "-" . $no_batch_baru . '-' . $sisa_stok . '-' . $check_jenis->rowCount() . "</span><br>";
+                // echo '<pre>' . print_r($gj, 1) . '</pre>';
                 $ins_kartu = $db->prepare("INSERT INTO `migrasi_obat`(`id_obat`, `id_obat_lama`, `jenis`, `merk`, `pabrikan`, `sumber_dana`, `harga_beli`, `harga_jual_non_tuslah`, `no_batch`, `expired`, `vol`) VALUES (:id_obat,:id_obat_lama,:jenis,:merk,:pabrikan,:sumber_dana,:harga_beli,:harga_jual_non_tuslah,:no_batch,:expired,:vol)");
                 $ins_kartu->bindParam(":id_obat", $id_obat_new);
                 $ins_kartu->bindParam(":id_obat_lama", $id_obat_lama);
@@ -114,7 +118,7 @@ try {
                 $ins_kartu->bindParam(":vol", $sisa_stok);
                 // $ins_kartu->execute();
             }
-
+            // echo '<br>';
             // if ($check_jenis->rowCount() > 0) {
             //     echo $id_obat_lama . " - " . $check_jenis->rowCount() . " : sisa_stok : " . $sisa_stok . ", volume lama :" . $vol_ref;
             //     // $terdaftar++;
@@ -134,7 +138,7 @@ try {
             //     $ins_kartu->bindParam(":no_batch", $no_batch_baru);
             //     $ins_kartu->bindParam(":expired", $expired_baru);
             //     $ins_kartu->bindParam(":vol", $sisa_stok);
-            //     // $ins_kartu->execute();
+            //     $ins_kartu->execute();
             //     echo "<br>";
             // } else {
             //     echo $id_obat_lama . " - " . $check_jenis->rowCount() . " : sisa_stok : " . $sisa_stok . ", volume lama :" . $vol_lama;
@@ -152,9 +156,8 @@ try {
             //     $ins_kartu->bindParam(":no_batch", $no_batch_baru);
             //     $ins_kartu->bindParam(":expired", $expired_baru);
             //     $ins_kartu->bindParam(":vol", $sisa_stok);
-            // $ins_kartu->execute();
+            //     $ins_kartu->execute();
             // }
-
         }
     }
     $db->commit();

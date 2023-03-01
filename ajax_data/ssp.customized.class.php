@@ -1,5 +1,5 @@
 <?php
-ini_set('display_errors',1);
+ini_set('display_errors', 1);
 /*
  * Helper functions for building a DataTables server-side processing SQL query
  *
@@ -23,7 +23,8 @@ ini_set('display_errors',1);
 // }
 
 
-class SSP {
+class SSP
+{
 
     /**
      * Create the data output array for the DataTables rows
@@ -35,22 +36,21 @@ class SSP {
      * @return array Formatted data in a row based format
      */
 
-    static function data_output ( $columns, $data, $isJoin = false )
+    static function data_output($columns, $data, $isJoin = false)
     {
         $out = array();
 
-        for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+        for ($i = 0, $ien = count($data); $i < $ien; $i++) {
             $row = array();
 
-            for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+            for ($j = 0, $jen = count($columns); $j < $jen; $j++) {
                 $column = $columns[$j];
 
                 // Is there a formatter?
-                if ( isset( $column['formatter'] ) ) {
-                    $row[ $column['dt'] ] = ($isJoin) ? $column['formatter']( $data[$i][ $column['field'] ], $data[$i] ) : $column['formatter']( $data[$i][ $column['db'] ], $data[$i] );
-                }
-                else {
-                    $row[ $column['dt'] ] = ($isJoin) ? $data[$i][ $columns[$j]['field'] ] : $data[$i][ $columns[$j]['db'] ];
+                if (isset($column['formatter'])) {
+                    $row[$column['dt']] = ($isJoin) ? $column['formatter']($data[$i][$column['field']], $data[$i]) : $column['formatter']($data[$i][$column['db']], $data[$i]);
+                } else {
+                    $row[$column['dt']] = ($isJoin) ? $data[$i][$columns[$j]['field']] : $data[$i][$columns[$j]['db']];
                 }
             }
 
@@ -70,12 +70,12 @@ class SSP {
      *  @param  array $columns Column information array
      *  @return string SQL limit clause
      */
-    static function limit ( $request, $columns )
+    static function limit($request, $columns)
     {
         $limit = '';
 
-        if ( isset($request['start']) && $request['length'] != -1 ) {
-            $limit = "LIMIT ".intval($request['start']).", ".intval($request['length']);
+        if (isset($request['start']) && $request['length'] != -1) {
+            $limit = "LIMIT " . intval($request['start']) . ", " . intval($request['length']);
         }
 
         return $limit;
@@ -93,32 +93,32 @@ class SSP {
      *
      *  @return string SQL order by clause
      */
-    static function order ( $request, $columns, $isJoin = false )
+    static function order($request, $columns, $isJoin = false)
     {
         $order = '';
 
-        if ( isset($request['order']) && count($request['order']) ) {
+        if (isset($request['order']) && count($request['order'])) {
             $orderBy = array();
-            $dtColumns = SSP::pluck( $columns, 'dt' );
+            $dtColumns = SSP::pluck($columns, 'dt');
 
-            for ( $i=0, $ien=count($request['order']) ; $i<$ien ; $i++ ) {
+            for ($i = 0, $ien = count($request['order']); $i < $ien; $i++) {
                 // Convert the column index into the column data property
                 $columnIdx = intval($request['order'][$i]['column']);
                 $requestColumn = $request['columns'][$columnIdx];
 
-                $columnIdx = array_search( $requestColumn['data'], $dtColumns );
-                $column = $columns[ $columnIdx ];
+                $columnIdx = array_search($requestColumn['data'], $dtColumns);
+                $column = $columns[$columnIdx];
 
-                if ( $requestColumn['orderable'] == 'true' ) {
+                if ($requestColumn['orderable'] == 'true') {
                     $dir = $request['order'][$i]['dir'] === 'asc' ?
                         'ASC' :
                         'DESC';
 
-                    $orderBy[] = ($isJoin) ? $column['db'].' '.$dir : '`'.$column['db'].'` '.$dir;
+                    $orderBy[] = ($isJoin) ? $column['db'] . ' ' . $dir : '`' . $column['db'] . '` ' . $dir;
                 }
             }
 
-            $order = 'ORDER BY '.implode(', ', $orderBy);
+            $order = 'ORDER BY ' . implode(', ', $orderBy);
         }
 
         return $order;
@@ -141,57 +141,59 @@ class SSP {
      *
      *  @return string SQL where clause
      */
-    static function filter ( $request, $columns, &$bindings, $isJoin = false )
+    static function filter($request, $columns, &$bindings, $isJoin = false)
     {
         $globalSearch = array();
         $columnSearch = array();
-        $dtColumns = SSP::pluck( $columns, 'dt' );
+        $dtColumns = SSP::pluck($columns, 'dt');
 
-        if ( isset($request['search']) && $request['search']['value'] != '' ) {
+        if (isset($request['search']) && $request['search']['value'] != '') {
             $str = $request['search']['value'];
 
-            for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
+            for ($i = 0, $ien = count($request['columns']); $i < $ien; $i++) {
                 $requestColumn = $request['columns'][$i];
-                $columnIdx = array_search( $requestColumn['data'], $dtColumns );
-                $column = $columns[ $columnIdx ];
+                $columnIdx = array_search($requestColumn['data'], $dtColumns);
+                $column = $columns[$columnIdx];
 
-                if ( $requestColumn['searchable'] == 'true' ) {
-                    $binding = SSP::bind( $bindings, '%'.$str.'%', PDO::PARAM_STR );
-                    $globalSearch[] = ($isJoin) ? $column['db']." LIKE ".$binding : "`".$column['db']."` LIKE ".$binding;
+                if ($requestColumn['searchable'] == 'true') {
+                    $binding = SSP::bind($bindings, '%' . $str . '%', PDO::PARAM_STR);
+                    $globalSearch[] = ($isJoin) ? $column['db'] . " LIKE " . $binding : "`" . $column['db'] . "` LIKE " . $binding;
                 }
             }
         }
 
         // Individual column filtering
-        for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
+        for ($i = 0, $ien = count($request['columns']); $i < $ien; $i++) {
             $requestColumn = $request['columns'][$i];
-            $columnIdx = array_search( $requestColumn['data'], $dtColumns );
-            $column = $columns[ $columnIdx ];
+            $columnIdx = array_search($requestColumn['data'], $dtColumns);
+            $column = $columns[$columnIdx];
 
             $str = $requestColumn['search']['value'];
 
-            if ( $requestColumn['searchable'] == 'true' &&
-                $str != '' ) {
-                $binding = SSP::bind( $bindings, '%'.$str.'%', PDO::PARAM_STR );
-                $columnSearch[] = ($isJoin) ? $column['db']." LIKE ".$binding : "`".$column['db']."` LIKE ".$binding;
+            if (
+                $requestColumn['searchable'] == 'true' &&
+                $str != ''
+            ) {
+                $binding = SSP::bind($bindings, '%' . $str . '%', PDO::PARAM_STR);
+                $columnSearch[] = ($isJoin) ? $column['db'] . " LIKE " . $binding : "`" . $column['db'] . "` LIKE " . $binding;
             }
         }
 
         // Combine the filters into a single string
         $where = '';
 
-        if ( count( $globalSearch ) ) {
-            $where = '('.implode(' OR ', $globalSearch).')';
+        if (count($globalSearch)) {
+            $where = '(' . implode(' OR ', $globalSearch) . ')';
         }
 
-        if ( count( $columnSearch ) ) {
+        if (count($columnSearch)) {
             $where = $where === '' ?
                 implode(' AND ', $columnSearch) :
-                $where .' AND '. implode(' AND ', $columnSearch);
+                $where . ' AND ' . implode(' AND ', $columnSearch);
         }
 
-        if ( $where !== '' ) {
-            $where = 'WHERE '.$where;
+        if ($where !== '') {
+            $where = 'WHERE ' . $where;
         }
 
         return $where;
@@ -218,28 +220,28 @@ class SSP {
      *  @return array  Server-side processing response array
      *
      */
-    static function simple ( $request, $sql_details, $table, $primaryKey, $columns, $joinQuery = NULL, $extraWhere = '', $groupBy = '', $having = '')
+    static function simple($request, $sql_details, $table, $primaryKey, $columns, $joinQuery = NULL, $extraWhere = '', $groupBy = '', $having = '')
     {
         $bindings = array();
-        $db = SSP::sql_connect( $sql_details );
+        $db = SSP::sql_connect($sql_details);
 
         // Build the SQL query string from the request
-        $limit = SSP::limit( $request, $columns );
-        $order = SSP::order( $request, $columns, $joinQuery );
-        $where = SSP::filter( $request, $columns, $bindings, $joinQuery );
+        $limit = SSP::limit($request, $columns);
+        $order = SSP::order($request, $columns, $joinQuery);
+        $where = SSP::filter($request, $columns, $bindings, $joinQuery);
 
-		// IF Extra where set then set and prepare query
-        if($extraWhere)
-            $extraWhere = ($where) ? ' AND '.$extraWhere : ' WHERE '.$extraWhere;
+        // IF Extra where set then set and prepare query
+        if ($extraWhere)
+            $extraWhere = ($where) ? ' AND ' . $extraWhere : ' WHERE ' . $extraWhere;
 
-        $groupBy = ($groupBy) ? ' GROUP BY '.$groupBy .' ' : '';
+        $groupBy = ($groupBy) ? ' GROUP BY ' . $groupBy . ' ' : '';
 
-        $having = ($having) ? ' HAVING '.$having .' ' : '';
+        $having = ($having) ? ' HAVING ' . $having . ' ' : '';
 
         // Main query to actually get the data
-        if($joinQuery){
+        if ($joinQuery) {
             $col = SSP::pluck($columns, 'db', $joinQuery);
-            $query =  "SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $col)."
+            $query =  "SELECT SQL_CALC_FOUND_ROWS " . implode(", ", $col) . "
 			 $joinQuery
 			 $where
 			 $extraWhere
@@ -247,8 +249,8 @@ class SSP {
        $having
 			 $order
 			 $limit";
-        }else{
-            $query =  "SELECT SQL_CALC_FOUND_ROWS `".implode("`, `", SSP::pluck($columns, 'db'))."`
+        } else {
+            $query =  "SELECT SQL_CALC_FOUND_ROWS `" . implode("`, `", SSP::pluck($columns, 'db')) . "`
 			 FROM `$table`
 			 $where
 			 $extraWhere
@@ -258,16 +260,18 @@ class SSP {
 			 $limit";
         }
 
-        $data = SSP::sql_exec( $db, $bindings,$query);
+        $data = SSP::sql_exec($db, $bindings, $query);
 
         // Data set length after filtering
-        $resFilterLength = SSP::sql_exec( $db,
+        $resFilterLength = SSP::sql_exec(
+            $db,
             "SELECT FOUND_ROWS()"
         );
         $recordsFiltered = $resFilterLength[0][0];
 
         // Total data set length
-        $resTotalLength = SSP::sql_exec( $db,
+        $resTotalLength = SSP::sql_exec(
+            $db,
             "SELECT COUNT(`{$primaryKey}`)
 			 FROM   `$table`"
         );
@@ -278,10 +282,10 @@ class SSP {
          * Output
          */
         return array(
-            "draw"            => intval( $request['draw'] ),
-            "recordsTotal"    => intval( $recordsTotal ),
-            "recordsFiltered" => intval( $recordsFiltered ),
-            "data"            => SSP::data_output( $columns, $data, $joinQuery )
+            "draw"            => intval($request['draw']),
+            "recordsTotal"    => intval($recordsTotal),
+            "recordsFiltered" => intval($recordsFiltered),
+            "data"            => SSP::data_output($columns, $data, $joinQuery)
         );
     }
 
@@ -297,21 +301,20 @@ class SSP {
      *     * pass - user password
      * @return resource Database connection handle
      */
-    static function sql_connect ( $sql_details )
+    static function sql_connect($sql_details)
     {
         try {
             $db = @new PDO(
                 "mysql:host={$sql_details['host']};dbname={$sql_details['db']}",
                 $sql_details['user'],
                 $sql_details['pass'],
-                array( PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION )
+                array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
             );
             $db->query("SET NAMES 'utf8'");
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             SSP::fatal(
-                "An error occurred while connecting to the database. ".
-                "The error reported by the server was: ".$e->getMessage()
+                "An error occurred while connecting to the database. " .
+                    "The error reported by the server was: " . $e->getMessage()
             );
         }
 
@@ -329,30 +332,29 @@ class SSP {
      * @param  string   $sql SQL query to execute.
      * @return array         Result from the query (all rows)
      */
-    static function sql_exec ( $db, $bindings, $sql=null )
+    static function sql_exec($db, $bindings, $sql = null)
     {
         // Argument shifting
-        if ( $sql === null ) {
+        if ($sql === null) {
             $sql = $bindings;
         }
 
-        $stmt = $db->prepare( $sql );
+        $stmt = $db->prepare($sql);
         //echo $sql;
 
         // Bind parameters
-        if ( is_array( $bindings ) ) {
-            for ( $i=0, $ien=count($bindings) ; $i<$ien ; $i++ ) {
+        if (is_array($bindings)) {
+            for ($i = 0, $ien = count($bindings); $i < $ien; $i++) {
                 $binding = $bindings[$i];
-                $stmt->bindValue( $binding['key'], $binding['val'], $binding['type'] );
+                $stmt->bindValue($binding['key'], $binding['val'], $binding['type']);
             }
         }
 
         // Execute
         try {
             $stmt->execute();
-        }
-        catch (PDOException $e) {
-            SSP::fatal( "An SQL error occurred: ".$e->getMessage() );
+        } catch (PDOException $e) {
+            SSP::fatal("An SQL error occurred: " . $e->getMessage());
         }
 
         // Return all
@@ -372,11 +374,11 @@ class SSP {
      *
      * @param  string $msg Message to send to the client
      */
-    static function fatal ( $msg )
+    static function fatal($msg)
     {
-        echo json_encode( array(
+        echo json_encode(array(
             "error" => $msg
-        ) );
+        ));
 
         exit(0);
     }
@@ -391,9 +393,9 @@ class SSP {
      * @return string       Bound key to be used in the SQL where this parameter
      *   would be used.
      */
-    static function bind ( &$a, $val, $type )
+    static function bind(&$a, $val, $type)
     {
-        $key = ':binding_'.count( $a );
+        $key = ':binding_' . count($a);
 
         $a[] = array(
             'key' => $key,
@@ -414,12 +416,12 @@ class SSP {
      *  @param  bool  $isJoin  Determine the the JOIN/complex query or simple one
      *  @return array        Array of property values
      */
-    static function pluck ( $a, $prop, $isJoin = false )
+    static function pluck($a, $prop, $isJoin = false)
     {
         $out = array();
 
-        for ( $i=0, $len=count($a) ; $i<$len ; $i++ ) {
-            $out[] = ($isJoin && isset($a[$i]['as'])) ? $a[$i][$prop]. ' AS '.$a[$i]['as'] : $a[$i][$prop];
+        for ($i = 0, $len = count($a); $i < $len; $i++) {
+            $out[] = ($isJoin && isset($a[$i]['as'])) ? $a[$i][$prop] . ' AS ' . $a[$i]['as'] : $a[$i][$prop];
         }
 
         return $out;

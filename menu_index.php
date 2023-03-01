@@ -148,8 +148,10 @@
             </li>
             <li class="header text-blue">MIGRASI</li>
             <li><a href="migrasi_data_single.php"><i class="fa fa-circle-o"></i> Migrasi Master</a></li>
+            <li><a href="katalog_migrasi.php"><i class="fa fa-circle-o"></i> Data Migrasi Single ID</a></li>
+            <li><a href="mapping_migrasi.php"><i class="fa fa-circle-o"></i> Mapping Data Migrasi</a></li>
             <li><a href="migrasi_data_single_auto.php"><i class="fa fa-circle-o"></i> Auto Migrasi v1</a></li>
-            <li><a href="migrasi_data_single_autov2.php"><i class="fa fa-circle-o"></i> Auto Migrasi v2</a></li>
+            <!-- <li><a href="migrasi_data_single_autov2.php"><i class="fa fa-circle-o"></i> Auto Migrasi v2</a></li> -->
             <li class="header text-maroon">PENGATURAN</li>
             <li class="treeview">
               <a href="#">

@@ -240,8 +240,8 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
                             <div class="box-footer">
                                 <?php
                                 if ($total_rincian > 0) {
-                                    echo "<a class=\"btn btn-app bg-blue\" href=\"save_keluar.php?parent=" . $id_parent . "&mode=draft\"><i class=\"fa fa-save\"></i> Draft</a>";
-                                    echo "<a class=\"btn btn-app bg-green\" href=\"save_keluar.php?parent=" . $id_parent . "&mode=save\"><i class=\"fa fa-save\"></i> Simpan</a>";
+                                    echo "<a class=\"btn btn-app bg-blue\" onclick=\"saveData(" . $id_parent . ",'draft')\"><i class=\"fa fa-save\"></i> Draft</a>";
+                                    echo "<a id='saveBtn' class=\"btn btn-app bg-green\" onclick=\"saveData(" . $id_parent . ",'save')\"><i class=\"fa fa-save\"></i> Simpan</a>";
                                     // echo "<a class=\"btn btn-app\" href=\"cancel_keluar.php?parent=".$id_parent."\"><i class=\"fa fa-trash\"></i> Batal</a>";
                                 } else {
                                     echo "<a class=\"btn btn-app bg-red\" href=\"cancel_keluar.php?parent=" . $id_parent . "\"><i class=\"fa fa-trash\"></i> Batalkan</a>";
@@ -280,6 +280,16 @@ $tuslah = $tuslah_aktif->fetch(PDO::FETCH_ASSOC);
     <script src="../dist/js/app.min.js" type="text/javascript"></script>
     <!-- page script -->
     <script type="text/javascript">
+        function saveData(id, mode) {
+            let uri_draft = "save_keluar.php?parent=" + id + "&mode=draft";
+            let uri_save = "save_keluar.php?parent=" + id + "&mode=save";
+            if (mode == 'save') {
+                $('#saveBtn').addClass('disabled');
+                window.location = uri_save;
+            } else {
+                window.location = uri_draft;
+            }
+        }
         $(function() {
             // loadData();
             $("#example1").dataTable();
